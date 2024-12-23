@@ -69,6 +69,7 @@ export default {
         cardBackground: '#F9F9F9',
         systemText: 'rgba(0, 0, 0, 0.72)',
         counterBlue: '#32374B',
+        lightCounterBlue: '#3a4057',
         cardGray: '#F3F3F3',
       },
     },
