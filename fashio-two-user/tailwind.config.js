@@ -6,6 +6,12 @@ export default {
   ],
   theme: {
     extend: {
+      width: {
+        '0.25': '0.0625rem',
+      },
+      fontSize: {
+        '2.5xl': '1.7rem',
+      },
       fontFamily: {
         poppins: ['Poppins',"sans-serif"],
         pacifico:['Pacifico', "sans-serif"],
