@@ -2,46 +2,64 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 const ImageSliderManager = () => {
-  const [images, setImages] = useState([]); // List of images
-  const [file, setFile] = useState(null);  // Selected file for upload
+  const [images, setImages] = useState([]); // Store image data
+  const [file, setFile] = useState(null);  // Store the file to upload
+  const [error, setError] = useState("");  // Store error messages for debugging
 
-  // Fetch images from the backend
+  // Fetch images from the backend when the component mounts
   useEffect(() => {
-    axios.get("/api/images")
-      .then((response) => setImages(response.data))
-      .catch((error) => console.error("Error fetching images:", error));
+    axios
+      .get("http://localhost:5000/api/images")
+      .then((response) => {
+        console.log("Fetched images:", response.data); // Debugging log
+        setImages(Array.isArray(response.data) ? response.data : []);
+      })
+      .catch((error) => {
+        console.error("Error fetching images:", error);
+        setError("Failed to load images.");
+        setImages([]); // Fallback to an empty array
+      });
   }, []);
 
-  // Handle file input change
+
+ 
+
+  // Handle file input changes
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
   };
 
-  // Handle upload
+  // Handle image upload
   const handleUpload = async () => {
-    if (!file) return;
+    if (!file) {
+      setError("Please select a file before uploading.");
+      return;
+    }
 
     const formData = new FormData();
     formData.append("image", file);
 
     try {
-      const response = await axios.post("/api/images/upload", formData, {
+      const response = await axios.post("http://localhost:5000/api/images/uploads", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      setImages([...images, response.data]); // Add the new image to the list
-      setFile(null); // Clear the input field
+      setImages((prevImages) => [...prevImages, response.data]); // Add new image to state
+      setFile(null); // Clear the file input
+      document.querySelector('input[type="file"]').value = ""; // Clear input field visually
     } catch (error) {
       console.error("Error uploading image:", error);
+      setError("Failed to upload image.");
     }
   };
 
-  // Handle delete
+  // Handle image delete
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`/api/images/${id}`);
-      setImages(images.filter((image) => image._id !== id)); // Update the list
+      await axios.delete(`http://localhost:5000/api/images/${id}`);
+      setImages((prevImages) => prevImages.filter((image) => image._id !== id)); // Remove the deleted image from state
     } catch (error) {
       console.error("Error deleting image:", error);
+      setError("Failed to delete image.");
     }
   };
 
@@ -50,13 +68,24 @@ const ImageSliderManager = () => {
       <h1>Admin Image Manager</h1>
       <input type="file" onChange={handleFileChange} />
       <button onClick={handleUpload}>Upload</button>
+      {error && <p style={{ color: "red" }}>{error}</p>} {/* Display error messages */}
       <div>
-        {images.map((image) => (
-          <div key={image._id}>
-            <img src={image.url} alt="uploaded" style={{ width: 100, height: 100 }} />
-            <button onClick={() => handleDelete(image._id)}>Delete</button>
-          </div>
-        ))}
+        {images.length === 0 ? (
+          <p>No images available. Upload one to get started!</p>
+        ) : (
+          images.map((image) => (
+            <div key={image._id} style={{ marginBottom: "10px" }}>
+              <img
+                
+                src={`http://localhost:5000${image.url}`}
+                alt="Uploaded"
+                style={{ width: 100, height: 100, objectFit: "cover" }}
+              />
+              <button onClick={() => handleDelete(image._id)}>Delete</button>
+            </div>
+            
+          ))
+        )}
       </div>
     </div>
   );
