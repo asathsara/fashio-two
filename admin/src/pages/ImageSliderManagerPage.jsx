@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import ImageUploader from "../components/ImageUploader";
 
 const ImageSliderManager = () => {
   const [images, setImages] = useState([]); // Store image data
@@ -65,7 +66,8 @@ const ImageSliderManager = () => {
 
   return (
     <div>
-      <h1>Admin Image Manager</h1>
+      <h1 className="font-poppins text-3xl font-semibold">Images for slider</h1>
+      <ImageUploader className='my-8'/>
       <input type="file" onChange={handleFileChange} />
       <button onClick={handleUpload}>Upload</button>
       {error && <p style={{ color: "red" }}>{error}</p>} {/* Display error messages */}
