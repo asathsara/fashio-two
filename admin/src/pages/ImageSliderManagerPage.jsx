@@ -45,7 +45,7 @@ const ImageSliderManager = () => {
             key={image._id}
             image={image}
             onDelete={handleDelete}
-            className="shadow-md m-2"
+            className="shadow-md m-4"
           />
         ))}
       </div>
