@@ -14,7 +14,7 @@ const Navbar = () => {
           >
             &#9776;
           </span>
-          <button className="bg-black text-white px-8 py-2 rounded-full font-poppins font-bold">Logout</button>
+          <button className="bg-black text-white px-8 py-2 rounded-full font-poppins ">Logout</button>
         </div>
       </div>
     </nav>
