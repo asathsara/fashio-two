@@ -27,7 +27,7 @@ const HomePage = () => {
         <img
           src={import.meta.env.VITE_API_UPLOAD_IMAGES_URL + images[index].url}
           alt="slide"
-          className="object-cover w-4/5 h-3/4 min-h-96 min-w-4/5 rounded-2xl mt-8"
+          className="object-cover w-4/5 h-7/10 min-h-96 min-w-4/5 rounded-2xl mt-8"
         />
       )}
       {error && <p className="text-red-500">{error}</p>}

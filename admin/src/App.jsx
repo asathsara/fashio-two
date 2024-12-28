@@ -51,7 +51,7 @@ const App = () => {
         currentPage={currentPage}
       />
 
-      <div className="flex">
+      <div className="flex mt-4">
         <NavigationRail
           navItems={navItems}
           className="hidden md:block"
@@ -59,7 +59,7 @@ const App = () => {
           setCurrentPage={setCurrentPage}
           currentPage={currentPage}
         />
-        <div className="flex-1 p-4">{pageComponents[currentPage]}</div>
+        <div className="flex-1 p-4 mt-4">{pageComponents[currentPage]}</div>
       </div>
     </>
   );

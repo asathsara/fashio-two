@@ -11,6 +11,7 @@ export default {
       },
       height: {
         '3/4': '75%',
+        '7/10': '70%',
       },
       fontSize: {
         '2.5xl': '1.7rem',
@@ -30,6 +31,7 @@ export default {
         black: '#000000',
         white: '#FFFFFF',
         darkGray: '#353535',
+        navbarGray: '#212121',
 
         skyBlue: '#0099FF',
         brightBlue: '#32CCFF',
