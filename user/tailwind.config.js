@@ -9,6 +9,9 @@ export default {
       width: {
         '0.25': '0.0625rem',
       },
+      height: {
+        '3/4': '75%',
+      },
       fontSize: {
         '2.5xl': '1.7rem',
       },
