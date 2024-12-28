@@ -2,33 +2,40 @@ import React, { useRef } from "react";
 import { FaSearch } from "react-icons/fa";
 import { MdOutlineShoppingBag } from "react-icons/md";
 
-const Navbar = () => {
+const Navbar = ({ openNav, onSelect, navItems }) => {
   const inputRef = useRef();
 
   return (
-    <nav className="navbar">
-      <div className="flex p-4   items-center  justify-between">
+    <nav className="fixed top-0 left-0 w-full z-10 bg-white">
+      <div className="flex p-4  items-center  justify-between">
         {/* First Item (Fashio) */}
-        <div className="flex font-pacifico text-2.5xl font-semibold  tracking- pl-4 md:text-3xl">
+        <div
+          className="flex font-pacifico text-2.5xl font-semibold  tracking- pl-4 md:text-3xl cursor-pointer"
+          onClick={() => onSelect("Home")}
+        >
           Fashio
         </div>
 
         <div className="flex items-center ">
-          <ul className="list-none flex gap-5 md:flex sm:hidden ml-3 mr-5 font-poppins">
-            <li>
-              <a href="/Promo">Promo</a>
-            </li>
-            <li>
-              <a href="/Help">Help</a>
-            </li>
-            <li>
-              <a href="/Login">Login</a>
-            </li>
+          <ul className="list-none hidden gap-5 md:flex sm:hidden ml-3 mr-5 font-poppins cursor-pointer">
+            {navItems.map((item) => (
+              <li
+                key={item.id}
+                className={`
+            }`}
+                onClick={() => {
+                  onSelect(item.label);
+                }}
+              >
+                {item.label}
+              </li>
+            ))}
           </ul>
 
           <span
             className="sm:block md:hidden cursor-pointer text-3xl mx-3 text-black"
-            onClick="openNav()">
+            onClick={openNav}
+          >
             &#9776;
           </span>
 

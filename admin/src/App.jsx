@@ -31,12 +31,11 @@ const App = () => {
   };
 
   const openNav = () => {
-    setNavabarOpen = true;
-    console.log("open");
+    setNavabarOpen(true);
   };
 
   const closeNav = () => {
-    setNavabarOpen = false;
+    setNavabarOpen(false);
   };
 
   return (
@@ -48,13 +47,17 @@ const App = () => {
         navItems={navItems}
         onSelect={(label) => setCurrentPage(label)}
         closeNav={closeNav}
+        setCurrentPage={setCurrentPage}
+        currentPage={currentPage}
       />
 
       <div className="flex">
         <NavigationRail
           navItems={navItems}
-          className="sm:hidden md:block"
+          className="hidden md:block"
           onSelect={(label) => setCurrentPage(label)}
+          setCurrentPage={setCurrentPage}
+          currentPage={currentPage}
         />
         <div className="flex-1 p-4">{pageComponents[currentPage]}</div>
       </div>

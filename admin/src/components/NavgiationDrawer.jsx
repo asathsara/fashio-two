@@ -1,17 +1,12 @@
 import React, { useState } from "react";
 import NavigationItem from "./NavigationItem";
 
-const NavgiationDrawer = ({ onSelect, className, navItems, closeNav }) => {
-  const [selected, setSelected] = useState("Image Slider"); // Default selected item
-
-  const handleSelect = (label) => {
-    setSelected(label);
-    onSelect(label); // Notify parent
-  };
+const NavgiationDrawer = ({ className, navItems, closeNav, currentPage, setCurrentPage }) => {
+ 
 
   return (
     <div
-      className={`${className} h-full z-20 fixed overflow-x-hidden  bg-slate-100`}
+      className={`${className} h-full z-20 fixed overflow-x-hidden  bg-slate-100 transition-all duration-300`}
     >
       <span
         className="cursor-pointer text-4xl float-right mr-6 pt-3 pb-5 "
@@ -24,8 +19,8 @@ const NavgiationDrawer = ({ onSelect, className, navItems, closeNav }) => {
           <NavigationItem
             key={item.id}
             item={item}
-            selected={selected}
-            onSelect={handleSelect}
+            selected={currentPage}
+            onSelect={setCurrentPage}
           />
         ))}
       </ul>

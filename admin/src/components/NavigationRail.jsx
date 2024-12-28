@@ -1,14 +1,7 @@
 import React, { useState } from "react";
 import NavigationItem from "./NavigationItem";
 
-const NavigationRail = ({ onSelect, className, navItems }) => {
-  const [selected, setSelected] = useState("Image Slider"); // Default selected item
-
-  const handleSelect = (label) => {
-    setSelected(label);
-    onSelect(label); // Notify parent
-  };
-
+const NavigationRail = ({ className, navItems,currentPage, setCurrentPage }) => {
   return (
     <div
       className={`${className} min-w-44 h-screen flex flex-col items-start pb-4 mx-4`}
@@ -18,8 +11,8 @@ const NavigationRail = ({ onSelect, className, navItems }) => {
           <NavigationItem
             key={item.id}
             item={item}
-            selected={selected}
-            onSelect={handleSelect}
+            selected={currentPage}
+            onSelect={setCurrentPage}
           />
         ))}
       </ul>
