@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { fetchImages, uploadImage, deleteImage } from "../api/imageApi";
+import { fetchImages, uploadImage, deleteImage } from "../api/ImageApi";
 import ImageUploader from "../components/ImageUploader";
 import ImageCard from "../components/ImageCard";
 

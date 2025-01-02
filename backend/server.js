@@ -23,6 +23,9 @@ mongoose.connect(process.env.MONGO_URI, {
 const imageRoutes = require("./routes/imageRoutes");
 app.use("/api/images", imageRoutes);
 
+const categoryRoutes = require("./routes/categoryRoutes");
+app.use("/api/categories", categoryRoutes);
+
 // Serve static files
 app.use("/uploads", express.static("uploads"));
 

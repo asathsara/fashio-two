@@ -3,49 +3,62 @@ const router = express.Router();
 const Category = require("../models/category");
 
 // Add a category
-router.post("/categories", async (req, res) => {
+router.post("/add", async (req, res) => {
   const category = new Category({ name: req.body.name, subItems: [] });
   await category.save();
   res.status(201).send(category);
 });
 
 // Fetch all categories
-router.get("/categories", async (req, res) => {
+router.get("/", async (req, res) => {
   const categories = await Category.find();
   res.send(categories);
 });
 
 // Add a subcategory
-router.post("/categories/:id/sub-categories", async (req, res) => {
+router.post("/:id/sub-categories", async (req, res) => {
   const category = await Category.findById(req.params.id);
-  category.subItems.push({ name: req.body.name });
+  const newSubItem = { name: req.body.name };
+  category.subItems.push(newSubItem);
   await category.save();
-  res.status(201).send(category);
+
+  // Send back only the new sub-item instead of the entire category
+  res.status(201).send(newSubItem);
 });
 
+
 // delete a category
-router.delete("/categories/:id", async (req, res) => {
+router.delete("/:id", async (req, res) => {
   await Category.findByIdAndDelete(req.params.id);
   res.status(204).send();
 });
 
-// delete a subcategory
-router.delete(
-  "/categories/:id/sub-categories/:subItemName",
-  async (req, res) => {
-    const { categoryId, subItemName } = req.params;
+// Delete a subcategory
+router.delete("/:id/sub-categories/:subItemName", async (req, res) => {
+  const { id, subItemName } = req.params; // Correct destructuring
 
-    // Find the category and remove the sub-item by name
-    const category = await Category.findById(categoryId);
-    if (!category) {
-      return res.status(404).send({ error: "Category not found" });
-    }
-
-    category.subItems = category.subItems.filter(
-      (subItem) => subItem.name !== subItemName
-    );
-
-    await category.save();
-    res.send(category); // Return the updated category
+  // Find the category
+  const category = await Category.findById(id);
+  if (!category) {
+    return res.status(404).send({ error: "Category not found" });
   }
-);
+
+  // Remove the sub-item
+  const initialLength = category.subItems.length;
+  category.subItems = category.subItems.filter(
+    (subItem) => subItem.name !== subItemName
+  );
+
+  // Check if a sub-item was actually deleted
+  if (category.subItems.length === initialLength) {
+    return res.status(404).send({ error: "Sub-item not found" });
+  }
+
+  // Save the updated category
+  await category.save();
+
+  // Send a response (e.g., updated sub-items array)
+  res.send({ message: "Sub-item deleted successfully", subItems: category.subItems });
+});
+
+module.exports = router;
