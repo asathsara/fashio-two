@@ -33,7 +33,7 @@ const Navbar = ({ openNav, onSelect, navItems }) => {
           </ul>
 
           <span
-            className="sm:block md:hidden cursor-pointer text-3xl mx-3 text-black"
+            className="sm:block md:hidden cursor-pointer text-3xl mx-3 text-backgroundGray"
             onClick={openNav}
           >
             &#9776;

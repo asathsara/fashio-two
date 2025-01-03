@@ -50,7 +50,7 @@ function App() {
         closeNav={closeNav}
       />
       <Spacer />
-      <div className="flex p-4">{pageComponents[currentPage]}</div>
+      <div className="flex ">{pageComponents[currentPage]}</div>
     </>
   );
 }

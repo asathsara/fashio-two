@@ -20,7 +20,7 @@ const CategoryItem = ({
   };
 
   return (
-    <div className="p-4 bg-gray-100 my-2 rounded-lg">
+    <div className="p-4 bg-backgroundGray my-2 rounded-lg">
       <div
         className="flex justify-between items-center cursor-pointer"
         onClick={() => setIsExpanded((prev) => !prev)}
@@ -45,12 +45,12 @@ const CategoryItem = ({
               }
             />
           ))}
-          <div className="mt-2 flex">
+          <div className="mt-4 flex">
             <input
               ref={subItemRef}
               type="text"
-              placeholder="Add sub-item"
-              className="border rounded px-2 py-1 mr-2 flex-1"
+              placeholder="Sub-item"
+              className="rounded-md px-4 py-1 mr-2 flex-1 bg-white border-0 outline-none font-semibold"
               onClick={(e) => e.stopPropagation()}
             />
             <button
@@ -58,7 +58,7 @@ const CategoryItem = ({
                 e.stopPropagation();
                 handleAddSubItem();
               }}
-              className="bg-blue-500 text-white px-4 py-1 rounded"
+              className="bg-skyBlue rounded-md text-white px-8 py-1 font-semibold mx-2"
             >
               Add
             </button>

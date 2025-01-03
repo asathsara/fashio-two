@@ -12,6 +12,9 @@ export default {
       height: {
         '3/4': '75%',
         '7/10': '70%',
+        '124': '31rem',
+        '128': '32rem',
+        '144': '36rem',
       },
       fontSize: {
         '2.5xl': '1.7rem',

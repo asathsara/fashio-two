@@ -57,7 +57,7 @@ router.delete("/:id/sub-categories/:subItemName", async (req, res) => {
   // Save the updated category
   await category.save();
 
-  // Send a response (e.g., updated sub-items array)
+  // Send a response 
   res.send({ message: "Sub-item deleted successfully", subItems: category.subItems });
 });
 
