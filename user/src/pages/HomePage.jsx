@@ -36,16 +36,16 @@ const HomePage = () => {
           <img
             src={import.meta.env.VITE_API_UPLOAD_IMAGES_URL + images[index].url}
             alt="slide"
-            className="object-cover w-4/5 md:h-144 sm:min-h-72 min-w-4/5 rounded-2xl mt-8"
+            className="object-cover w-4/5 md:h-144 sm:min-h-72 min-w-4/5 rounded-2xl mt-8 shadow-sm"
           />
         )}
         {error && <p className="text-red-500">{error}</p>}
       </div>
 
-      <div className="flex flex-row items-center mt-8 justify-around w-full h-24 bg-brightYellow">
+      <div className="flex flex-row items-center mt-8 justify-around w-full h-20 bg-navbarGray">
         {categories.map((category) => {
           return (
-            <p key={category._id} className="md:text-xl sm:text-lg font-bold font-poppins cursor-pointer">
+            <p key={category._id} className="md:text-xl sm:text-lg font-bold font-poppins cursor-pointer text-backgroundGray">
               {category.name}
             </p>
           );

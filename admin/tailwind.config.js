@@ -6,12 +6,16 @@ export default {
       width: {
         100: "25rem",
         104: "26rem",
+        '3/4': '75%',
       },
       height: {
         0.25: "0.0625rem",
       },
       fontSize: {
         "2.5xl": "1.7rem",
+      },
+      borderWidth: {
+        1: "1px",
       },
       fontFamily: {
         poppins: ["Poppins", "sans-serif"],
