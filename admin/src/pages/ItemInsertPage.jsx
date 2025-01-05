@@ -7,6 +7,24 @@ const ItemInsertPage = () => {
   const [category, setCategory] = useState(null); // Store entire category object
   const [subCategory, setSubCategory] = useState(null); // Store selected sub-category
   const [selectedSizes, setSelectedSizes] = useState([]); // Store multiple selected sizes
+  const [uploadedImages, setUploadedImages] = useState({
+    uploader1: null,
+    uploader2: null,
+    uploader3: null,
+    uploader4: null,
+  });
+
+  const handleImageChange = (uploaderKey, file) => {
+    setUploadedImages((prev) => ({
+      ...prev,
+      [uploaderKey]: file,
+    }));
+  };
+
+  const handleButtonClick = () => {
+    console.log("Uploaded images:", uploadedImages);
+    // You can process or save the uploaded images here
+  };
 
   useEffect(() => {
     fetchCategories()
@@ -44,24 +62,28 @@ const ItemInsertPage = () => {
 
       <div className="flex flex-row mt-8 flex-wrap">
         <div className="flex flex-col flex-[1] mr-4">
-          <ImageUploaderSolid />
+          <ImageUploaderSolid
+            onImageChange={(file) => handleImageChange("uploader1", file)}
+          />
           <div className="flex flex-row mt-4">
             <div className="flex-[1]">
-              <ImageUploaderSolid />
+              <ImageUploaderSolid
+                onImageChange={(file) => handleImageChange("uploader2", file)}
+              />
             </div>
             <div className="flex-[1] ml-4">
-              <ImageUploaderSolid />
+              <ImageUploaderSolid
+                onImageChange={(file) => handleImageChange("uploader3", file)}
+              />
             </div>
             <div className="flex-[1] ml-4">
-              <ImageUploaderSolid />
+              <ImageUploaderSolid
+                onImageChange={(file) => handleImageChange("uploader4", file)}
+              />
             </div>
           </div>
-
-          <button className="bg-black text-backgroundGray px-8 py-2 rounded-full font-semibold font-poppins flex-[1] ml-8 h-full mt-8">
-            Submit
-          </button>
         </div>
-        <div className="flex-col flex-[1] ml-4">
+        <div className="flex-col flex-[1] ml-0 md:ml-8">
           <p className="font-poppins text-lg md:mt-2 mt-8">Item Name</p>
           <input
             type="text"
@@ -141,6 +163,9 @@ const ItemInsertPage = () => {
               </div>
             ))}
           </div>
+          <button className="bg-black text-backgroundGray px-8 py-2 rounded-full font-semibold font-poppins w-3/4 mt-8">
+            Submit
+          </button>
         </div>
       </div>
     </>
