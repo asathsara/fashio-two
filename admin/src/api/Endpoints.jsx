@@ -12,6 +12,7 @@ const API_ENDPOINTS = {
 
   ITEMS: '/items',
   ADD_ITEMS: '/items/add',
+  DELETE_ITEM: (id) => `/items/${id}`,
 
 };
 

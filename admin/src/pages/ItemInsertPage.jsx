@@ -29,6 +29,7 @@ const ItemInsertPage = () => {
   };
 
   const handleSubmit = async () => {
+
     // Validation
     if (!nameRef.current.value.trim()) {
       alert("Name is required.");
@@ -74,7 +75,7 @@ const ItemInsertPage = () => {
 
     // Append other fields from refs
     formData.append("name", nameRef.current.value);
-    formData.append("price", priceRef.current.value);
+    formData.append("price", (Math.round(priceRef.current.value * 100) / 100).toFixed(2));
     formData.append("stock", stockRef.current.value);
     formData.append("category", category?.name || "");
     formData.append("subCategory", subCategory || "");
@@ -85,6 +86,21 @@ const ItemInsertPage = () => {
       const response = await insertItem(formData);
       alert("Item added successfully!");
       console.log(response);
+
+      // Clear fields after successful submission
+      nameRef.current.value = "";
+      priceRef.current.value = "";
+      stockRef.current.value = "";
+      descriptionRef.current.value = "";
+      setCategory(null);
+      setSubCategory(null);
+      setSelectedSizes([]);
+      setUploadedImages({
+        uploader1: null,
+        uploader2: null,
+        uploader3: null,
+        uploader4: null,
+      });
     } catch (error) {
       console.error(error);
       alert("Failed to add item");
@@ -101,7 +117,7 @@ const ItemInsertPage = () => {
     const selectedCategory = categories.find(
       (cat) => cat._id === e.target.value
     );
-    setCategory(selectedCategory.name);
+    setCategory(selectedCategory);
     setSubCategory(null);
   };
 

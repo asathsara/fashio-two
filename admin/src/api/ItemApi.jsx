@@ -14,3 +14,8 @@ export const insertItem = async (formData) => {
   });
   return response.data;
 };
+
+export const deleteItem = async (id) => {
+  const response = await axiosInstance.delete(API_ENDPOINTS.DELETE_ITEM(id));
+  return response.data;
+}

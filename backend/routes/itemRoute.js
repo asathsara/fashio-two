@@ -3,6 +3,7 @@ const router = express.Router();
 const multer = require("multer");
 const fs = require("fs");
 const Item = require("../models/item");
+const path = require("path");
 
 // Configure Multer for image uploads
 const storage = multer.diskStorage({
@@ -69,5 +70,38 @@ router.get("/", async (req, res) => {
     res.status(500).json({ message: "Failed to fetch items", error: err.message });
   }
 });
+
+
+
+
+router.delete("/:id", async (req, res) => {
+  try {
+    // Find the item by ID
+    const item = await Item.findById(req.params.id);
+    if (!item) {
+      return res.status(404).json({ message: "Item not found" });
+    }
+
+    // Delete the images from the filesystem
+    item.urls.forEach((fileUrl) => {
+      const filePath = `./uploads/items/${fileUrl}`; // The file path
+      fs.unlink(filePath, (err) => {
+        if (err) {
+          console.error(`Error deleting file ${filePath}:`, err);
+        }
+      });
+    });
+
+    // Find the item by ID and delete it from the database
+     await Item.findByIdAndDelete(req.params.id);
+
+    // Respond with success message
+    res.status(200).json({ message: "Item and its images deleted successfully" });
+  } catch (err) {
+    // Handle errors and respond appropriately
+    res.status(500).json({ message: "Failed to delete item", error: err.message });
+  }
+});
+
 
 module.exports = router;
