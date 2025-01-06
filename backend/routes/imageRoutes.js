@@ -7,7 +7,7 @@ const router = express.Router();
 
 // Configure Multer
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, "./uploads/"),
+  destination: (req, file, cb) => cb(null, "./uploads/slider/"),
   filename: (req, file, cb) => cb(null, Date.now() + "-" + file.originalname),
 });
 const upload = multer({ storage });
@@ -25,7 +25,7 @@ router.get("/", async (req, res) => {
 // Upload an image
 router.post("/uploads", upload.single("image"), async (req, res) => {
   try {
-    const newImage = new Image({ url: `/uploads/${req.file.filename}` });
+    const newImage = new Image({ url: `/uploads/slider/${req.file.filename}` });
     await newImage.save();
     res.json(newImage);
   } catch (error) {
@@ -39,7 +39,7 @@ router.delete("/:id", async (req, res) => {
     const image = await Image.findById(req.params.id);
     if (!image) return res.status(404).json({ error: "Image not found" });
 
-    fs.unlinkSync(`./uploads/${image.url.split("/").pop()}`);
+    fs.unlinkSync(`./uploads/slider/${image.url.split("/").pop()}`);
     await Image.findByIdAndDelete(req.params.id);
     res.json({ message: "Image deleted" });
   } catch (error) {

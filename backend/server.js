@@ -26,6 +26,9 @@ app.use("/api/images", imageRoutes);
 const categoryRoutes = require("./routes/categoryRoutes");
 app.use("/api/categories", categoryRoutes);
 
+const itemRoutes = require("./routes/itemRoute");
+app.use("/api/items", itemRoutes);
+
 // Serve static files
 app.use("/uploads", express.static("uploads"));
 

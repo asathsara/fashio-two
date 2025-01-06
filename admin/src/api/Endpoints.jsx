@@ -10,6 +10,9 @@ const API_ENDPOINTS = {
   DELETE_SUBCATEGORY: (categoryId, subItemName) =>
     `/categories/${categoryId}/sub-categories/${subItemName}`,
 
+  ITEMS: '/items',
+  ADD_ITEMS: '/items/add',
+
 };
 
 export default API_ENDPOINTS;
