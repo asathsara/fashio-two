@@ -3,6 +3,7 @@ import ImageUploaderSolid from "../components/ImageUploaderSolid";
 import { fetchCategories } from "../api/CategoryApi";
 import { insertItem } from "../api/ItemApi";
 
+
 const ItemInsertPage = () => {
   const [categories, setCategories] = useState([]);
   const [category, setCategory] = useState(null);
@@ -14,6 +15,7 @@ const ItemInsertPage = () => {
     uploader3: null,
     uploader4: null,
   });
+  
 
   // Using useRef for input fields
   const nameRef = useRef();
@@ -33,6 +35,7 @@ const ItemInsertPage = () => {
     // Validation
     if (!nameRef.current.value.trim()) {
       alert("Name is required.");
+      setIsDialogOpen(true);
       return;
     }
     if (!priceRef.current.value || isNaN(priceRef.current.value)) {
@@ -254,6 +257,7 @@ const ItemInsertPage = () => {
           </button>
         </div>
       </div>
+      
     </>
   );
 };

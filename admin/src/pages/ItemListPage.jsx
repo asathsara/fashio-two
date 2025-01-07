@@ -1,11 +1,26 @@
 import React, { useState, useEffect } from "react";
 import { deleteItem, fetchItems } from "../api/ItemApi";
 import { FaTrash } from "react-icons/fa";
+import Dialog from "../components/Dialog";
 
 const ItemListPage = () => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState(null); // Track the item to delete
+
+  const handleOk = () => {
+    handleDelete(itemToDelete._id); // Perform the deletion of the selected item
+    setIsDialogOpen(false); // Close the dialog
+    setItemToDelete(null); // Reset itemToDelete
+  };
+
+  const handleCancel = () => {
+    
+    setIsDialogOpen(false); // Just close the dialog
+    setItemToDelete(null); // Reset itemToDelete
+  };
 
   useEffect(() => {
     // Fetch items from the API
@@ -33,6 +48,11 @@ const ItemListPage = () => {
     }
   };
 
+  const openDeleteDialog = (item) => {
+    setItemToDelete(item); // Set the item to be deleted
+    setIsDialogOpen(true); // Open the confirmation dialog
+  };
+
   return (
     <>
       <h1 className="font-poppins text-3xl font-semibold mb-6">Items List</h1>
@@ -42,7 +62,7 @@ const ItemListPage = () => {
         <p className="text-red-500">{error}</p>
       ) : (
         <div className="w-full mt-8">
-          <div className="grid grid-cols-8 gap-4 text-left font-semibold text-gray-700 px-4 py-4 bg-gray-100 rounded-md mb-2 font-poppins ">
+          <div className="grid grid-cols-8 gap-4 text-left font-semibold text-gray-700 px-4 py-4 bg-gray-100 rounded-md mb-2 font-poppins">
             <span>Image</span>
             <span>Name</span>
             <span>Price</span>
@@ -77,15 +97,21 @@ const ItemListPage = () => {
               <span>{item.subCategory}</span>
               <span>{item.sizes.join(", ")}</span>
               <FaTrash
-                className="cursor-pointer "
-                onClick={(e) => {
-                  handleDelete(item._id);
-                }}
+                className="cursor-pointer"
+                onClick={() => openDeleteDialog(item)} // Open the dialog for the selected item
               />
             </div>
           ))}
         </div>
       )}
+
+      <Dialog
+        isOpen={isDialogOpen}
+        title="Delete"
+        subText={`Are you sure you want to delete the item "${itemToDelete?.name}"?`}
+        onOk={handleOk}
+        onCancel={handleCancel}
+      />
     </>
   );
 };
