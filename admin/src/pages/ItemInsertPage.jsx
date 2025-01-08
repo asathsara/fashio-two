@@ -1,8 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
-import ImageUploaderSolid from "../components/ImageUploaderSolid";
+
 import { fetchCategories } from "../api/CategoryApi";
 import { insertItem } from "../api/ItemApi";
-
+import ImageUploaderGroup from "../components/ImageUploaderGroup";
+import FormInput from "../components/FormInput ";
+import SizeSelector from "../components/SizeSelector";
+import CategorySelector from "../components/CategorySelector";
+import Dialog from "../components/Dialog";
 
 const ItemInsertPage = () => {
   const [categories, setCategories] = useState([]);
@@ -16,7 +20,18 @@ const ItemInsertPage = () => {
     uploader4: null,
   });
   const [resetCounter, setResetCounter] = useState(0); // Reset trigger
-  
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [dialogContent, setDialogContent] = useState([])
+
+  const handleOk = () => {
+    setIsDialogOpen(false); // Close the dialog
+    setItemToDelete(null); // Reset itemToDelete
+  };
+
+  const handleCancel = () => {
+    setIsDialogOpen(false); // Just close the dialog
+    setItemToDelete(null); // Reset itemToDelete
+  };
 
   // Using useRef for input fields
   const nameRef = useRef();
@@ -31,40 +46,68 @@ const ItemInsertPage = () => {
     }));
   };
 
-  const handleSubmit = async () => {
+  const validateField = (field, message) => {
+    if (!field || (typeof field === "string" && field.trim() === "")) {
+      setDialogContent({ title: "Validation Error", subText: message });
+      setIsDialogOpen(true);
+      return false;
+    }
+    return true;
+  };
 
+  const handleSubmit = async () => {
     // Validation
-    if (!nameRef.current.value.trim()) {
-      alert("Name is required.");
+    if (!validateField(nameRef.current.value, "Name is required.")) return;
+    if (
+      !validateField(
+        priceRef.current.value,
+        "Price is required and must be a valid number."
+      ) ||
+      isNaN(priceRef.current.value)
+    )
+      return;
+    if (
+      !validateField(
+        stockRef.current.value,
+        "Stock is required and must be a valid number."
+      ) ||
+      isNaN(stockRef.current.value)
+    )
+      return;
+    if (!category) {
+      setDialogContent({
+        title: "Validation Error",
+        subText: "Category is required.",
+      });
       setIsDialogOpen(true);
       return;
     }
-    if (!priceRef.current.value || isNaN(priceRef.current.value)) {
-      alert("Price is required and must be a valid number.");
-      return;
-    }
-    if (!stockRef.current.value || isNaN(stockRef.current.value)) {
-      alert("Stock is required and must be a valid number.");
-      return;
-    }
-    if (!category) {
-      alert("Category is required.");
-      return;
-    }
     if (!subCategory) {
-      alert("Subcategory is required.");
+      setDialogContent({
+        title: "Validation Error",
+        subText: "Subcategory is required.",
+      });
+      setIsDialogOpen(true);
       return;
     }
     if (selectedSizes.length === 0) {
-      alert("At least one size must be selected.");
+      setDialogContent({
+        title: "Validation Error",
+        subText: "At least one size must be selected.",
+      });
+      setIsDialogOpen(true);
       return;
     }
-    if (!descriptionRef.current.value.trim()) {
-      alert("Description is required.");
+    if (
+      !validateField(descriptionRef.current.value, "Description is required.")
+    )
       return;
-    }
     if (!Object.values(uploadedImages).some((file) => file)) {
-      alert("At least one image is required.");
+      setDialogContent({
+        title: "Validation Error",
+        subText: "At least one image is required.",
+      });
+      setIsDialogOpen(true);
       return;
     }
 
@@ -79,7 +122,10 @@ const ItemInsertPage = () => {
 
     // Append other fields from refs
     formData.append("name", nameRef.current.value);
-    formData.append("price", (Math.round(priceRef.current.value * 100) / 100).toFixed(2));
+    formData.append(
+      "price",
+      (Math.round(priceRef.current.value * 100) / 100).toFixed(2)
+    );
     formData.append("stock", stockRef.current.value);
     formData.append("category", category?.name || "");
     formData.append("subCategory", subCategory || "");
@@ -88,7 +134,11 @@ const ItemInsertPage = () => {
 
     try {
       const response = await insertItem(formData);
-      alert("Item added successfully!");
+      setDialogContent({
+        title: "Success",
+        subText: "Item added successfully!",
+      });
+      setIsDialogOpen(true);
       console.log(response);
 
       // Clear fields after successful submission
@@ -107,11 +157,10 @@ const ItemInsertPage = () => {
       });
 
       setResetCounter((prev) => prev + 1); // Increment the reset trigger
-
-     
     } catch (error) {
       console.error(error);
-      alert("Failed to add item");
+      setDialogContent({ title: "Error", subText: "Failed to add item" });
+      setIsDialogOpen(true);
     }
   };
 
@@ -144,120 +193,34 @@ const ItemInsertPage = () => {
   return (
     <>
       <h1 className="font-poppins text-3xl font-semibold">Item Insert</h1>
-
       <div className="flex flex-row mt-8 flex-wrap">
         <div className="flex flex-col flex-[1] mr-4">
-          <ImageUploaderSolid
+          <ImageUploaderGroup
             resetTrigger={resetCounter}
-            onImageChange={(file) => handleImageChange("uploader1", file)}
+            onImageChange={handleImageChange}
           />
-          <div className="flex flex-row mt-4">
-            <div className="flex-[1]">
-              <ImageUploaderSolid
-                resetTrigger={resetCounter}
-                onImageChange={(file) => handleImageChange("uploader2", file)}
-              />
-            </div>
-            <div className="flex-[1] ml-4">
-              <ImageUploaderSolid
-                resetTrigger={resetCounter}
-                onImageChange={(file) => handleImageChange("uploader3", file)}
-              />
-            </div>
-            <div className="flex-[1] ml-4">
-              <ImageUploaderSolid
-                resetTrigger={resetCounter}
-                onImageChange={(file) => handleImageChange("uploader4", file)}
-              />
-            </div>
-          </div>
         </div>
         <div className="flex-col flex-[1] ml-0 md:ml-8">
-          <p className="font-poppins text-lg md:mt-2 mt-8">Item Name</p>
-          <input
-            ref={nameRef}
-            type="text"
-            className="border-1 border-gray-300 outline-none rounded-md px-4 py-2 mt-1 w-3/4 min-w-96"
+          <FormInput label="Item Name" type="text" inputRef={nameRef} />
+          <FormInput
+            label="Description"
+            inputRef={descriptionRef}
+            as="textarea"
           />
-
-          <p className="font-poppins text-lg mt-4">Description</p>
-          <textarea
-            ref={descriptionRef}
-            className="border-1 border-gray-300 outline-none rounded-md px-4 py-2 mt-1 w-3/4 min-w-96 h-32"
+          <CategorySelector
+            categories={categories}
+            category={category}
+            subCategory={subCategory}
+            onCategoryChange={handleCategoryChange}
+            onSubCategoryChange={handleSubCategoryChange}
           />
-
-          <div className="flex-row mt-4 flex justify-between w-3/4 flex-wrap">
-            <div className="mr-2">
-              <p className="font-poppins text-lg mt-4">Category</p>
-              <div className="relative inline-block w-64 mt-1">
-                <select
-                  className="w-full border-1 border-gray-300 outline-none rounded-md px-4 py-2 bg-white cursor-pointer"
-                  value={category ? category._id : ""}
-                  onChange={handleCategoryChange}
-                >
-                  <option value="" disabled>
-                    Select an option
-                  </option>
-                  {categories.map((cat) => (
-                    <option key={cat._id} value={cat._id}>
-                      {cat.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-            <div>
-              <p className="font-poppins text-lg mt-4">Sub Category</p>
-              <div className="relative inline-block w-64 mt-1">
-                <select
-                  className="w-full border-1 border-gray-300 outline-none rounded-md px-4 py-2 bg-white cursor-pointer"
-                  value={subCategory || ""}
-                  onChange={handleSubCategoryChange}
-                  disabled={!category}
-                >
-                  <option value="" disabled>
-                    Select an option
-                  </option>
-                  {category &&
-                    category.subItems &&
-                    category.subItems.map((subItem) => (
-                      <option key={subItem._id} value={subItem.name}>
-                        {subItem.name}
-                      </option>
-                    ))}
-                </select>
-              </div>
-            </div>
-          </div>
-          <p className="font-poppins text-lg md:mt-4 mt-8">Stock</p>
-          <input
-            ref={stockRef}
-            type="number"
-            className="border-1 border-gray-300 outline-none rounded-md px-4 py-2 mt-1 w-3/4 min-w-96"
+          <FormInput label="Stock" type="number" inputRef={stockRef} />
+          <FormInput label="Item Price" type="text" inputRef={priceRef} />
+          <SizeSelector
+            className={"mt-8"}
+            selectedSizes={selectedSizes}
+            onSizeToggle={handleSizeToggle}
           />
-          <p className="font-poppins text-lg md:mt-4 mt-8">Item Price</p>
-          <input
-            ref={priceRef}
-            type="text"
-            className="border-1 border-gray-300 outline-none rounded-md px-4 py-2 mt-1 w-3/4 min-w-96"
-          />
-          <p className="font-poppins text-lg md:mt-4 mt-8">Item Size</p>
-
-          <div className="flex space-x-4 mt-2">
-            {["S", "M", "L", "XL", "XXL"].map((size) => (
-              <div
-                key={size}
-                onClick={() => handleSizeToggle(size)}
-                className={`cursor-pointer w-12 h-12 flex items-center justify-center border-2 rounded-md ${
-                  selectedSizes.includes(size)
-                    ? "bg-gray-500 text-white"
-                    : "bg-white text-gray-700"
-                }`}
-              >
-                {size}
-              </div>
-            ))}
-          </div>
           <button
             onClick={handleSubmit}
             className="bg-black text-backgroundGray px-8 py-2 rounded-full font-semibold font-poppins w-3/4 mt-8"
@@ -266,7 +229,13 @@ const ItemInsertPage = () => {
           </button>
         </div>
       </div>
-      
+      <Dialog
+        isOpen={isDialogOpen}
+        title={dialogContent.title}
+        subText={dialogContent.subText}
+        onOk={handleOk}
+        onCancel={handleCancel}
+      />
     </>
   );
 };
