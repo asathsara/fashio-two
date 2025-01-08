@@ -28,11 +28,15 @@ router.post("/add", upload.array("images", 4), async (req, res) => {
   try {
     // Check if any files were uploaded
     if (!req.files || req.files.length === 0) {
-      return res.status(400).json({ message: "At least one image is required" });
+      return res
+        .status(400)
+        .json({ message: "At least one image is required" });
     }
 
     // Map uploaded file paths to `urls` field
-    const imageUrls = req.files.map((file) => `/uploads/items/${file.filename}`);
+    const imageUrls = req.files.map(
+      (file) => `/uploads/items/${file.filename}`
+    );
 
     // Create a new Item instance using req.body and the image URLs
     const item = new Item({
@@ -67,11 +71,11 @@ router.get("/", async (req, res) => {
     res.status(200).json(items);
   } catch (err) {
     // Handle errors and respond appropriately
-    res.status(500).json({ message: "Failed to fetch items", error: err.message });
+    res
+      .status(500)
+      .json({ message: "Failed to fetch items", error: err.message });
   }
 });
-
-
 
 
 router.delete("/:id", async (req, res) => {
@@ -83,25 +87,35 @@ router.delete("/:id", async (req, res) => {
     }
 
     // Delete the images from the filesystem
-    item.urls.forEach((fileUrl) => {
-      const filePath = `./uploads/items/${fileUrl}`; // The file path
-      fs.unlink(filePath, (err) => {
-        if (err) {
-          console.error(`Error deleting file ${filePath}:`, err);
-        }
+    const deletionPromises = item.urls.map((imageUrl) => {
+      const filePath = `./uploads/items/${imageUrl.split("/").pop()}`; // The file path
+      return new Promise((resolve, reject) => {
+        fs.unlink(filePath, (err) => {
+          if (err) {
+            console.error(`Error deleting file ${filePath}:`, err);
+            reject(err);
+          } else {
+            console.log(`Successfully deleted file: ${filePath}`);
+            resolve();
+          }
+        });
       });
     });
 
+    // Wait for all deletions to complete
+    await Promise.all(deletionPromises);
+
     // Find the item by ID and delete it from the database
-     await Item.findByIdAndDelete(req.params.id);
+    await Item.findByIdAndDelete(req.params.id);
 
     // Respond with success message
     res.status(200).json({ message: "Item and its images deleted successfully" });
   } catch (err) {
     // Handle errors and respond appropriately
-    res.status(500).json({ message: "Failed to delete item", error: err.message });
+    res
+      .status(500)
+      .json({ message: "Failed to delete item", error: err.message });
   }
 });
-
 
 module.exports = router;

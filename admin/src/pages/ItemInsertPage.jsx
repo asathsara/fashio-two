@@ -15,6 +15,7 @@ const ItemInsertPage = () => {
     uploader3: null,
     uploader4: null,
   });
+  const [resetCounter, setResetCounter] = useState(0); // Reset trigger
   
 
   // Using useRef for input fields
@@ -104,6 +105,10 @@ const ItemInsertPage = () => {
         uploader3: null,
         uploader4: null,
       });
+
+      setResetCounter((prev) => prev + 1); // Increment the reset trigger
+
+     
     } catch (error) {
       console.error(error);
       alert("Failed to add item");
@@ -143,21 +148,25 @@ const ItemInsertPage = () => {
       <div className="flex flex-row mt-8 flex-wrap">
         <div className="flex flex-col flex-[1] mr-4">
           <ImageUploaderSolid
+            resetTrigger={resetCounter}
             onImageChange={(file) => handleImageChange("uploader1", file)}
           />
           <div className="flex flex-row mt-4">
             <div className="flex-[1]">
               <ImageUploaderSolid
+                resetTrigger={resetCounter}
                 onImageChange={(file) => handleImageChange("uploader2", file)}
               />
             </div>
             <div className="flex-[1] ml-4">
               <ImageUploaderSolid
+                resetTrigger={resetCounter}
                 onImageChange={(file) => handleImageChange("uploader3", file)}
               />
             </div>
             <div className="flex-[1] ml-4">
               <ImageUploaderSolid
+                resetTrigger={resetCounter}
                 onImageChange={(file) => handleImageChange("uploader4", file)}
               />
             </div>
