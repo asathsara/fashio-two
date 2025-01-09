@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { fetchImages } from "../api/ImageApi";
 import { fetchCategories } from "../api/CategoryApi";
+import { motion, AnimatePresence } from "framer-motion";
+import Detailsbar from "../components/detailsbar/Detailsbar";
 
 const HomePage = () => {
   const [images, setImages] = useState([]);
@@ -33,19 +35,38 @@ const HomePage = () => {
     <div className="flex flex-col w-full">
       <div className="flex justify-center">
         {images.length > 0 && (
-          <img
-            src={import.meta.env.VITE_API_UPLOAD_IMAGES_URL + images[index].url}
-            alt="slide"
-            className="object-cover w-4/5 md:h-144 sm:min-h-72 min-w-4/5 rounded-2xl mt-8 shadow-sm"
-          />
+          <AnimatePresence mode="wait">
+            <motion.img
+              key={index} // This will trigger re-render and animation
+              src={
+                import.meta.env.VITE_API_UPLOAD_IMAGES_URL + images[index].url
+              }
+              alt="slide"
+              className="object-cover w-4/5 md:h-144 sm:min-h-72 min-w-4/5 rounded-2xl mt-8 shadow-sm"
+              initial={{ opacity: 0, x: 100 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -100 }}
+              transition={{
+                type: "spring",
+                stiffness: 100,
+                damping: 20,
+                duration: 1,
+              }}
+            />
+          </AnimatePresence>
         )}
         {error && <p className="text-red-500">{error}</p>}
       </div>
 
-      <div className="flex flex-row items-center mt-8 justify-around w-full h-20 bg-navbarGray">
+      <Detailsbar className={'mt-8'}/>
+
+      <div className="flex flex-row items-center mt-16 justify-center w-full ">
         {categories.map((category) => {
           return (
-            <p key={category._id} className="md:text-xl sm:text-lg font-bold font-poppins cursor-pointer text-backgroundGray">
+            <p
+              key={category._id}
+              className="md:text-xl sm:text-lg font-bold font-poppins md:mx-8 mx-2 border-navbarGray border-2 md:px-8 md:py-4 px-6 py-3 rounded-lg cursor-pointer text-navbarGray"
+            >
               {category.name}
             </p>
           );
