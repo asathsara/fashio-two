@@ -3,12 +3,17 @@ import { fetchImages } from "../api/ImageApi";
 import { fetchCategories } from "../api/CategoryApi";
 import { motion, AnimatePresence } from "framer-motion";
 import Detailsbar from "../components/detailsbar/Detailsbar";
+import { fetchItems } from "../api/ItemApi";
+import ItemCategory from "../components/ItemCategory";
 
 const HomePage = () => {
   const [images, setImages] = useState([]);
   const [error, setError] = useState("");
   const [index, setIndex] = useState(0);
   const [categories, setCategories] = useState([]);
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [uniqueCategories, setUniqueCategories] = useState([]);
 
   useEffect(() => {
     fetchImages()
@@ -30,6 +35,29 @@ const HomePage = () => {
     }, 5000);
     return () => clearInterval(interval);
   }, [images.length]);
+
+  useEffect(() => {
+    // Fetch items from the API
+    const loadItems = async () => {
+      try {
+        const data = await fetchItems();
+        setItems(data);
+      } catch (err) {
+        setError("Failed to fetch items");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadItems();
+  }, []);
+
+  useEffect(() => {
+    setUniqueCategories(
+      Array.from(new Set(items.map((item) => item.category)))
+    );
+    console.log(uniqueCategories);
+  }, [items]);
 
   return (
     <div className="flex flex-col w-full">
@@ -58,7 +86,7 @@ const HomePage = () => {
         {error && <p className="text-red-500">{error}</p>}
       </div>
 
-      <Detailsbar className={'mt-8'}/>
+      <Detailsbar className={"mt-8"} />
 
       <div className="flex flex-row items-center mt-16 justify-center w-full ">
         {categories.map((category) => {
@@ -71,6 +99,29 @@ const HomePage = () => {
             </p>
           );
         })}
+      </div>
+
+      <div className="mt-8 w-full">
+        {loading ? (
+          <p>Loading...</p>
+        ) : error ? (
+          <p className="text-red-500">{error}</p>
+        ) : (
+          uniqueCategories.map((category, index) => {
+            // Filter items belonging to the current category
+            const categoryItems = items.filter(
+              (item) => item.category === category
+            );
+
+            return (
+              <ItemCategory
+                key={index}
+                categoryName={category}
+                items={categoryItems}
+              />
+            );
+          })
+        )}
       </div>
     </div>
   );

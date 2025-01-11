@@ -19,6 +19,9 @@ export default {
       fontSize: {
         '2.5xl': '1.7rem',
       },
+      borderWidth: {
+        1: "1px",
+      },
       fontFamily: {
         poppins: ['Poppins',"sans-serif"],
         pacifico:['Pacifico', "sans-serif"],
