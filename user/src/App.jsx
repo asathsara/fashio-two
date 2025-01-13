@@ -7,6 +7,8 @@ import HomePage from "./pages/HomePage";
 import PromoPage from "./pages/PromoPage";
 import HelpPage from "./pages/HelpPage";
 import LoginPage from "./pages/LoginPage";
+import Footer from "./components/Footer";
+import FloatingUpButton from "./components/FloatingUpButton";
 
 function App() {
   const [currentPage, setCurrentPage] = useState("Home"); // Current page state
@@ -49,8 +51,11 @@ function App() {
         onSelect={(label) => setCurrentPage(label)}
         closeNav={closeNav}
       />
+
+      <FloatingUpButton/>
       <Spacer />
       <div className="flex ">{pageComponents[currentPage]}</div>
+      <Footer onSelect={(label) => setCurrentPage(label)} footerItems={navItems} />
     </>
   );
 }

@@ -2,7 +2,7 @@ import React from "react";
 
 const Item = ({ className, item }) => {
   return (
-    <div className={`${className} rounded-md border-1 border-x-gray-100 md:w-64 mr-10 mt-10 w-56`}>
+    <div className={`${className} rounded-md border-1 border-x-gray-100 md:w-64 mr-10 mt-10 w-56 cursor-pointer`}>
       <img
         className="rounded-t-md md:h-72 h-64 w-full object-cover"
         src={import.meta.env.VITE_API_UPLOAD_IMAGES_URL + item.urls[0]}
