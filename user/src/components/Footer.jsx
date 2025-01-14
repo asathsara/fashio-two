@@ -59,20 +59,7 @@ const Footer = ({ onSelect, footerItems }) => {
         <p className="text-sm text-gray-400">
           &copy; 2025 Fashio Inc. All rights reserved.
         </p>
-        <div className="mt-4 flex justify-center space-x-4">
-          <a href="#" className="text-gray-400 hover:text-white">
-            <i className="fab fa-facebook-f"></i>
-          </a>
-          <a href="#" className="text-gray-400 hover:text-white">
-            <i className="fab fa-twitter"></i>
-          </a>
-          <a href="#" className="text-gray-400 hover:text-white">
-            <i className="fab fa-instagram"></i>
-          </a>
-          <a href="#" className="text-gray-400 hover:text-white">
-            <i className="fab fa-linkedin-in"></i>
-          </a>
-        </div>
+        
       </div>
     </footer>
   );
