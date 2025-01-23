@@ -1,7 +1,7 @@
 const mongoose = require("mongoose")
 
 const promoScheme = new mongoose.Schema({
-    itemId: { type: String, required: true },
+    item: { type: Object, required: true },
     startDate: {type:String, required: true},
     startTime: {type:String, required: true},
     endDate: {type:String, required: true},

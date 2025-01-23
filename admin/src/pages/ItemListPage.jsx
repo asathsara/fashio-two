@@ -17,7 +17,6 @@ const ItemListPage = () => {
   };
 
   const handleCancel = () => {
-    
     setIsDialogOpen(false); // Just close the dialog
     setItemToDelete(null); // Reset itemToDelete
   };
@@ -61,8 +60,8 @@ const ItemListPage = () => {
       ) : error ? (
         <p className="text-red-500">{error}</p>
       ) : (
-        <div className="w-full mt-8">
-          <div className="grid grid-cols-8 gap-4 text-left font-semibold text-gray-700 px-4 py-4 bg-gray-100 rounded-md mb-2 font-poppins">
+        <div className="w-full mt-8 overflow-x-auto">
+          <div className="min-w-[1000px] grid grid-cols-8 gap-4 text-left font-semibold text-gray-700 px-4 py-4 bg-gray-100 rounded-md mb-2 font-poppins">
             <span>Image</span>
             <span>Name</span>
             <span>Price</span>
@@ -75,7 +74,7 @@ const ItemListPage = () => {
           {items.map((item) => (
             <div
               key={item._id}
-              className="grid grid-cols-8 gap-4 items-center text-left text-gray-800 px-4 py-4 hover:bg-gray-50 border-b border-gray-200 font-poppins"
+              className="min-w-[1000px] grid grid-cols-8 gap-4 items-center text-left text-gray-800 px-4 py-4 hover:bg-gray-50 border-b border-gray-200 font-poppins"
             >
               <div className="flex items-center">
                 {item.urls && item.urls.length > 0 ? (
@@ -97,8 +96,8 @@ const ItemListPage = () => {
               <span>{item.subCategory}</span>
               <span>{item.sizes.join(", ")}</span>
               <FaTrash
-                className="cursor-pointer"
-                onClick={() => openDeleteDialog(item)} // Open the dialog for the selected item
+                className="cursor-pointer text-red-500 hover:text-red-700 transition duration-200"
+                onClick={() => openDeleteDialog(item)}
               />
             </div>
           ))}

@@ -14,6 +14,10 @@ const API_ENDPOINTS = {
   ADD_ITEMS: '/items/add',
   DELETE_ITEM: (id) => `/items/${id}`,
 
+  PROMOS: '/promos',
+  ADD_PROMOS: '/promos/add',
+  DELETE_PROMO: (id) => `/promos/${id}`,
+
 };
 
 export default API_ENDPOINTS;

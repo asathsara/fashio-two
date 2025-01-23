@@ -139,7 +139,7 @@ const ItemInsertPage = () => {
         subText: "Item added successfully!",
       });
       setIsDialogOpen(true);
-      console.log(response);
+      
 
       // Clear fields after successful submission
       nameRef.current.value = "";
