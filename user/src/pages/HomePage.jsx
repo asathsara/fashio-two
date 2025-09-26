@@ -70,7 +70,7 @@ const HomePage = () => {
                 import.meta.env.VITE_API_UPLOAD_IMAGES_URL + images[index].url
               }
               alt="slide"
-              className="object-cover w-4/5 md:h-144 sm:min-h-72 min-w-4/5 rounded-2xl mt-8 shadow-sm"
+              className="object-cover w-4/5 md:h-144 sm:min-h-72 min-w-4/5 rounded-2xl mt-8 shadow-xs"
               initial={{ opacity: 0, x: 100 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -100 }}
@@ -93,7 +93,7 @@ const HomePage = () => {
           return (
             <p
               key={category._id}
-              className="md:text-xl sm:text-lg font-bold font-poppins md:mx-8 mx-2 border-navbarGray border-2 md:px-8 md:py-4 px-6 py-3 rounded-lg cursor-pointer text-navbarGray"
+              className="md:text-xl sm:text-lg font-bold font-poppins md:mx-8 mx-2 border-navbar-gray border-2 md:px-8 md:py-4 px-6 py-3 rounded-lg cursor-pointer text-navbar-gray"
             >
               {category.name}
             </p>

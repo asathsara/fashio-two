@@ -2,7 +2,7 @@ import React from "react";
 
 const Footer = ({ onSelect, footerItems }) => {
   return (
-    <footer className="bg-navbarGray text-white py-8 font-poppins mt-8">
+    <footer className="bg-navbar-gray text-white py-8 font-poppins mt-8">
       <div className="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
         {/* About Section */}
         <div>
@@ -16,7 +16,7 @@ const Footer = ({ onSelect, footerItems }) => {
         {/* Links Section */}
         <div>
           <h2 className="text-lg font-semibold mb-4">Quick Links</h2>
-          <ul className="list-none gap-5 flex ml-3 mr-5 font-poppins cursor-pointer flex-col text-sm  text-backgroundGray">
+          <ul className="list-none gap-5 flex ml-3 mr-5 font-poppins cursor-pointer flex-col text-sm  text-background-gray">
             {footerItems.map((item) => (
               <li
                 key={item.id}
@@ -42,10 +42,10 @@ const Footer = ({ onSelect, footerItems }) => {
               <input
                 type="email"
                 placeholder="Enter your email"
-                className="p-2 rounded bg-backgroundGray  text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="p-2 rounded-sm bg-background-gray  text-white placeholder-gray-400 focus:outline-hidden focus:ring-2 focus:ring-blue-500"
               />
               <button
-                className="bg-darkGray hover:bg-black text-white py-2 px-4 rounded"
+                className="bg-dark-gray hover:bg-black text-white py-2 px-4 rounded-sm"
               >
                 Subscribe
               </button>

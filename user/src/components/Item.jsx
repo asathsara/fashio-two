@@ -9,7 +9,7 @@ const Item = ({ className, item }) => {
         alt={item.name}
       />
       <div className="flex flex-col w-full items-center font-poppins">
-        <p className="text-lg text-darkGray mt-8">{item.name}</p>
+        <p className="text-lg text-dark-gray mt-8">{item.name}</p>
         <h2 className="text-md font-bold mt-2 mb-6">{`Rs. ${(Math.round(item.price * 100) / 100).toFixed(2)}`}</h2>
       </div>
     </div>

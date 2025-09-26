@@ -8,7 +8,7 @@ const NavgiationDrawer = ({
 }) => {
   return (
     <div
-      className={`${className} h-full z-20 fixed overflow-x-hidden  bg-navbarGray transition-all duration-300`}
+      className={`${className} h-full z-20 fixed overflow-x-hidden  bg-navbar-gray transition-all duration-300`}
     >
       <span
         className="cursor-pointer text-4xl float-right mr-6 pt-3 pb-5 text-white" 
