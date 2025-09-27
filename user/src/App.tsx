@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { BrowserRouter as Router, Routes,Route } from "react-router-dom";
+import { useState, type SetStateAction } from "react";
 import Navbar from "./components/Navbar";
 import NavgiationDrawer from "./components/NavgiationDrawer";
 import Spacer from "./components/Spacer";
@@ -38,25 +38,23 @@ function App() {
   };
 
   return (
-    <>
-      <Navbar
-        openNav={openNav}
-        onSelect={(label) => setCurrentPage(label)}
-        navItems={navItems}
-      />
-
-      <NavgiationDrawer
-        className={`${navbarOpen ? "w-64" : "w-0"}`}
-        navItems={navItems}
-        onSelect={(label) => setCurrentPage(label)}
-        closeNav={closeNav}
-      />
-
-      <FloatingUpButton/>
+    <Router>
+      <Navbar />
+      <NavgiationDrawer />
+      <FloatingUpButton />
       <Spacer />
-      <div className="flex ">{pageComponents[currentPage]}</div>
-      <Footer onSelect={(label) => setCurrentPage(label)} footerItems={navItems} />
-    </>
+
+      <div className="flex">
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/promo" element={<PromoPage />} />
+          <Route path="/help" element={<HelpPage />} />
+          <Route path="/login" element={<LoginPage />} />
+        </Routes>
+      </div>
+
+      <Footer />
+    </Router>
   );
 }
 
