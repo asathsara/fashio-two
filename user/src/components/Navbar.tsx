@@ -1,9 +1,16 @@
 import  { useRef } from "react";
 import { FaSearch } from "react-icons/fa";
 import { MdOutlineShoppingBag } from "react-icons/md";
+import { Link } from "react-router-dom";
+import type { NavItem } from "../types/nav";
 
-const Navbar = ({ openNav, onSelect, navItems }) => {
-  const inputRef = useRef();
+type NavbarProps = {
+  navItems: NavItem[],
+  openNav: () => void
+}
+
+const Navbar = ({ navItems, openNav } : NavbarProps) => {
+  const inputRef = useRef(null);
 
   return (
     <nav className="fixed top-0 left-0 w-full z-10 bg-navbar-gray">
@@ -11,23 +18,20 @@ const Navbar = ({ openNav, onSelect, navItems }) => {
         {/* First Item (Fashio) */}
         <div
           className="flex font-pacifico text-2.5xl font-semibold  tracking- pl-4 md:text-3xl cursor-pointer text-background-gray"
-          onClick={() => onSelect("Home")}
         >
-          Fashio
+          <Link to="/">Fashio</Link>
+          
         </div>
 
         <div className="flex items-center ">
           <ul className="list-none hidden gap-5 md:flex sm:hidden ml-3 mr-5 font-poppins cursor-pointer font-semibold  text-background-gray">
             {navItems.map((item) => (
               <li
-                key={item.id}
+                key={item.path}
                 className={`
             }`}
-                onClick={() => {
-                  onSelect(item.label);
-                }}
               >
-                {item.label}
+                <Link to={item.path}>{ item.label}</Link>
               </li>
             ))}
           </ul>
