@@ -1,55 +1,22 @@
 import { BrowserRouter as Router, Routes,Route } from "react-router-dom";
-import { useState, type SetStateAction } from "react";
-import Navbar from "./components/Navbar";
-import NavgiationDrawer from "./components/NavgiationDrawer";
-import Spacer from "./components/Spacer";
-import HomePage from "./pages/HomePage";
-import PromoPage from "./pages/PromoPage";
-import HelpPage from "./pages/HelpPage";
-import LoginPage from "./pages/LoginPage";
 import Footer from "./components/Footer";
 import FloatingUpButton from "./components/FloatingUpButton";
+import { routes } from "./config/routes";
 
 function App() {
-  const [currentPage, setCurrentPage] = useState("Home"); // Current page state
-
-  const [navbarOpen, setNavabarOpen] = useState(false);
-
-  const navItems = [
-    { id: 1, label: "Promo" },
-    { id: 2, label: "Help" },
-    { id: 3, label: "Login" },
-  ];
-
-  // Map label to components
-  const pageComponents = {
-    Home: <HomePage />,
-    Promo: <PromoPage />,
-    Help: <HelpPage />,
-    Login: <LoginPage />,
-  };
-
-  const openNav = () => {
-    setNavabarOpen(true);
-  };
-
-  const closeNav = () => {
-    setNavabarOpen(false);
-  };
 
   return (
-    <Router>
-      <Navbar />
-      <NavgiationDrawer />
+     <Router>
+      <Navbar navItems={routes.filter(r => r.showInNav)} />
+      <NavigationDrawer navItems={routes.filter(r => r.showInNav)} />
       <FloatingUpButton />
       <Spacer />
 
       <div className="flex">
         <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/promo" element={<PromoPage />} />
-          <Route path="/help" element={<HelpPage />} />
-          <Route path="/login" element={<LoginPage />} />
+          {routes.map((route) => (
+            <Route key={route.path} path={route.path} element={route.element} />
+          ))}
         </Routes>
       </div>
 
