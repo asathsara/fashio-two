@@ -11,7 +11,7 @@ const CategorySelector = ({
     <div className="mr-2">
       <p className="font-poppins text-lg mt-4">Category</p>
       <select
-        className="w-64 border-1 border-gray-300 outline-none rounded-md px-4 py-2 bg-white cursor-pointer "
+        className="w-64 border border-gray-300 outline-none rounded-md px-4 py-2 bg-white cursor-pointer "
         value={category ? category._id : ""}
         onChange={onCategoryChange}
       >
@@ -28,7 +28,7 @@ const CategorySelector = ({
     <div>
       <p className="font-poppins text-lg mt-4">Sub Category</p>
       <select
-        className="w-64 border-1 border-gray-300 outline-none rounded-md px-4 py-2 bg-white cursor-pointer"
+        className="w-64 border border-gray-300 outline-none rounded-md px-4 py-2 bg-white cursor-pointer"
         value={subCategory || ""}
         onChange={onSubCategoryChange}
         disabled={!category}

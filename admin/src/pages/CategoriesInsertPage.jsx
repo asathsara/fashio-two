@@ -76,7 +76,7 @@ const CategoriesInsertPage = () => {
       </h1>
 
       <div className="flex flex-row items-center mt-8">
-        <div className="flex flex-[8] rounded-full p-3 md:min-w-72 min-w-64 bg-backgroundGray justify-between items-center">
+        <div className="flex flex-8 rounded-full p-3 md:min-w-72 min-w-64 bg-backgroundGray justify-between items-center">
           <FaSearch className="mx-3 text-gray-400 cursor-pointer " />
           <input
             ref={inputRef}
@@ -86,7 +86,7 @@ const CategoriesInsertPage = () => {
           />
         </div>
         <button
-          className="bg-black text-backgroundGray px-8 py-2 rounded-full font-semibold font-poppins flex-[1] ml-8 h-full"
+          className="bg-black text-backgroundGray px-8 py-2 rounded-full font-semibold font-poppins flex-1 ml-8 h-full"
           onClick={handleAddCategory}
         >
           ADD

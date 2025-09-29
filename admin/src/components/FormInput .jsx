@@ -6,7 +6,7 @@ const FormInput = ({ label, type, inputRef, className = "min-w-96", ...props }) 
     <input
       ref={inputRef}
       type={type}
-      className={`border-1 border-gray-300 outline-none rounded-md px-4 py-2 mt-1 w-3/4 ${className}`}
+      className={`border border-gray-300 outline-none rounded-md px-4 py-2 mt-1 w-3/4 ${className}`}
       {...props}
     />
   </div>

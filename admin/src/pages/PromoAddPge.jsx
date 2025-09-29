@@ -113,7 +113,7 @@ const PromoAddPge = () => {
           <p className="font-poppins text-lg mt-4">Item</p>
           {!loading && (
             <select
-              className="w-3/4 border-1 border-gray-300 outline-none rounded-md px-4 py-2 bg-white cursor-pointer mt-2"
+              className="w-3/4 border border-gray-300 outline-none rounded-md px-4 py-2 bg-white cursor-pointer mt-2"
               value={selectedItem || ""}
               onChange={handleItemsChange}
               disabled={!items.length}
@@ -136,13 +136,13 @@ const PromoAddPge = () => {
               type="date"
               value={startDate}
               onChange={handleStartDateChange}
-              className="w-full border-1 border-gray-300 outline-none rounded-md px-4 py-2 bg-white"
+              className="w-full border border-gray-300 outline-none rounded-md px-4 py-2 bg-white"
             />
             <input
               type="time"
               value={startTime}
               onChange={handleStartTimeChange}
-              className="w-full border-1 border-gray-300 outline-none rounded-md px-4 py-2 bg-white"
+              className="w-full border border-gray-300 outline-none rounded-md px-4 py-2 bg-white"
             />
           </div>
           {/* End Date-Time */}
@@ -152,13 +152,13 @@ const PromoAddPge = () => {
               type="date"
               value={endDate}
               onChange={handleEndDateChange}
-              className="w-full border-1 border-gray-300 outline-none rounded-md px-4 py-2 bg-white"
+              className="w-full border border-gray-300 outline-none rounded-md px-4 py-2 bg-white"
             />
             <input
               type="time"
               value={endTime}
               onChange={handleEndTimeChange}
-              className="w-full border-1 border-gray-300 outline-none rounded-md px-4 py-2 bg-white"
+              className="w-full border border-gray-300 outline-none rounded-md px-4 py-2 bg-white"
             />
           </div>{" "}
           <FormInput

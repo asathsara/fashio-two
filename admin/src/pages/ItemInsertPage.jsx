@@ -194,13 +194,13 @@ const ItemInsertPage = () => {
     <>
       <h1 className="font-poppins text-3xl font-semibold">Item Insert</h1>
       <div className="flex flex-row mt-8 flex-wrap">
-        <div className="flex flex-col flex-[1] mr-4">
+        <div className="flex flex-col flex-1 mr-4">
           <ImageUploaderGroup
             resetTrigger={resetCounter}
             onImageChange={handleImageChange}
           />
         </div>
-        <div className="flex-col flex-[1] ml-0 md:ml-8">
+        <div className="flex-col flex-1 ml-0 md:ml-8">
           <FormInput label="Item Name" type="text" inputRef={nameRef} />
           <FormInput
             label="Description"
