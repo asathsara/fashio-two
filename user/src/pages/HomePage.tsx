@@ -1,19 +1,20 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { fetchImages } from "../api/ImageApi";
 import { fetchCategories } from "../api/CategoryApi";
 import { motion, AnimatePresence } from "framer-motion";
 import { fetchItems } from "../api/ItemApi";
 import ItemCategory from "../components/ItemCategory";
 import DetailsBar from "../components/detailsbar/Detailsbar";
+import type { Category, Image, Item } from "../types/item";
 
 const HomePage = () => {
-  const [images, setImages] = useState([]);
+  const [images, setImages] = useState<Image[]>([]);
   const [error, setError] = useState("");
   const [index, setIndex] = useState(0);
-  const [categories, setCategories] = useState([]);
-  const [items, setItems] = useState([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [items, setItems] = useState<Item[]>([]);
   const [loading, setLoading] = useState(true);
-  const [uniqueCategories, setUniqueCategories] = useState([]);
+  //const [uniqueCategories, setUniqueCategories] = useState([]);
 
   useEffect(() => {
     fetchImages()
@@ -52,12 +53,12 @@ const HomePage = () => {
     loadItems();
   }, []);
 
-  useEffect(() => {
-    setUniqueCategories(
-      Array.from(new Set(items.map((item) => item.category)))
-    );
-    console.log(uniqueCategories);
-  }, [items]);
+  // useEffect(() => {
+  //   setUniqueCategories(
+  //     Array.from(new Set(items.map((item) => item.category)))
+  //   );
+  //   console.log(uniqueCategories);
+  // }, [items]);
 
   return (
     <div className="flex flex-col w-full">
@@ -107,16 +108,16 @@ const HomePage = () => {
         ) : error ? (
           <p className="text-red-500">{error}</p>
         ) : (
-          uniqueCategories.map((category, index) => {
+          categories.map((category, index) => {
             // Filter items belonging to the current category
             const categoryItems = items.filter(
-              (item) => item.category === category
+              (item) => item.category === category.name
             );
 
             return (
               <ItemCategory
                 key={index}
-                categoryName={category}
+                categoryName={category.name}
                 items={categoryItems}
               />
             );
