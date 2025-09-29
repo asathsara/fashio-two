@@ -28,8 +28,6 @@ const Navbar = ({ navItems, onOpenDrawer } : NavbarProps) => {
             {navItems.map((item) => (
               <li
                 key={item.path}
-                className={`
-            }`}
               >
                 <Link to={item.path}>{ item.label}</Link>
               </li>

@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import type { NavItem } from "../types/nav";
 
-type drawerProps = {
+type DrawerProps = {
   navItems: NavItem[],
   open: boolean,
   closeNav: () => void
@@ -11,7 +11,7 @@ const NavigationDrawer = ({
   navItems,
   open,
   closeNav,
-}: drawerProps) => {
+}: DrawerProps) => {
   return (
     <div
       className={`${open ? 'w-64' : 'w-0'} h-full z-20 fixed overflow-x-hidden  bg-navbar-gray transition-all duration-300`}

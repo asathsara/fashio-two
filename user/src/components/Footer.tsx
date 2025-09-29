@@ -1,5 +1,11 @@
+import { Link } from "react-router-dom";
+import type { NavItem } from "../types/nav";
 
-const Footer = ({ onSelect, footerItems }) => {
+type FooterProps = {
+  footerItems: NavItem[]
+}
+
+const Footer = ({ footerItems } : FooterProps) => {
   return (
     <footer className="bg-navbar-gray text-white py-8 font-poppins mt-8">
       <div className="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -18,14 +24,9 @@ const Footer = ({ onSelect, footerItems }) => {
           <ul className="list-none gap-5 flex ml-3 mr-5 font-poppins cursor-pointer flex-col text-sm  text-background-gray">
             {footerItems.map((item) => (
               <li
-                key={item.id}
-                className={`
-            }`}
-                onClick={() => {
-                  onSelect(item.label);
-                }}
+                key={item.path}
               >
-                {item.label}
+                <Link to={item.path}>{ item.label}</Link>
               </li>
             ))}
           </ul>
