@@ -43,7 +43,7 @@ const Navbar = ({ navItems, onOpenDrawer } : NavbarProps) => {
 
           {/* Search Bar */}
           <div className="flex rounded-full p-3 md:min-w-72 min-w-64 bg-dark-gray justify-between">
-            <div className="flex-5 flex items-center ">
+            <div className="flex-[5] flex items-center ">
               <FaSearch className="mx-3 text-background-gray cursor-pointer" />
               <input
                 ref={inputRef}
