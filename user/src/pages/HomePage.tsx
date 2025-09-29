@@ -71,7 +71,7 @@ const HomePage = () => {
                 import.meta.env.VITE_API_UPLOAD_IMAGES_URL + images[index].url
               }
               alt="slide"
-              className="object-cover w-4/5 md:h-144 sm:min-h-72 min-w-4/5 rounded-2xl mt-8 shadow-xs"
+              className="object-cover w-4/5 md:h-144 sm:min-h-72 min-w-4/5 rounded-2xl mt-8 shadow-sm"
               initial={{ opacity: 0, x: 100 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -100 }}
