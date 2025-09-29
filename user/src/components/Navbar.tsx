@@ -6,10 +6,10 @@ import type { NavItem } from "../types/nav";
 
 type NavbarProps = {
   navItems: NavItem[],
-  openNav: () => void
+  onOpenDrawer: () => void
 }
 
-const Navbar = ({ navItems, openNav } : NavbarProps) => {
+const Navbar = ({ navItems, onOpenDrawer } : NavbarProps) => {
   const inputRef = useRef(null);
 
   return (
@@ -38,7 +38,7 @@ const Navbar = ({ navItems, openNav } : NavbarProps) => {
 
           <span
             className="sm:block md:hidden cursor-pointer text-3xl mx-3 text-background-gray"
-            onClick={openNav}
+            onClick={onOpenDrawer}
           >
             &#9776;
           </span>
