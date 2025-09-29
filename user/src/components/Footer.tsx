@@ -42,7 +42,7 @@ const Footer = ({ footerItems } : FooterProps) => {
               <input
                 type="email"
                 placeholder="Enter your email"
-                className="p-2 rounded-sm bg-background-gray  text-white placeholder-gray-400 focus:outline-hidden focus:ring-2 focus:ring-blue-500"
+                className="p-2 rounded-sm bg-background-gray  text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               <button
                 className="bg-dark-gray hover:bg-black text-white py-2 px-4 rounded-sm"
