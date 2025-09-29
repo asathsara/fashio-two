@@ -1,19 +1,20 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { fetchImages } from "../api/ImageApi";
 import { fetchCategories } from "../api/CategoryApi";
 import { motion, AnimatePresence } from "framer-motion";
-import Detailsbar from "../components/detailsbar/Detailsbar";
 import { fetchItems } from "../api/ItemApi";
 import ItemCategory from "../components/ItemCategory";
+import DetailsBar from "../components/detailsbar/Detailsbar";
+import type { Category, Image, Item } from "../types/item";
 
 const HomePage = () => {
-  const [images, setImages] = useState([]);
+  const [images, setImages] = useState<Image[]>([]);
   const [error, setError] = useState("");
   const [index, setIndex] = useState(0);
-  const [categories, setCategories] = useState([]);
-  const [items, setItems] = useState([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [items, setItems] = useState<Item[]>([]);
   const [loading, setLoading] = useState(true);
-  const [uniqueCategories, setUniqueCategories] = useState([]);
+  //const [uniqueCategories, setUniqueCategories] = useState([]);
 
   useEffect(() => {
     fetchImages()
@@ -52,12 +53,12 @@ const HomePage = () => {
     loadItems();
   }, []);
 
-  useEffect(() => {
-    setUniqueCategories(
-      Array.from(new Set(items.map((item) => item.category)))
-    );
-    console.log(uniqueCategories);
-  }, [items]);
+  // useEffect(() => {
+  //   setUniqueCategories(
+  //     Array.from(new Set(items.map((item) => item.category)))
+  //   );
+  //   console.log(uniqueCategories);
+  // }, [items]);
 
   return (
     <div className="flex flex-col w-full">
@@ -86,14 +87,14 @@ const HomePage = () => {
         {error && <p className="text-red-500">{error}</p>}
       </div>
 
-      <Detailsbar className={"mt-8"} />
+      <DetailsBar className={"mt-8"} />
 
       <div className="flex flex-row items-center mt-16 justify-center w-full ">
         {categories.map((category) => {
           return (
             <p
               key={category._id}
-              className="md:text-xl sm:text-lg font-bold font-poppins md:mx-8 mx-2 border-navbarGray border-2 md:px-8 md:py-4 px-6 py-3 rounded-lg cursor-pointer text-navbarGray"
+              className="md:text-xl sm:text-lg font-bold font-poppins md:mx-8 mx-2 border-navbar-gray border-2 md:px-8 md:py-4 px-6 py-3 rounded-lg cursor-pointer text-navbar-gray"
             >
               {category.name}
             </p>
@@ -107,16 +108,16 @@ const HomePage = () => {
         ) : error ? (
           <p className="text-red-500">{error}</p>
         ) : (
-          uniqueCategories.map((category, index) => {
+          categories.map((category, index) => {
             // Filter items belonging to the current category
             const categoryItems = items.filter(
-              (item) => item.category === category
+              (item) => item.category === category.name
             );
 
             return (
               <ItemCategory
                 key={index}
-                categoryName={category}
+                categoryName={category.name}
                 items={categoryItems}
               />
             );

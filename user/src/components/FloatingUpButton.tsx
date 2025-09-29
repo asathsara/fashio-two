@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import { FaAngleUp } from "react-icons/fa";
 
 const FloatingUpButton = () => {

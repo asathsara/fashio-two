@@ -6,17 +6,17 @@ const axiosInstance = axios.create({
   timeout: 10000, // Optional: timeout of 10 seconds
 });
 
-// Add interceptors for requests and responses
-axiosInstance.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem("authToken");
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
+//  Add interceptors for requests and responses
+// axiosInstance.interceptors.request.use(
+//   (config) => {
+//     const token = localStorage.getItem("authToken");
+//     if (token) {
+//       config.headers.Authorization = `Bearer ${token}`;
+//     }
+//     return config;
+//   },
+//   (error) => Promise.reject(error)
+// );
 
 axiosInstance.interceptors.response.use(
   (response) => response,
