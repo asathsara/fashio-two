@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import { fetchImages } from "../api/ImageApi";
 import { fetchCategories } from "../api/CategoryApi";
 import { motion, AnimatePresence } from "framer-motion";
-import Detailsbar from "../components/detailsbar/Detailsbar";
 import { fetchItems } from "../api/ItemApi";
 import ItemCategory from "../components/ItemCategory";
+import DetailsBar from "../components/detailsbar/Detailsbar";
 
 const HomePage = () => {
   const [images, setImages] = useState([]);
@@ -86,7 +86,7 @@ const HomePage = () => {
         {error && <p className="text-red-500">{error}</p>}
       </div>
 
-      <Detailsbar className={"mt-8"} />
+      <DetailsBar className={"mt-8"} />
 
       <div className="flex flex-row items-center mt-16 justify-center w-full ">
         {categories.map((category) => {

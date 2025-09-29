@@ -1,6 +1,12 @@
-import React from "react";
+import type { ComponentType } from "react";
 
-const Detail = ({ icon: Icon, heading, subheading }) => {
+type DetailProps = {
+  icon: ComponentType<{className? : string}>,
+  heading: string,
+  subheading: string
+}
+
+const Detail = ({ icon: Icon, heading, subheading }: DetailProps) => {
   return (
     <div className="flex flex-col justify-center items-center font-poppins">
       <Icon className="text-2xl mb-2" /> {/* Render the icon here */}

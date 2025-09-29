@@ -1,8 +1,11 @@
-import React from "react";
 import Detail from "./Detail";
 import { FaTruck, FaExchangeAlt, FaLock } from "react-icons/fa";
 
-const Detailsbar = ({className}) => {
+
+type DetailsBarProps = {
+  className: string
+}
+const DetailsBar = ({className}: DetailsBarProps) => {
   return (
       <div className={`${className} flex space-x-6 p-6 justify-center`}>
       <Detail
@@ -24,4 +27,4 @@ const Detailsbar = ({className}) => {
   );
 };
 
-export default Detailsbar;
+export default DetailsBar;
