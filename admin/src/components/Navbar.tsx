@@ -1,6 +1,8 @@
-import React from "react";
+type NavbarProps = {
+  openNav: () => void
+}
 
-const Navbar = ({ openNav }) => {
+const Navbar = ({ openNav }: NavbarProps) => {
   return (
     <nav className="fixed top-0 left-0 h-20 w-full z-10 bg-navbarGray">
       <div className="flex justify-between  items-center p-5 ">

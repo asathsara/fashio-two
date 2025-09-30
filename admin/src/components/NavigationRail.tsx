@@ -8,7 +8,7 @@ type RailProps = {
 const NavigationRail = ({ routes }: RailProps) => {
   return (
     <div
-      className={`className="hidden md:flex min-w-44 h-screen md:flex-col items-start pb-4 mx-4`}
+      className={`hidden md:flex min-w-44 h-screen md:flex-col items-start pb-4 mx-4`}
     >
       <ul className="list-none flex flex-col gap-2 w-full mt-4 font-poppins">
         {routes.map((route) => (
