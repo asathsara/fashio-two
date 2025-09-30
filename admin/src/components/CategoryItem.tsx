@@ -1,17 +1,30 @@
 import { useState, useRef } from "react";
 import { FaTrash } from "react-icons/fa";
 import SubCategoryItem from "./SubCategoryItem";
+import type { Category } from "../types/api/category";
+
+
+interface CategoryItemProps {
+  category: Category;
+  onAddSubItem: (categoryId: string, subItemName: string) => void;
+  onDelete: (categoryId: string) => void;
+  onDeleteSubCategory: (categoryId: string, subCategoryName: string) => void;
+}
 
 const CategoryItem = ({
   category,
   onAddSubItem,
   onDelete,
-  onDeleteSubCategory,
-}) => {
+  onDeleteSubCategory
+}: CategoryItemProps) => {
+
   const [isExpanded, setIsExpanded] = useState(false);
-  const subItemRef = useRef();
+  const subItemRef = useRef<HTMLInputElement | null>(null);
 
   const handleAddSubItem = () => {
+
+    if (!subItemRef.current) return;
+
     const subItemName = subItemRef.current.value;
     if (subItemName) {
       onAddSubItem(category._id, subItemName);
@@ -36,10 +49,10 @@ const CategoryItem = ({
       </div>
       {isExpanded && (
         <div className="mt-2">
-          {category.subItems.map((subItem, index) => (
+          {category.subCategories.map((subItem) => (
             <SubCategoryItem
-              key={index}
-              subItem={subItem}
+              key={subItem._id}
+              name={subItem.name}
               onDeleteSubCategory={() =>
                 onDeleteSubCategory(category._id, subItem.name)
               }

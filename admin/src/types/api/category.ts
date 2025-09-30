@@ -1,11 +1,11 @@
 export interface Category {
-  id: string;
+  _id: string;
   name: string;
   subCategories: SubCategory[];
 }
 
 export interface SubCategory {
-  id: string;
+  _id: string;
   name: string;
 }
 

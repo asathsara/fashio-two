@@ -1,5 +1,5 @@
 import React from "react";
-import ImageUploaderSolid from "../components/ImageUploaderSolid";
+import ImageUploaderSolid from "./ImageUploaderSolid";
 
 const ImageUploaderGroup = ({ resetTrigger, onImageChange }) => {
   return (

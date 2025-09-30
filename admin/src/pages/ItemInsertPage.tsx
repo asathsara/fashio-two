@@ -133,7 +133,7 @@ const ItemInsertPage = () => {
     formData.append("description", descriptionRef.current.value);
 
     try {
-      const response = await insertItem(formData);
+      await insertItem(formData);
       setDialogContent({
         title: "Success",
         subText: "Item added successfully!",
