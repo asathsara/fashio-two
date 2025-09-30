@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { fetchItems } from "../api/ItemApi";
 import { fetchPromos, insertPromo } from "../api/PromoApi";
 import FormInput from "../components/FormInput ";

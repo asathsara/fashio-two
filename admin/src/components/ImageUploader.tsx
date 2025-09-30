@@ -1,22 +1,26 @@
 import { motion } from "framer-motion";
-import React, { useRef, useState} from "react";
+import { useRef, useState} from "react";
 import { FaCloudUploadAlt } from "react-icons/fa";
 
-const ImageUploader = ({ className, onUpload }) => {
+type ImageUploaderProps = {
+  onUpload: (file: File) => void;
+};
+
+const ImageUploader = ({ onUpload }: ImageUploaderProps) => {
   const [isDragging, setIsDragging] = useState(false);
-  const fileInputRef = useRef(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const handleClick = () => {
     fileInputRef.current?.click(); // Trigger the file input click
   };
 
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
     if (file) {
       onUpload(file); // Call the onUpload function with the selected file
     }
   };
-  const handleDragOver = (event) => {
+  const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     setIsDragging(true);
   };
@@ -25,7 +29,7 @@ const ImageUploader = ({ className, onUpload }) => {
     setIsDragging(false);
   };
 
-  const handleDrop = (event) => {
+  const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     setIsDragging(false);
     const file = event.dataTransfer.files[0];
@@ -37,7 +41,7 @@ const ImageUploader = ({ className, onUpload }) => {
 
   return (
     <motion.div
-      className={`w-auto h-80 border-dashed border-2 rounded-3xl border-black flex flex-col justify-center items-center ${className}`}
+      className={`w-auto h-80 border-dashed border-2 rounded-3xl border-black flex flex-col justify-center items-center my-8`}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
@@ -55,8 +59,7 @@ const ImageUploader = ({ className, onUpload }) => {
       <p className="font-poppins text-xl">Or</p>
       <button
         className="bg-black text-white px-8 py-2 rounded-full font-poppins mt-6"
-        onClick={(e) => {
-          
+        onClick={() => {
           handleClick();
         }}
       >

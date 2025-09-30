@@ -1,19 +1,20 @@
-import React, { useState, useEffect } from "react";
+import  { useState, useEffect } from "react";
 import { fetchImages, uploadImage, deleteImage } from "../api/ImageApi";
 import ImageUploader from "../components/ImageUploader";
 import ImageCard from "../components/ImageCard";
+import type { Image } from "../types/api/image";
 
 const ImageSliderManager = () => {
-  const [images, setImages] = useState([]);
+  const [images, setImages] = useState<Image[]>([]);
   const [error, setError] = useState("");
 
   useEffect(() => {
     fetchImages()
       .then((data) => setImages(data))
-      .catch((err) => setError("Failed to fetch images"));
+      .catch(() => setError("Failed to fetch images"));
   }, []);
 
-  const handleUpload = async (file) => {
+  const handleUpload = async (file: File) => {
     const formData = new FormData();
     formData.append("image", file);
 
@@ -25,7 +26,7 @@ const ImageSliderManager = () => {
     }
   };
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (id: string) => {
     try {
       await deleteImage(id);
       setImages((prev) => prev.filter((image) => image._id !== id));
@@ -37,7 +38,7 @@ const ImageSliderManager = () => {
   return (
     <div>
       <h1 className="font-poppins text-3xl font-semibold">Images for Slider</h1>
-      <ImageUploader onUpload={handleUpload} className="my-8" />
+      <ImageUploader onUpload={handleUpload}/>
       {error && <p className="text-red-500">{error}</p>}
       <div className="flex flex-wrap">
         {images.map((image) => (

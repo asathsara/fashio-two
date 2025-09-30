@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { FaSearch } from "react-icons/fa";
 import {
   fetchCategories,
@@ -8,11 +8,12 @@ import {
   insertSubCategory,
 } from "../api/CategoryApi";
 import CategoryItem from "../components/CategoryItem";
+import type { Category } from "../types/api/category";
 
 const CategoriesInsertPage = () => {
-  const [categories, setCategories] = useState([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [error, setError] = useState(null);
-  const inputRef = useRef();
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   // Fetch categories on mount
   useEffect(() => {
@@ -22,34 +23,36 @@ const CategoriesInsertPage = () => {
   }, []);
 
   const handleAddCategory = () => {
-    const name = inputRef.current.value;
+    const name = inputRef.current?.value;
     if (!name) {
       return;
     }
 
     insertCategory(name).then((data) => {
       setCategories([...categories, data]);
-      inputRef.current.value = "";
+      if (inputRef.current) {
+        inputRef.current.value = "";
+      }
     });
   };
 
-  const addSubItem = (categoryId, subItemName) => {
+  const addSubItem = (categoryId: string, subItemName: string) => {
     insertSubCategory(categoryId, subItemName).then((newSubItem) => {
       setCategories((prevCategories) =>
         prevCategories.map((category) =>
           category._id === categoryId
             ? {
-                ...category,
-                subItems: [...category.subItems, newSubItem],
-              }
+              ...category,
+              subItems: [...category.subCategories, newSubItem],
+            }
             : category
         )
       );
     });
   };
-  
 
-  const handleDeleteCategory = (categoryId) => {
+
+  const handleDeleteCategory = (categoryId: string) => {
     deleteCategory(categoryId).then(() => {
       setCategories(
         categories.filter((category) => category._id !== categoryId)
@@ -57,15 +60,20 @@ const CategoriesInsertPage = () => {
     });
   };
 
-  const handleDeleteSubCategory = (categoryId, subCategoryName) => {
+  const handleDeleteSubCategory = (categoryId: string, subCategoryName: string) => {
     deleteSubCategory(categoryId, subCategoryName).then(() => {
-      const category = categories.find(
-        (category) => category._id === categoryId
+      setCategories((prevCategories) =>
+        prevCategories.map((category) =>
+          category._id === categoryId
+            ? {
+              ...category,
+              subItems: category.subCategories.filter(
+                (subItem) => subItem.name !== subCategoryName
+              ),
+            }
+            : category
+        )
       );
-      category.subItems = category.subItems.filter(
-        (subItem) => subItem.name !== subCategoryName
-      );
-      setCategories([...categories]);
     });
   };
 
@@ -93,17 +101,21 @@ const CategoriesInsertPage = () => {
         </button>
       </div>
 
-      <div className="mt-8">
-        {categories.map((category) => (
-          <CategoryItem
-            key={category._id}
-            category={category}
-            onAddSubItem={addSubItem}
-            onDelete={handleDeleteCategory}
-            onDeleteSubCategory={handleDeleteSubCategory}
-          />
-        ))}
-      </div>
+      {error ? (
+        <p className="text-red-500 mt-4">Failed to fetch categories: {String(error)}</p>
+      ) : (
+        <div className="mt-8">
+          {categories.map((category) => (
+            <CategoryItem
+              key={category._id}
+              category={category}
+              onAddSubItem={addSubItem}
+              onDelete={handleDeleteCategory}
+              onDeleteSubCategory={handleDeleteSubCategory}
+            />
+          ))}
+        </div>
+      )}
     </>
   );
 };

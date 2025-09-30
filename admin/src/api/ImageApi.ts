@@ -2,7 +2,7 @@ import type { Image } from "../types/api/image";
 import axiosInstance from "./AxiosInstance";
 import API_ENDPOINTS from "./Endpoints";
 
-export const fetchImages = async (): Promise<Image> => {
+export const fetchImages = async (): Promise<Image[]> => {
   const response = await axiosInstance.get(API_ENDPOINTS.IMAGES);
   return response.data;
 };
