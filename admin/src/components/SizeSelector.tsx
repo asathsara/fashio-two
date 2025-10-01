@@ -1,8 +1,15 @@
-import React from "react";
+type SizeSelectorProps = {
+  selectedSizes: string[],
+  onSizeToggle: (size: string) => void,
+  className: string
 
-const SizeSelector = ({ selectedSizes, onSizeToggle, className }) => (
+}
+
+const AVAILABLE_SIZES = ["S", "M", "L", "XL", "XXL"] as const
+
+const SizeSelector = ({ selectedSizes, onSizeToggle, className }: SizeSelectorProps) => (
   <div className="flex space-x-4 mt-2">
-    {["S", "M", "L", "XL", "XXL"].map((size) => (
+    {AVAILABLE_SIZES.map((size) => (
       <div
         key={size}
         onClick={() => onSizeToggle(size)}

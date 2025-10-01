@@ -3,52 +3,57 @@ import React, { useEffect, useRef, useState } from "react";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import { MdClose } from "react-icons/md";
 
-const ImageUploaderSolid = ({ className, onImageChange, resetTrigger }) => {
-  const [uploadedImage, setUploadedImage] = useState(null);
-  const [isDragging, setIsDragging] = useState(false);
-  const fileInputRef = useRef(null);
+type ImageUploaderSolidProps = {
+  className?: string;
+  onImageChange: (file: File | null) => void;
+  resetTrigger?: any; // can type this better depending on how you trigger resets
+}
 
-  useEffect(() => {
-    setUploadedImage(null)
-  }, [resetTrigger])
+const ImageUploaderSolid = ({
+  className = "",
+  onImageChange,
+  resetTrigger,
+}: ImageUploaderSolidProps) => {
   
+  const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  const handleClick = () => {
-    fileInputRef.current?.click(); // Trigger file input click
+  // Reset when parent toggles trigger
+  useEffect(() => {
+    setUploadedImage(null);
+  }, [resetTrigger]);
+
+  const handleClick = () => fileInputRef.current?.click();
+
+  const handleFile = (file: File) => {
+    const fileURL = URL.createObjectURL(file);
+    setUploadedImage(fileURL);
+    onImageChange(file);
   };
 
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const fileURL = URL.createObjectURL(file);
-      setUploadedImage(fileURL); // Store the image locally
-      onImageChange(file); // Inform parent of the change
-    }
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) handleFile(file);
   };
 
-  const handleDragOver = (event) => {
+  const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     setIsDragging(true);
   };
 
-  const handleDragLeave = () => {
-    setIsDragging(false);
-  };
+  const handleDragLeave = () => setIsDragging(false);
 
-  const handleDrop = (event) => {
+  const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     setIsDragging(false);
-    const file = event.dataTransfer.files[0];
-    if (file) {
-      const fileURL = URL.createObjectURL(file);
-      setUploadedImage(fileURL); // Store the image locally
-      onImageChange(file); // Inform parent of the change
-    }
+    const file = event.dataTransfer.files?.[0];
+    if (file) handleFile(file);
   };
 
   const handleRemoveImage = () => {
-    setUploadedImage(null); // Clear the image
-    onImageChange(null); // Inform parent of the removal
+    setUploadedImage(null);
+    onImageChange(null);
   };
 
   return (
@@ -57,7 +62,7 @@ const ImageUploaderSolid = ({ className, onImageChange, resetTrigger }) => {
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
-      onClick={!uploadedImage ? handleClick : undefined} // Disable click when image is uploaded
+      onClick={!uploadedImage ? handleClick : undefined}
       animate={{ scale: isDragging ? 1.1 : 1 }}
       transition={{ duration: 0.2 }}
       style={{
@@ -68,9 +73,10 @@ const ImageUploaderSolid = ({ className, onImageChange, resetTrigger }) => {
     >
       <input
         type="file"
+        accept="image/*"
         ref={fileInputRef}
         onChange={handleFileChange}
-        style={{ display: "none" }} // Hide the input
+        style={{ display: "none" }}
       />
       {!uploadedImage && (
         <>

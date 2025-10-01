@@ -1,6 +1,12 @@
-import React from "react";
+type DialogProps =  {
+  isOpen: boolean;
+  title: string;
+  subText: string;
+  onOk: () => void;
+  onCancel: () => void;
+}
 
-const Dialog = ({ isOpen, title, subText, onOk, onCancel }) => {
+const Dialog = ({ isOpen, title, subText, onOk, onCancel }: DialogProps) => {
   if (!isOpen) return null; // Don't render if the dialog isn't open
 
   return (

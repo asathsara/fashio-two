@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { deleteItem, fetchItems } from "../api/ItemApi";
 import { FaTrash } from "react-icons/fa";
 import Dialog from "../components/Dialog";
