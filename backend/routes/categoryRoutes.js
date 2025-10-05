@@ -4,7 +4,7 @@ const Category = require("../models/category");
 
 // Add a category
 router.post("/add", async (req, res) => {
-  const category = new Category({ name: req.body.name, subItems: [] });
+  const category = new Category({ name: req.body.name, subCategories: [] });
   await category.save();
   res.status(201).send(category);
 });
@@ -19,7 +19,7 @@ router.get("/", async (req, res) => {
 router.post("/:id/sub-categories", async (req, res) => {
   const category = await Category.findById(req.params.id);
   const newSubItem = { name: req.body.name };
-  category.subItems.push(newSubItem);
+  category.subCategories.push(newSubItem);
   await category.save();
 
   // Send back only the new sub-item instead of the entire category
@@ -44,13 +44,13 @@ router.delete("/:id/sub-categories/:subItemName", async (req, res) => {
   }
 
   // Remove the sub-item
-  const initialLength = category.subItems.length;
-  category.subItems = category.subItems.filter(
+  const initialLength = category.subCategories.length;
+  category.subCategories = category.subCategories.filter(
     (subItem) => subItem.name !== subItemName
   );
 
   // Check if a sub-item was actually deleted
-  if (category.subItems.length === initialLength) {
+  if (category.subCategories.length === initialLength) {
     return res.status(404).send({ error: "Sub-item not found" });
   }
 
@@ -58,7 +58,7 @@ router.delete("/:id/sub-categories/:subItemName", async (req, res) => {
   await category.save();
 
   // Send a response 
-  res.send({ message: "Sub-item deleted successfully", subItems: category.subItems });
+  res.send({ message: "Sub-item deleted successfully", subCategories: category.subCategories});
 });
 
 module.exports = router;
