@@ -50,7 +50,7 @@ const CategorySelector = ({
           Select an option
         </option>
         {category?.subCategories?.map((subItem) => (
-          <option key={subItem._id} value={subItem.name}>
+          <option key={subItem.name} value={subItem.name}>
             {subItem.name}
           </option>
         ))}
