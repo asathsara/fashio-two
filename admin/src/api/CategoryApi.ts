@@ -8,7 +8,7 @@ export const fetchCategories = async () => {
 };
 
 export const insertCategory = async (name: string): Promise<Category> => {
-  const response = await axiosInstance.post(API_ENDPOINTS.ADD_CATEGORIES, name);
+  const response = await axiosInstance.post(API_ENDPOINTS.ADD_CATEGORIES, { name });
   return response.data;
 };
 

@@ -33,12 +33,13 @@ const CategoryItem = ({
   };
 
   return (
-    <div className="p-4 bg-backgroundGray my-2 rounded-lg">
+    <div className="p-4 bg-background-gray my-2 rounded-lg">
+    
       <div
         className="flex justify-between items-center cursor-pointer"
         onClick={() => setIsExpanded((prev) => !prev)}
       >
-        <h2 className="font-semibold">{category.name}</h2>
+        <h2 className="font-bold text-gray-600">{category.name}</h2>
         <FaTrash
           className="cursor-pointer "
           onClick={(e) => {
@@ -49,9 +50,9 @@ const CategoryItem = ({
       </div>
       {isExpanded && (
         <div className="mt-2">
-          {category.subCategories.map((subItem) => (
+          {category.subCategories!.map((subItem) => (
             <SubCategoryItem
-              key={subItem._id}
+              key={subItem.name}
               name={subItem.name}
               onDeleteSubCategory={() =>
                 onDeleteSubCategory(category._id, subItem.name)
@@ -71,7 +72,7 @@ const CategoryItem = ({
                 e.stopPropagation();
                 handleAddSubItem();
               }}
-              className="bg-skyBlue rounded-md text-white px-8 py-1 font-semibold mx-2"
+              className="bg-skyBlue rounded-md text-gray-400 px-8 py-1 font-semibold mx-2"
             >
               Add
             </button>

@@ -38,12 +38,13 @@ const CategoriesInsertPage = () => {
 
   const addSubItem = (categoryId: string, subItemName: string) => {
     insertSubCategory(categoryId, subItemName).then((newSubItem) => {
+
       setCategories((prevCategories) =>
         prevCategories.map((category) =>
           category._id === categoryId
             ? {
               ...category,
-              subItems: [...category.subCategories, newSubItem],
+              subCategories: [...category.subCategories, newSubItem],
             }
             : category
         )
@@ -67,7 +68,7 @@ const CategoriesInsertPage = () => {
           category._id === categoryId
             ? {
               ...category,
-              subItems: category.subCategories.filter(
+              subCategories: category.subCategories.filter(
                 (subItem) => subItem.name !== subCategoryName
               ),
             }
@@ -94,7 +95,7 @@ const CategoriesInsertPage = () => {
           />
         </div>
         <button
-          className="bg-black text-backgroundGray px-8 py-2 rounded-full font-semibold font-poppins flex-1 ml-8 h-full"
+          className="bg-black text-backgroundGray px-8 py-2 rounded-full font-semibold font-poppins flex-1 ml-8 h-full text-white cursor-pointer"
           onClick={handleAddCategory}
         >
           ADD
@@ -106,6 +107,7 @@ const CategoriesInsertPage = () => {
       ) : (
         <div className="mt-8">
           {categories.map((category) => (
+            
             <CategoryItem
               key={category._id}
               category={category}
