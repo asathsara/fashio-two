@@ -10,5 +10,5 @@ export interface SubCategory {
 
 export interface DeleteSubCategoryResponse {
   message: string;
-  subItems: SubCategory[];
+  subCategories: SubCategory[];
 }
