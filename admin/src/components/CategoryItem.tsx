@@ -33,7 +33,7 @@ const CategoryItem = ({
   };
 
   return (
-    <div className="p-4 bg-background-gray my-2 rounded-lg">
+    <div className="p-4 bg-backgroundGray my-2 rounded-lg">
     
       <div
         className="flex justify-between items-center cursor-pointer"
