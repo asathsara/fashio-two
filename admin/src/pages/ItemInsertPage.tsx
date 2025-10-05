@@ -7,47 +7,63 @@ import FormInput from "../components/FormInput ";
 import SizeSelector from "../components/SizeSelector";
 import CategorySelector from "../components/CategorySelector";
 import Dialog from "../components/Dialog";
+import type { Category } from "../types/api/category";
 
-const ItemInsertPage = () => {
-  const [categories, setCategories] = useState([]);
-  const [category, setCategory] = useState(null);
-  const [subCategory, setSubCategory] = useState(null);
-  const [selectedSizes, setSelectedSizes] = useState([]);
-  const [uploadedImages, setUploadedImages] = useState({
+
+
+interface UploadedImages {
+  uploader1: File | null;
+  uploader2: File | null;
+  uploader3: File | null;
+  uploader4: File | null;
+}
+
+interface DialogContent {
+  title: string;
+  subText: string;
+}
+
+const ItemInsertPage: React.FC = () => {
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [category, setCategory] = useState<Category | null>(null);
+  const [subCategory, setSubCategory] = useState<string | null>(null);
+  const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
+  const [uploadedImages, setUploadedImages] = useState<UploadedImages>({
     uploader1: null,
     uploader2: null,
     uploader3: null,
     uploader4: null,
   });
-  const [resetCounter, setResetCounter] = useState(0); // Reset trigger
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [dialogContent, setDialogContent] = useState([])
+  const [resetCounter, setResetCounter] = useState<number>(0);
+  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
+  const [dialogContent, setDialogContent] = useState<DialogContent>({
+    title: "",
+    subText: "",
+  });
+
+  // Refs
+  const nameRef = useRef<HTMLInputElement>(null);
+  const stockRef = useRef<HTMLInputElement>(null);
+  const priceRef = useRef<HTMLInputElement>(null);
+  const descriptionRef = useRef<HTMLTextAreaElement>(null);
 
   const handleOk = () => {
-    setIsDialogOpen(false); // Close the dialog
-    setItemToDelete(null); // Reset itemToDelete
+    setIsDialogOpen(false);
   };
 
   const handleCancel = () => {
-    setIsDialogOpen(false); // Just close the dialog
-    setItemToDelete(null); // Reset itemToDelete
+    setIsDialogOpen(false);
   };
 
-  // Using useRef for input fields
-  const nameRef = useRef();
-  const stockRef = useRef();
-  const priceRef = useRef();
-  const descriptionRef = useRef();
-
-  const handleImageChange = (uploaderKey, file) => {
+  const handleImageChange = (uploaderKey: keyof UploadedImages, file: File | null) => {
     setUploadedImages((prev) => ({
       ...prev,
       [uploaderKey]: file,
     }));
   };
 
-  const validateField = (field, message) => {
-    if (!field || (typeof field === "string" && field.trim() === "")) {
+  const validateField = (field: string | undefined, message: string): boolean => {
+    if (!field || field.trim() === "") {
       setDialogContent({ title: "Validation Error", subText: message });
       setIsDialogOpen(true);
       return false;
@@ -55,58 +71,34 @@ const ItemInsertPage = () => {
     return true;
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (): Promise<void> => {
+    const name = nameRef.current?.value || "";
+    const price = priceRef.current?.value || "";
+    const stock = stockRef.current?.value || "";
+    const description = descriptionRef.current?.value || "";
+
     // Validation
-    if (!validateField(nameRef.current.value, "Name is required.")) return;
-    if (
-      !validateField(
-        priceRef.current.value,
-        "Price is required and must be a valid number."
-      ) ||
-      isNaN(priceRef.current.value)
-    )
-      return;
-    if (
-      !validateField(
-        stockRef.current.value,
-        "Stock is required and must be a valid number."
-      ) ||
-      isNaN(stockRef.current.value)
-    )
-      return;
+    if (!validateField(name, "Name is required.")) return;
+    if (!validateField(price, "Price is required and must be a valid number.") || isNaN(Number(price))) return;
+    if (!validateField(stock, "Stock is required and must be a valid number.") || isNaN(Number(stock))) return;
     if (!category) {
-      setDialogContent({
-        title: "Validation Error",
-        subText: "Category is required.",
-      });
+      setDialogContent({ title: "Validation Error", subText: "Category is required." });
       setIsDialogOpen(true);
       return;
     }
     if (!subCategory) {
-      setDialogContent({
-        title: "Validation Error",
-        subText: "Subcategory is required.",
-      });
+      setDialogContent({ title: "Validation Error", subText: "Subcategory is required." });
       setIsDialogOpen(true);
       return;
     }
     if (selectedSizes.length === 0) {
-      setDialogContent({
-        title: "Validation Error",
-        subText: "At least one size must be selected.",
-      });
+      setDialogContent({ title: "Validation Error", subText: "At least one size must be selected." });
       setIsDialogOpen(true);
       return;
     }
-    if (
-      !validateField(descriptionRef.current.value, "Description is required.")
-    )
-      return;
+    if (!validateField(description, "Description is required.")) return;
     if (!Object.values(uploadedImages).some((file) => file)) {
-      setDialogContent({
-        title: "Validation Error",
-        subText: "At least one image is required.",
-      });
+      setDialogContent({ title: "Validation Error", subText: "At least one image is required." });
       setIsDialogOpen(true);
       return;
     }
@@ -120,43 +112,31 @@ const ItemInsertPage = () => {
       }
     });
 
-    // Append other fields from refs
-    formData.append("name", nameRef.current.value);
-    formData.append(
-      "price",
-      (Math.round(priceRef.current.value * 100) / 100).toFixed(2)
-    );
-    formData.append("stock", stockRef.current.value);
+    // Append other fields
+    formData.append("name", name);
+    formData.append("price", (Math.round(Number(price) * 100) / 100).toFixed(2));
+    formData.append("stock", stock);
     formData.append("category", category?.name || "");
     formData.append("subCategory", subCategory || "");
     formData.append("sizes", JSON.stringify(selectedSizes));
-    formData.append("description", descriptionRef.current.value);
+    formData.append("description", description);
 
     try {
       await insertItem(formData);
-      setDialogContent({
-        title: "Success",
-        subText: "Item added successfully!",
-      });
+      setDialogContent({ title: "Success", subText: "Item added successfully!" });
       setIsDialogOpen(true);
-      
 
-      // Clear fields after successful submission
-      nameRef.current.value = "";
-      priceRef.current.value = "";
-      stockRef.current.value = "";
-      descriptionRef.current.value = "";
+      // Reset fields
+      if (nameRef.current) nameRef.current.value = "";
+      if (priceRef.current) priceRef.current.value = "";
+      if (stockRef.current) stockRef.current.value = "";
+      if (descriptionRef.current) descriptionRef.current.value = "";
+
       setCategory(null);
       setSubCategory(null);
       setSelectedSizes([]);
-      setUploadedImages({
-        uploader1: null,
-        uploader2: null,
-        uploader3: null,
-        uploader4: null,
-      });
-
-      setResetCounter((prev) => prev + 1); // Increment the reset trigger
+      setUploadedImages({ uploader1: null, uploader2: null, uploader3: null, uploader4: null });
+      setResetCounter((prev) => prev + 1);
     } catch (error) {
       console.error(error);
       setDialogContent({ title: "Error", subText: "Failed to add item" });
@@ -166,27 +146,23 @@ const ItemInsertPage = () => {
 
   useEffect(() => {
     fetchCategories()
-      .then((data) => setCategories(data))
+      .then((data: Category[]) => setCategories(data))
       .catch(() => alert("Failed to fetch categories"));
   }, []);
 
-  const handleCategoryChange = (e) => {
-    const selectedCategory = categories.find(
-      (cat) => cat._id === e.target.value
-    );
+  const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedCategory = categories.find((cat) => cat._id === e.target.value) || null;
     setCategory(selectedCategory);
     setSubCategory(null);
   };
 
-  const handleSubCategoryChange = (e) => {
+  const handleSubCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSubCategory(e.target.value);
   };
 
-  const handleSizeToggle = (size) => {
-    setSelectedSizes((prevSelectedSizes) =>
-      prevSelectedSizes.includes(size)
-        ? prevSelectedSizes.filter((item) => item !== size)
-        : [...prevSelectedSizes, size]
+  const handleSizeToggle = (size: string) => {
+    setSelectedSizes((prev) =>
+      prev.includes(size) ? prev.filter((item) => item !== size) : [...prev, size]
     );
   };
 
@@ -195,18 +171,11 @@ const ItemInsertPage = () => {
       <h1 className="font-poppins text-3xl font-semibold">Item Insert</h1>
       <div className="flex flex-row mt-8 flex-wrap">
         <div className="flex flex-col flex-1 mr-4">
-          <ImageUploaderGroup
-            resetTrigger={resetCounter}
-            onImageChange={handleImageChange}
-          />
+          <ImageUploaderGroup resetTrigger={resetCounter} onImageChange={handleImageChange} />
         </div>
         <div className="flex-col flex-1 ml-0 md:ml-8">
           <FormInput label="Item Name" type="text" inputRef={nameRef} />
-          <FormInput
-            label="Description"
-            inputRef={descriptionRef}
-            as="textarea"
-          />
+          <FormInput label="Description" inputRef={descriptionRef} as="textarea" />
           <CategorySelector
             categories={categories}
             category={category}
@@ -216,11 +185,7 @@ const ItemInsertPage = () => {
           />
           <FormInput label="Stock" type="number" inputRef={stockRef} />
           <FormInput label="Item Price" type="text" inputRef={priceRef} />
-          <SizeSelector
-            className={"mt-8"}
-            selectedSizes={selectedSizes}
-            onSizeToggle={handleSizeToggle}
-          />
+          <SizeSelector className="mt-8" selectedSizes={selectedSizes} onSizeToggle={handleSizeToggle} />
           <button
             onClick={handleSubmit}
             className="bg-black text-backgroundGray px-8 py-2 rounded-full font-semibold font-poppins w-3/4 mt-8"

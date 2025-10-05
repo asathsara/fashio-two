@@ -2,18 +2,23 @@ import { useState, useEffect } from "react";
 import { deleteItem, fetchItems } from "../api/ItemApi";
 import { FaTrash } from "react-icons/fa";
 import Dialog from "../components/Dialog";
+import type { Item } from "../types/api/item";
+
+
 
 const ItemListPage = () => {
-  const [items, setItems] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [itemToDelete, setItemToDelete] = useState(null); // Track the item to delete
+  const [items, setItems] = useState<Item[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
+  const [itemToDelete, setItemToDelete] = useState<Item | null>(null); // Track the item to delete
 
   const handleOk = () => {
-    handleDelete(itemToDelete._id); // Perform the deletion of the selected item
-    setIsDialogOpen(false); // Close the dialog
-    setItemToDelete(null); // Reset itemToDelete
+    if (itemToDelete) {
+      handleDelete(itemToDelete._id!); 
+      setIsDialogOpen(false); // Close the dialog
+      setItemToDelete(null); // Reset itemToDelete
+    }
   };
 
   const handleCancel = () => {
@@ -25,7 +30,7 @@ const ItemListPage = () => {
     // Fetch items from the API
     const loadItems = async () => {
       try {
-        const data = await fetchItems();
+        const data: Item[] = await fetchItems();
         setItems(data);
       } catch (err) {
         setError("Failed to fetch items");
@@ -37,8 +42,7 @@ const ItemListPage = () => {
     loadItems();
   }, []);
 
-  const handleDelete = async (id) => {
-    // Delete the item with the given ID
+  const handleDelete = async (id: string) => {
     try {
       await deleteItem(id);
       setItems((prevItems) => prevItems.filter((item) => item._id !== id));
@@ -47,9 +51,9 @@ const ItemListPage = () => {
     }
   };
 
-  const openDeleteDialog = (item) => {
-    setItemToDelete(item); // Set the item to be deleted
-    setIsDialogOpen(true); // Open the confirmation dialog
+  const openDeleteDialog = (item: Item) => {
+    setItemToDelete(item);
+    setIsDialogOpen(true);
   };
 
   return (
@@ -61,6 +65,7 @@ const ItemListPage = () => {
         <p className="text-red-500">{error}</p>
       ) : (
         <div className="w-full mt-8 overflow-x-auto">
+          {/* Header Row */}
           <div className="min-w-[1000px] grid grid-cols-8 gap-4 text-left font-semibold text-gray-700 px-4 py-4 bg-gray-100 rounded-md mb-2 font-poppins">
             <span>Image</span>
             <span>Name</span>
@@ -71,6 +76,8 @@ const ItemListPage = () => {
             <span>Sizes</span>
             <span>Delete</span>
           </div>
+
+          {/* Items Rows */}
           {items.map((item) => (
             <div
               key={item._id}
@@ -90,7 +97,9 @@ const ItemListPage = () => {
                 )}
               </div>
               <span>{item.name}</span>
-              <span>Rs. {(Math.round(item.price * 100) / 100).toFixed(2)}</span>
+              <span>
+                Rs. {(Math.round(item.price * 100) / 100).toFixed(2)}
+              </span>
               <span>{item.stock}</span>
               <span>{item.category}</span>
               <span>{item.subCategory}</span>
