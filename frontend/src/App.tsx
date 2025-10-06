@@ -3,7 +3,7 @@ function App() {
 
   return (
     <>
-      Helo Worlss
+      <div className="font-black">Hello World</div>
     </>
   )
 }
