@@ -1,5 +1,5 @@
 
-import axiosInstance from "./AxiosInstance";
+import axiosInstance from "./api";
 import API_ENDPOINTS from "./endpoints";
 
 export const fetchItems = async () => {

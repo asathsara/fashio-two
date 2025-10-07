@@ -1,5 +1,5 @@
-import type { Image } from "../types/api/image";
-import axiosInstance from "./AxiosInstance";
+import type { Image } from "../types/image";
+import axiosInstance from "./api";
 import API_ENDPOINTS from "./endpoints";
 
 export const fetchImages = async (): Promise<Image[]> => {
