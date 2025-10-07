@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/auth/AuthProvider';
-import ProtectedRoute from './config/ProtectedRoutes';
+import ProtectedRoute from './config/ProtectedRoute';
 import PublicLayout from './layouts/PublicLayout';
 import AdminLayout from './layouts/AdminLayout';
 import { publicRoutes, adminRoutes, DEFAULT_ADMIN_ROUTE } from './config/routes';
