@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { fetchCategories } from "../../services/categoryService";
 import { insertItem } from "../../services/itemService";
 import ImageUploaderGroup from "../../components/admin/ImageUploaderGroup";
-import FormInput from "../../components/admin/FormInput ";
+import FormInput from "../../components/admin/FormInput";
 import SizeSelector from "../../components/admin/SizeSelector";
 import CategorySelector from "../../components/admin/CategorySelector";
 import Dialog from "../../components/admin/Dialog";
