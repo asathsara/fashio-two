@@ -1,9 +1,13 @@
-import React from "react";
+import type { Image } from "../../types/image";
 
-const ImageCard = ({ image, onDelete, className }) => {
+type ImageCardProps = {
+  image: Image,
+  onDelete : (id: string) => void
+}
+const ImageCard = ({ image, onDelete }: ImageCardProps) => {
   return (
     <div
-      className={`${className} md:h-96 md:w-96 sm:w-72 sm:h-64 min-w-72 min-h-64 p-4 rounded-xl flex flex-col`}
+      className={`shadow-md m-4 md:h-96 md:w-96 sm:w-72 sm:h-64 min-w-72 min-h-64 p-4 rounded-xl flex flex-col`}
     >
       <div className="flex flex-6 overflow-hidden">
         <img

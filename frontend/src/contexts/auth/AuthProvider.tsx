@@ -6,7 +6,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
+    useEffect(() => {
+      
+    login('hello@example.com')
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
       try {
@@ -28,7 +30,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       role: "admin",
     };
 
-    setUser(mockUser);
+      setUser(mockUser);
     localStorage.setItem("user", JSON.stringify(mockUser));
   };
 

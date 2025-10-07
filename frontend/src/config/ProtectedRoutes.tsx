@@ -16,6 +16,7 @@ const ProtectedRoute = ({ requiredRole }: ProtectedRouteProps) => {
         );
     }
 
+    console.log(isAuthenticated)
     if (!isAuthenticated) {
         return <Navigate to="/login" replace />;
     }
