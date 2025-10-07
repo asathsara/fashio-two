@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import type { AppRoute } from "../config/routes";
+import type { AppRoute } from "../../config/routes";
 
 
 type DrawerProps = {
@@ -9,7 +9,7 @@ type DrawerProps = {
 };
 
 const NavigationDrawer = ({ routes, closeNav, navbarOpen }: DrawerProps) => {
- 
+
 
   return (
     <div
@@ -28,8 +28,7 @@ const NavigationDrawer = ({ routes, closeNav, navbarOpen }: DrawerProps) => {
             to={r.path}
             onClick={closeNav}
             className={({ isActive }) =>
-              `px-4 py-2 rounded-full transition text-left ${
-                isActive ? "bg-black text-white" : "hover:bg-gray-200 text-gray-800"
+              `px-4 py-2 rounded-full transition text-left ${isActive ? "bg-black text-white" : "hover:bg-gray-200 text-gray-800"
               }`
             }
           >

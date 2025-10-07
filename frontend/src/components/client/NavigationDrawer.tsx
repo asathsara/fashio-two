@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import type { NavItem } from "../types/nav";
+import type { NavItem } from "../../types/nav";
 
 type DrawerProps = {
   navItems: NavItem[],
@@ -32,7 +32,7 @@ const NavigationDrawer = ({
             onClick={closeNav}
           >
             <Link to={item.path}>{item.label}</Link>
-            
+
           </li>
         ))}
       </ul>

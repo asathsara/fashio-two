@@ -8,7 +8,7 @@ import {
   insertSubCategory,
 } from "../../services/categoryService";
 import CategoryItem from "../../components/admin/CategoryItem";
-import type { Category } from "../types/api/category";
+import type { Category } from "../../types/category";
 
 const CategoriesInsertPage = () => {
   const [categories, setCategories] = useState<Category[]>([]);

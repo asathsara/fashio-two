@@ -1,10 +1,10 @@
-import type { Item } from "../types/item";
+import type { Item } from "../../types/item";
 
-type ItemCardProps =  {
+type ItemCardProps = {
   item: Item;
 }
 
-const ItemCard = ({ item } : ItemCardProps) => {
+const ItemCard = ({ item }: ItemCardProps) => {
   return (
     <div className={`rounded-md border-1 border-x-gray-100 md:w-64 mr-10 mt-10 w-56 cursor-pointer`}>
       <img

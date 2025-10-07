@@ -1,15 +1,15 @@
-import  { useRef } from "react";
+import { useRef } from "react";
 import { FaSearch } from "react-icons/fa";
 import { MdOutlineShoppingBag } from "react-icons/md";
 import { Link } from "react-router-dom";
-import type { NavItem } from "../types/nav";
+import type { NavItem } from "../../types/nav";
 
 type NavbarProps = {
   navItems: NavItem[],
   onOpenDrawer: () => void
 }
 
-const Navbar = ({ navItems, onOpenDrawer } : NavbarProps) => {
+const Navbar = ({ navItems, onOpenDrawer }: NavbarProps) => {
   const inputRef = useRef(null);
 
   return (
@@ -20,7 +20,7 @@ const Navbar = ({ navItems, onOpenDrawer } : NavbarProps) => {
           className="flex font-pacifico text-2.5xl font-semibold  tracking- pl-4 md:text-3xl cursor-pointer text-background-gray"
         >
           <Link to="/">Fashio</Link>
-          
+
         </div>
 
         <div className="flex items-center ">
@@ -29,7 +29,7 @@ const Navbar = ({ navItems, onOpenDrawer } : NavbarProps) => {
               <li
                 key={item.path}
               >
-                <Link to={item.path}>{ item.label}</Link>
+                <Link to={item.path}>{item.label}</Link>
               </li>
             ))}
           </ul>

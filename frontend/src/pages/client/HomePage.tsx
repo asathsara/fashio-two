@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
-import { fetchImages } from "../api/ImageApi";
-import { fetchCategories } from "../api/CategoryApi";
+import { fetchImages } from "../../services/imageService";
+import { fetchCategories } from "../../services/categoryService";
 import { motion, AnimatePresence } from "framer-motion";
-import { fetchItems } from "../api/ItemApi";
-import ItemCategory from "../components/ItemCategory";
-import DetailsBar from "../components/detailsbar/Detailsbar";
-import type { Category, Image, Item } from "../types/item";
+import { fetchItems } from "../../services/itemService";
+import ItemCategory from "../../components/client/ItemCategory";
+import DetailsBar from "../../components/client/detailsbar/Detailsbar";
+import type { Category } from "../../types/category";
+import type { Image } from "../../types/image";
+import type { Item } from "../../types/item";
 
 const HomePage = () => {
   const [images, setImages] = useState<Image[]>([]);
@@ -124,7 +126,7 @@ const HomePage = () => {
           })
         )}
       </div>
-      
+
     </div>
   );
 };

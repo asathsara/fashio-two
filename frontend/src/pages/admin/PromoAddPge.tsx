@@ -1,10 +1,10 @@
 import { useState, useEffect, useRef } from "react";
-import { fetchItems } from "../api/ItemApi";
-import { fetchPromos, insertPromo } from "../api/PromoApi";
-import FormInput from "../components/FormInput ";
-import Dialog from "../components/Dialog";
+import { fetchItems } from "../../services/itemService";
+import { fetchPromos, insertPromo } from "../../services/promoService";
+import FormInput from "../../components/admin/FormInput ";
+import Dialog from "../../components/admin/Dialog";
 import { FaTrash } from "react-icons/fa";
-import type { Promo } from "../types/api/promo";
+import type { Promo } from "../../types/promo";
 
 // Example types (adjust to your real backend)
 interface Item {

@@ -1,4 +1,4 @@
-import  { type Item as ItemType } from "../types/item";
+import { type Item as ItemType } from "../../types/item";
 import ItemCard from "./Item";
 
 
@@ -7,7 +7,7 @@ type ItemCategoryProps = {
   items: ItemType[]
 }
 
-const ItemCategory = ({ categoryName, items } : ItemCategoryProps) => {
+const ItemCategory = ({ categoryName, items }: ItemCategoryProps) => {
   return (
     <div className={`flex flex-col font-poppins  mx-1/10`}>
       <div className="flex flex-row mt-10 tracking-tighter">

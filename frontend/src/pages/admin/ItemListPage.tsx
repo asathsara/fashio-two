@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import { deleteItem, fetchItems } from "../api/ItemApi";
+import { deleteItem, fetchItems } from "../../services/itemService";
 import { FaTrash } from "react-icons/fa";
-import Dialog from "../components/Dialog";
-import type { Item } from "../types/api/item";
+import Dialog from "../../components/admin/Dialog";
+import type { Item } from "../../types/item";
 
 
 
@@ -15,7 +15,7 @@ const ItemListPage = () => {
 
   const handleOk = () => {
     if (itemToDelete) {
-      handleDelete(itemToDelete._id!); 
+      handleDelete(itemToDelete._id!);
       setIsDialogOpen(false); // Close the dialog
       setItemToDelete(null); // Reset itemToDelete
     }

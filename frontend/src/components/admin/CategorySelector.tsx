@@ -1,7 +1,7 @@
 import React from "react";
-import type { Category } from "../types/api/category"; 
+import type { Category } from "../../types/category";
 
-type CategorySelectorProps =  {
+type CategorySelectorProps = {
   categories: Category[];
   category: Category | null;
   subCategory: string | null;

@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import type { AppRoute } from "../config/routes";
+import type { AppRoute } from "../../config/routes";
 
 type RailProps = {
   routes: AppRoute[];

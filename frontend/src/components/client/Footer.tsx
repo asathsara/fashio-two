@@ -1,11 +1,11 @@
 import { Link } from "react-router-dom";
-import type { NavItem } from "../types/nav";
+import type { NavItem } from "../../types/nav";
 
 type FooterProps = {
   footerItems: NavItem[]
 }
 
-const Footer = ({ footerItems } : FooterProps) => {
+const Footer = ({ footerItems }: FooterProps) => {
   return (
     <footer className="bg-navbar-gray text-white py-8 font-poppins mt-8">
       <div className="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -26,7 +26,7 @@ const Footer = ({ footerItems } : FooterProps) => {
               <li
                 key={item.path}
               >
-                <Link to={item.path}>{ item.label}</Link>
+                <Link to={item.path}>{item.label}</Link>
               </li>
             ))}
           </ul>
@@ -37,20 +37,20 @@ const Footer = ({ footerItems } : FooterProps) => {
           <h2 className="text-lg font-semibold mb-4">
             Subscribe to Our Newsletter
           </h2>
-         
-            <div className="flex flex-col space-y-4">
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="p-2 rounded-sm bg-background-gray  text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              <button
-                className="bg-dark-gray hover:bg-black text-white py-2 px-4 rounded-sm"
-              >
-                Subscribe
-              </button>
-            </div>
-         
+
+          <div className="flex flex-col space-y-4">
+            <input
+              type="email"
+              placeholder="Enter your email"
+              className="p-2 rounded-sm bg-background-gray  text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <button
+              className="bg-dark-gray hover:bg-black text-white py-2 px-4 rounded-sm"
+            >
+              Subscribe
+            </button>
+          </div>
+
         </div>
       </div>
 
@@ -59,7 +59,7 @@ const Footer = ({ footerItems } : FooterProps) => {
         <p className="text-sm text-gray-400">
           &copy; 2025 Fashio Inc. All rights reserved.
         </p>
-        
+
       </div>
     </footer>
   );

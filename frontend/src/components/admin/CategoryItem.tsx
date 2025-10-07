@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import { FaTrash } from "react-icons/fa";
 import SubCategoryItem from "./SubCategoryItem";
-import type { Category } from "../types/api/category";
+import type { Category } from "../../types/category";
 
 
 interface CategoryItemProps {

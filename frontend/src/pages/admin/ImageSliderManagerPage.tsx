@@ -1,8 +1,8 @@
 import  { useState, useEffect } from "react";
-import { fetchImages, uploadImage, deleteImage } from "../api/ImageApi";
-import ImageUploader from "../components/ImageUploader";
-import ImageCard from "../components/ImageCard";
-import type { Image } from "../types/api/image";
+import { fetchImages, uploadImage, deleteImage } from "../../services/imageService";
+import ImageUploader from "../../components/admin/ImageUploader";
+import ImageCard from "../../components/admin/ImageCard";
+import type { Image } from "../../types/image";
 
 const ImageSliderManager = () => {
   const [images, setImages] = useState<Image[]>([]);
