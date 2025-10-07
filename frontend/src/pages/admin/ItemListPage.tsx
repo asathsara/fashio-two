@@ -32,7 +32,7 @@ const ItemListPage = () => {
       try {
         const data: Item[] = await fetchItems();
         setItems(data);
-      } catch (err) {
+      } catch {
         setError("Failed to fetch items");
       } finally {
         setLoading(false);
@@ -46,7 +46,7 @@ const ItemListPage = () => {
     try {
       await deleteItem(id);
       setItems((prevItems) => prevItems.filter((item) => item._id !== id));
-    } catch (err) {
+    } catch {
       setError("Failed to delete item");
     }
   };

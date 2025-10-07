@@ -9,7 +9,11 @@ const ItemCard = ({ item }: ItemCardProps) => {
     <div className={`rounded-md border-1 border-x-gray-100 md:w-64 mr-10 mt-10 w-56 cursor-pointer`}>
       <img
         className="rounded-t-md md:h-72 h-64 w-full object-cover"
-        src={import.meta.env.VITE_API_UPLOAD_IMAGES_URL + item.urls[0]}
+        src={
+          item.urls && item.urls.length > 0
+            ? import.meta.env.VITE_API_UPLOAD_IMAGES_URL + item.urls[0]
+            : ""
+        }
         alt={item.name}
       />
       <div className="flex flex-col w-full items-center font-poppins">

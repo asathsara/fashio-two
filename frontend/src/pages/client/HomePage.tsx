@@ -45,7 +45,7 @@ const HomePage = () => {
       try {
         const data = await fetchItems();
         setItems(data);
-      } catch (err) {
+      } catch {
         setError("Failed to fetch items");
       } finally {
         setLoading(false);
