@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { fetchItems } from "../../services/itemService";
 import { fetchPromos, insertPromo } from "../../services/promoService";
-import FormInput from "../../components/admin/FormInput ";
+import FormInput from "../../components/admin/FormInput";
 import Dialog from "../../components/admin/Dialog";
 import { FaTrash } from "react-icons/fa";
 import type { Promo } from "../../types/promo";

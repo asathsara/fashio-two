@@ -2,18 +2,17 @@ import { useRef } from "react";
 import { FaSearch } from "react-icons/fa";
 import { MdOutlineShoppingBag } from "react-icons/md";
 import { Link } from "react-router-dom";
-import type { NavItem } from "../../types/nav";
+import { publicNavRoutes } from "../../config/routes";
 
 type NavbarProps = {
-  navItems: NavItem[],
   onOpenDrawer: () => void
 }
 
-const Navbar = ({ navItems, onOpenDrawer }: NavbarProps) => {
+const Navbar = ({ onOpenDrawer }: NavbarProps) => {
   const inputRef = useRef(null);
 
   return (
-    <nav className="fixed top-0 left-0 w-full z-10 bg-navbar-gray">
+    <nav className="fixed top-0 left-0 w-full z-10 bg-navbar-gray h-20">
       <div className="flex p-4  items-center  justify-between">
         {/* First Item (Fashio) */}
         <div
@@ -25,7 +24,7 @@ const Navbar = ({ navItems, onOpenDrawer }: NavbarProps) => {
 
         <div className="flex items-center ">
           <ul className="list-none hidden gap-5 md:flex sm:hidden ml-3 mr-5 font-poppins cursor-pointer font-semibold  text-background-gray">
-            {navItems.map((item) => (
+            {publicNavRoutes.map((item) => (
               <li
                 key={item.path}
               >
