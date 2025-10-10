@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { fetchItems } from "../../services/itemService";
 import { fetchPromos, insertPromo, deletePromo } from "../../services/promoService";
-import { PromoForm } from "../../components/admin/promo/PromoForm";
+import { PromoForm } from "../../components/admin/promo/forms/PromoForm";
 import { PromoList } from "../../components/admin/promo/PromoList";
 import Dialog from "../../components/admin/Dialog";
 import type { Promo } from "../../types/promo";
