@@ -1,12 +1,10 @@
-const express = require("express");
-const router = express.Router();
-const multer = require("multer");
-const fs = require("fs");
-const Item = require("../models/item");
-const path = require("path");
-
+import { Router } from "express";
+const router = Router();
+import multer, { diskStorage } from "multer";
+import { unlink } from "fs";
+import Item from "../models/item";
 // Configure Multer for image uploads
-const storage = multer.diskStorage({
+const storage = diskStorage({
   destination: (req, file, cb) => cb(null, "./uploads/items/"),
   filename: (req, file, cb) => cb(null, Date.now() + "-" + file.originalname),
 });
@@ -90,7 +88,7 @@ router.delete("/:id", async (req, res) => {
     const deletionPromises = item.urls.map((imageUrl) => {
       const filePath = `./uploads/items/${imageUrl.split("/").pop()}`; // The file path
       return new Promise((resolve, reject) => {
-        fs.unlink(filePath, (err) => {
+        unlink(filePath, (err) => {
           if (err) {
             console.error(`Error deleting file ${filePath}:`, err);
             reject(err);
@@ -118,4 +116,4 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

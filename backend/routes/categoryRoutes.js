@@ -1,6 +1,6 @@
-const express = require("express");
-const router = express.Router();
-const Category = require("../models/category");
+import { Router } from "express";
+const router = Router();
+import Category from "../models/category";
 
 // Add a category
 router.post("/add", async (req, res) => {
@@ -58,7 +58,7 @@ router.delete("/:id/sub-categories/:subItemName", async (req, res) => {
   await category.save();
 
   // Send a response 
-  res.send({ message: "Sub-item deleted successfully", subCategories: category.subCategories});
+  res.send({ message: "Sub-item deleted successfully", subCategories: category.subCategories });
 });
 
-module.exports = router;
+export default router;

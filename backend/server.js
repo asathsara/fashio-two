@@ -1,6 +1,6 @@
-const express = require("express");
-const mongoose = require("mongoose");
-const cors = require("cors");
+import express from "express";
+import { connect } from "mongoose";
+import cors from "cors";
 require("dotenv").config();
 
 const app = express();
@@ -13,23 +13,23 @@ app.use(express.json());
 
 
 // MongoDB Connection
-mongoose.connect(process.env.MONGO_URI, {
+connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 }).then(() => console.log("MongoDB connected"))
   .catch(err => console.error(err));
 
 // Routes
-const imageRoutes = require("./routes/imageRoutes");
+import imageRoutes from "./routes/imageRoutes";
 app.use("/api/images", imageRoutes);
 
-const categoryRoutes = require("./routes/categoryRoutes");
+import categoryRoutes from "./routes/categoryRoutes";
 app.use("/api/categories", categoryRoutes);
 
-const promoRoutes = require("./routes/promoRoutes");
+import promoRoutes from "./routes/promoRoutes";
 app.use("/api/promos", promoRoutes);
 
-const itemRoutes = require("./routes/itemRoute");
+import itemRoutes from "./routes/itemRoute";
 app.use("/api/items", itemRoutes);
 
 // Serve static files
