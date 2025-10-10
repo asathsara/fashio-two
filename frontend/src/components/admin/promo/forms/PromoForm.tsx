@@ -8,9 +8,16 @@ import { Percent } from "lucide-react";
 import { PromoDateTimePicker } from "./PromoDateTimePicker";
 import { PromoItemSelect } from "./PromoItemSelect";
 import type { PromoFormProps } from "@/types/promo";
+import { mapFormToPromo } from "@/utils/mappers/promoMapper";
 
 export const PromoForm = ({ items, onSubmit, loading, onSuccess, onError }: PromoFormProps) => {
-  const form = useForm<PromoFormData>({
+  const {
+    control,
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<PromoFormData>({
     resolver: zodResolver(promoSchema),
     defaultValues: {
       item: "",
@@ -20,10 +27,11 @@ export const PromoForm = ({ items, onSubmit, loading, onSuccess, onError }: Prom
     },
   });
 
-  const handleSubmit = form.handleSubmit(async (data) => {
+  const onFormSubmit  = handleSubmit(async (data: PromoFormData) => {
     try {
-      await onSubmit(data);
-      form.reset();
+      const payload = mapFormToPromo(data);
+      await onSubmit(payload);
+      reset();
       onSuccess();
     } catch {
       onError("Failed to create promotion");
@@ -34,23 +42,23 @@ export const PromoForm = ({ items, onSubmit, loading, onSuccess, onError }: Prom
     <Card>
       <CardHeader><CardTitle>Create Promotion</CardTitle></CardHeader>
       <CardContent className="space-y-6">
-        <PromoItemSelect control={form.control} items={items} />
-        <PromoDateTimePicker control={form.control} name="startDate" label="Start Date" />
-        <PromoDateTimePicker control={form.control} name="endDate" label="End Date" />
+        <PromoItemSelect control={control} items={items} />
+        <PromoDateTimePicker control={control} name="startDate" label="Start Date" />
+        <PromoDateTimePicker control={control} name="endDate" label="End Date" />
 
         <div className="space-y-2">
           <label className="flex items-center gap-2 text-sm font-medium">
             <Percent className="w-4 h-4" /> Discount %
           </label>
-          <Input type="number" {...form.register("discount", { valueAsNumber: true })} />
-          {form.formState.errors.discount && (
+          <Input type="number" {...register("discount", { valueAsNumber: true })} />
+          {errors.discount && (
             <p className="text-sm text-red-500">
-              {form.formState.errors.discount.message}
+              {errors.discount.message}
             </p>
           )}
         </div>
 
-        <Button onClick={handleSubmit} disabled={loading} className="w-full">
+        <Button onClick={onFormSubmit} disabled={loading} className="w-full">
           {loading ? "Creating..." : "Create Promotion"}
         </Button>
       </CardContent>

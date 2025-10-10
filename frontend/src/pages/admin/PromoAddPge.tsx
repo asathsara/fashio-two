@@ -5,6 +5,7 @@ import { PromoForm } from "../../components/admin/promo/forms/PromoForm";
 import { PromoList } from "../../components/admin/promo/PromoList";
 import Dialog from "../../components/admin/Dialog";
 import type { Promo } from "../../types/promo";
+import type { PromoFormData } from "@/schemas/promoSchema";
 
 interface Item {
   _id: string;
@@ -60,7 +61,7 @@ const PromoAddPage = () => {
     loadPromos();
   }, []);
 
-  const handleCreatePromo = async (promo: Omit<Promo, "_id">) => {
+  const handleCreatePromo = async (promo: PromoFormData) => {
     const newPromo = await insertPromo(promo as Promo);
     setPromos((prev) => [newPromo, ...prev]);
   };
