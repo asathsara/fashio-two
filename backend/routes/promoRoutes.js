@@ -1,6 +1,6 @@
 import { Router } from "express";
 const router = Router();
-import Promo, { find, findByIdAndDelete } from "../models/promo";
+import Promo from "../models/promo.js";
 
 // Add a promo
 router.post("/add", async (req, res) => {
@@ -18,13 +18,13 @@ router.post("/add", async (req, res) => {
 
 // Fetch all promos
 router.get("/", async (req, res) => {
-    const promos = await find();
+    const promos = await Promo.find();
     res.send(promos);
 })
 
 // delete a promo
 router.delete("/:id", async (req, res) => {
-    await findByIdAndDelete(req.params.id);
+    await Promo.findByIdAndDelete(req.params.id);
     res.status(204).send();
 });
 

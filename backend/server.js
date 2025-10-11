@@ -1,7 +1,15 @@
 import express from "express";
 import { connect } from "mongoose";
 import cors from "cors";
-require("dotenv").config();
+
+import imageRoutes from "./routes/imageRoutes.js";
+import categoryRoutes from "./routes/categoryRoutes.js";
+import promoRoutes from "./routes/promoRoutes.js";
+import itemRoutes from "./routes/itemRoute.js";
+
+import dotenv from "dotenv";
+dotenv.config();
+
 
 const app = express();
 
@@ -20,16 +28,9 @@ connect(process.env.MONGO_URI, {
   .catch(err => console.error(err));
 
 // Routes
-import imageRoutes from "./routes/imageRoutes";
 app.use("/api/images", imageRoutes);
-
-import categoryRoutes from "./routes/categoryRoutes";
 app.use("/api/categories", categoryRoutes);
-
-import promoRoutes from "./routes/promoRoutes";
 app.use("/api/promos", promoRoutes);
-
-import itemRoutes from "./routes/itemRoute";
 app.use("/api/items", itemRoutes);
 
 // Serve static files

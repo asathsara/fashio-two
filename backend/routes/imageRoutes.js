@@ -1,7 +1,7 @@
 import { Router } from "express";
 import multer, { diskStorage } from "multer";
 import { unlinkSync } from "fs";
-import Image, { find, findById, findByIdAndDelete } from "../models/image";
+import Image from "../models/image.js";
 
 const router = Router();
 
@@ -15,7 +15,7 @@ const upload = multer({ storage });
 // Fetch all images
 router.get("/", async (req, res) => {
   try {
-    const images = await find();
+    const images = await Image.find();
     res.json(images);
   } catch (error) {
     res.status(500).json({ error: "Error fetching images" });
@@ -36,11 +36,11 @@ router.post("/uploads", upload.single("image"), async (req, res) => {
 // Delete an image
 router.delete("/:id", async (req, res) => {
   try {
-    const image = await findById(req.params.id);
+    const image = await Image.findById(req.params.id);
     if (!image) return res.status(404).json({ error: "Image not found" });
 
     unlinkSync(`./uploads/slider/${image.url.split("/").pop()}`);
-    await findByIdAndDelete(req.params.id);
+    await Image.findByIdAndDelete(req.params.id);
     res.json({ message: "Image deleted" });
   } catch (error) {
     res.status(500).json({ error: "Error deleting image" });

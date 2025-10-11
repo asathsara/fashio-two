@@ -2,7 +2,8 @@ import { Router } from "express";
 const router = Router();
 import multer, { diskStorage } from "multer";
 import { unlink } from "fs";
-import Item from "../models/item";
+import Item from "../models/item.js";
+
 // Configure Multer for image uploads
 const storage = diskStorage({
   destination: (req, file, cb) => cb(null, "./uploads/items/"),

@@ -1,6 +1,6 @@
 import { Router } from "express";
 const router = Router();
-import Category from "../models/category";
+import Category from "../models/category.js";
 
 // Add a category
 router.post("/add", async (req, res) => {
