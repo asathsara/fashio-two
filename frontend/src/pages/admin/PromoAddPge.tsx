@@ -4,13 +4,8 @@ import { fetchPromos, insertPromo, deletePromo } from "../../services/promoServi
 import { PromoForm } from "../../components/admin/promo/forms/PromoForm";
 import { PromoList } from "../../components/admin/promo/PromoList";
 import Dialog from "../../components/admin/Dialog";
-import type { Promo } from "../../types/promo";
+import type { Promo, PromoSelectableItem } from "../../types/promo";
 
-interface Item {
-  _id: string;
-  name: string;
-  category: string;
-}
 
 interface DialogContent {
   title: string;
@@ -18,7 +13,7 @@ interface DialogContent {
 }
 
 const PromoAddPage = () => {
-  const [items, setItems] = useState<Item[]>([]);
+  const [items, setItems] = useState<PromoSelectableItem[]>([]);
   const [promos, setPromos] = useState<Promo[]>([]);
   const [loading, setLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -117,7 +112,7 @@ const PromoAddPage = () => {
             onSuccess={handleSuccess}
             onError={handleError}
           />
-          <PromoList promos={promos} loading={loading} onDelete={handleDeletePromo} />
+          <PromoList promos={promos} loading={loading} onDelete={handleDeletePromo} items={items} />
         </div>
       </div>
 

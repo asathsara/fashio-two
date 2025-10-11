@@ -13,15 +13,16 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Calendar, Clock, Percent, Trash2, Tag } from "lucide-react";
-import type { Promo } from "../../../types/promo";
+import type { Promo, PromoSelectableItem } from "../../../types/promo";
 
 interface PromoListProps {
   promos: Promo[];
   loading: boolean;
   onDelete: (id: string) => Promise<void>;
+  items: PromoSelectableItem[];
 }
 
-export const PromoList = ({ promos, loading, onDelete }: PromoListProps) => {
+export const PromoList = ({ promos, loading, onDelete, items }: PromoListProps) => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [promoToDelete, setPromoToDelete] = useState<string | null>(null);
 
@@ -57,6 +58,11 @@ export const PromoList = ({ promos, loading, onDelete }: PromoListProps) => {
       minute: "2-digit",
     });
   };
+
+  const findItemName = (itemId: string) => {
+    const item = items.find(i => i._id === itemId);
+    return item ? item.name : "Unknown Item";
+  }
 
   if (loading) {
     return (
@@ -104,7 +110,7 @@ export const PromoList = ({ promos, loading, onDelete }: PromoListProps) => {
                 {/* Header with status and delete */}
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <h3 className="font-semibold text-lg">{promo.item}</h3>
+                    <h3 className="font-semibold text-lg">{findItemName(promo.item)}</h3>
                     <Badge
                       variant={
                         status === "active"
