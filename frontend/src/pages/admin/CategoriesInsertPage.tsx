@@ -7,7 +7,7 @@ import {
   deleteSubCategory,
   insertSubCategory,
 } from "../../services/categoryService";
-import CategoryItem from "../../components/admin/CategoryItem";
+import CategoryItem from "../../components/admin/category/CategoryItem";
 import type { Category } from "../../types/category";
 
 const CategoriesInsertPage = () => {
@@ -107,7 +107,7 @@ const CategoriesInsertPage = () => {
       ) : (
         <div className="mt-8">
           {categories.map((category) => (
-            
+
             <CategoryItem
               key={category._id}
               category={category}

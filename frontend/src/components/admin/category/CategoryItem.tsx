@@ -9,18 +9,9 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
 import SubCategoryItem from "./SubCategoryItem";
-import type { Category } from "../../types/category";
+import type { Category } from "../../../types/category";
+import { ConfirmDialog } from "@/components/common/ConfirmDialog";
 
 interface CategoryItemProps {
   category: Category;
@@ -153,27 +144,13 @@ const CategoryItem = ({
       </Card>
 
       {/* Delete Confirmation Dialog */}
-      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Delete Category</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to delete <strong>{category.name}</strong>? This
-              will also delete all {category.subCategories?.length || 0} subcategories.
-              This action cannot be undone.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleDeleteCategory}
-              className="bg-destructive hover:bg-destructive/90"
-            >
-              Delete
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <ConfirmDialog
+        open={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+        title={`Delete Category`}
+        description={`Are you sure you want to delete ${category.name}? This will also delete all subcategories.`}
+        onConfirm={handleDeleteCategory}
+      />
     </>
   );
 };

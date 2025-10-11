@@ -1,16 +1,7 @@
 import { useState } from "react";
 import { Trash2, Tag } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+import { ConfirmDialog } from "@/components/common/ConfirmDialog";
 
 type SubCategoryItemProps = {
   name: string;
@@ -42,26 +33,15 @@ const SubCategoryItem = ({ name, onDeleteSubCategory }: SubCategoryItemProps) =>
         </Button>
       </div>
 
-      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Delete Subcategory</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to delete <strong>{name}</strong>? This action
-              cannot be undone.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleDelete}
-              className="bg-destructive hover:bg-destructive/90"
-            >
-              Delete
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <ConfirmDialog
+        open={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+        title="Delete Subcategory"
+        description={`Are you sure you want to delete "${name}"? This action cannot be undone.`}
+        onConfirm={handleDelete}
+        confirmLabel="Delete"
+        cancelLabel="Cancel"
+      />
     </>
   );
 };
