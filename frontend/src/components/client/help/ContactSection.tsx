@@ -16,7 +16,7 @@ export const ContactSection = () => {
                 </CardHeader>
                 <CardContent>
                     <Badge variant="secondary" className="mb-4">Available 24/7</Badge>
-                    <Button className="w-full rounded-4xl cursor-pointer">Start Chat</Button>
+                    <Button className="w-full">Start Chat</Button>
                 </CardContent>
             </Card>
 
