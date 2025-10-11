@@ -1,8 +1,26 @@
 import { useState, useRef } from "react";
-import { FaTrash } from "react-icons/fa";
+import { Trash2, ChevronDown, ChevronUp, Plus, FolderOpen } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import SubCategoryItem from "./SubCategoryItem";
 import type { Category } from "../../types/category";
-
 
 interface CategoryItemProps {
   category: Category;
@@ -15,71 +33,148 @@ const CategoryItem = ({
   category,
   onAddSubItem,
   onDelete,
-  onDeleteSubCategory
+  onDeleteSubCategory,
 }: CategoryItemProps) => {
-
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [subItemValue, setSubItemValue] = useState("");
   const subItemRef = useRef<HTMLInputElement | null>(null);
 
   const handleAddSubItem = () => {
-
-    if (!subItemRef.current) return;
-
-    const subItemName = subItemRef.current.value;
+    const subItemName = subItemValue.trim();
     if (subItemName) {
       onAddSubItem(category._id, subItemName);
-      subItemRef.current.value = "";
+      setSubItemValue("");
     }
   };
 
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      handleAddSubItem();
+    }
+  };
+
+  const handleDeleteCategory = () => {
+    onDelete(category._id);
+    setIsDeleteDialogOpen(false);
+  };
+
   return (
-    <div className="p-4 bg-backgroundGray my-2 rounded-lg">
-    
-      <div
-        className="flex justify-between items-center cursor-pointer"
-        onClick={() => setIsExpanded((prev) => !prev)}
-      >
-        <h2 className="font-bold text-gray-600">{category.name}</h2>
-        <FaTrash
-          className="cursor-pointer "
-          onClick={(e) => {
-            e.stopPropagation();
-            onDelete(category._id);
-          }}
-        />
-      </div>
-      {isExpanded && (
-        <div className="mt-2">
-          {category.subCategories!.map((subItem) => (
-            <SubCategoryItem
-              key={subItem.name}
-              name={subItem.name}
-              onDeleteSubCategory={() =>
-                onDeleteSubCategory(category._id, subItem.name)
-              }
-            />
-          ))}
-          <div className="mt-4 flex">
-            <input
-              ref={subItemRef}
-              type="text"
-              placeholder="Sub-item"
-              className="rounded-md px-4 py-1 mr-2 flex-1 bg-white border-0 outline-none font-semibold"
-              onClick={(e) => e.stopPropagation()}
-            />
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                handleAddSubItem();
-              }}
-              className="bg-skyBlue rounded-md text-gray-400 px-8 py-1 font-semibold mx-2"
+    <>
+      <Card className="bg-card border-border hover:border-primary/50 transition-all duration-200 mb-2">
+        <Collapsible open={isExpanded} onOpenChange={setIsExpanded}>
+          <CardContent className="p-4">
+            {/* Header */}
+            <div className="flex items-center justify-between">
+              <CollapsibleTrigger asChild>
+                <div className="flex items-center gap-3 flex-1 cursor-pointer group">
+                  <div className="p-2 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                    <FolderOpen className="w-4 h-4 text-primary" />
+                  </div>
+                  <div className="flex items-center gap-2 flex-1">
+                    <h3 className="font-semibold text-foreground text-lg">
+                      {category.name}
+                    </h3>
+                    <Badge variant="secondary" className="ml-2">
+                      {category.subCategories?.length || 0}
+                    </Badge>
+                  </div>
+                  {isExpanded ? (
+                    <ChevronUp className="w-4 h-4 text-muted-foreground transition-transform" />
+                  ) : (
+                    <ChevronDown className="w-4 h-4 text-muted-foreground transition-transform" />
+                  )}
+                </div>
+              </CollapsibleTrigger>
+
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsDeleteDialogOpen(true);
+                }}
+                className="ml-2 text-destructive hover:text-destructive hover:bg-destructive/10"
+              >
+                <Trash2 className="w-4 h-4" />
+              </Button>
+            </div>
+
+            {/* Expanded Content */}
+            <CollapsibleContent className="mt-4">
+              <div className="space-y-2">
+                {/* Sub-categories List */}
+                {category.subCategories && category.subCategories.length > 0 ? (
+                  <div className="space-y-2 mb-4">
+                    {category.subCategories.map((subItem) => (
+                      <SubCategoryItem
+                        key={subItem.name}
+                        name={subItem.name}
+                        onDeleteSubCategory={() =>
+                          onDeleteSubCategory(category._id, subItem.name)
+                        }
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-4 text-muted-foreground text-sm border border-dashed rounded-lg mb-4">
+                    No subcategories yet. Add one below.
+                  </div>
+                )}
+
+                {/* Add Sub-item Input */}
+                <div className="flex gap-2 pt-2 border-t border-border">
+                  <Input
+                    ref={subItemRef}
+                    type="text"
+                    value={subItemValue}
+                    onChange={(e) => setSubItemValue(e.target.value)}
+                    onKeyPress={handleKeyPress}
+                    placeholder="Add a subcategory..."
+                    className="flex-1"
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                  <Button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleAddSubItem();
+                    }}
+                    disabled={!subItemValue.trim()}
+                    className="gap-2"
+                  >
+                    <Plus className="w-4 h-4" />
+                    Add
+                  </Button>
+                </div>
+              </div>
+            </CollapsibleContent>
+          </CardContent>
+        </Collapsible>
+      </Card>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Category</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete <strong>{category.name}</strong>? This
+              will also delete all {category.subCategories?.length || 0} subcategories.
+              This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteCategory}
+              className="bg-destructive hover:bg-destructive/90"
             >
-              Add
-            </button>
-          </div>
-        </div>
-      )}
-    </div>
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 };
 
