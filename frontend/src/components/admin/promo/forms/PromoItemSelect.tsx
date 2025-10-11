@@ -1,18 +1,18 @@
-import { Controller } from "react-hook-form";
+import { Controller, type Control, type FieldValues, type Path } from "react-hook-form";
 import { Label } from "@/components/ui/label";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import type { PromoSelectableItem } from "@/types/promo";
 
 
-interface Props {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  control: any;
+interface Props<T extends FieldValues> {
+  name: Path<T>; 
+  control: Control<T>;
   items: PromoSelectableItem[];
 }
 
-export const PromoItemSelect = ({ control, items }: Props) => (
+export const PromoItemSelect = <T extends FieldValues>({ name, control, items }: Props<T>) => (
   <Controller
-    name="item"
+    name={name}
     control={control}
     render={({ field, fieldState }) => (
       <div className="space-y-2">

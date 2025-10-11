@@ -42,7 +42,7 @@ export const PromoForm = ({ items, onSubmit, loading, onSuccess, onError }: Prom
     <Card>
       <CardHeader><CardTitle>Create Promotion</CardTitle></CardHeader>
       <CardContent className="space-y-6">
-        <PromoItemSelect control={control} items={items} />
+        <PromoItemSelect control={control} name="item" items={items} />
         <PromoDateTimePicker control={control} name="startDate" label="Start Date" />
         <PromoDateTimePicker control={control} name="endDate" label="End Date" />
 

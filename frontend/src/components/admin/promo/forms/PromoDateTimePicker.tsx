@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { CalendarIcon, ClockIcon } from "lucide-react";
 
 interface Props<T extends FieldValues> {
-  name: Path<T>; // ensures this name exists in the form data
+  name: Path<T>; 
   label: string;
   control: Control<T>;
 }
