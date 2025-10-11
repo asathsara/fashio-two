@@ -1,12 +1,12 @@
-const express = require("express");
-const multer = require("multer");
-const fs = require("fs");
-const Image = require("../models/image");
+import { Router } from "express";
+import multer, { diskStorage } from "multer";
+import { unlinkSync } from "fs";
+import Image from "../models/image.js";
 
-const router = express.Router();
+const router = Router();
 
 // Configure Multer
-const storage = multer.diskStorage({
+const storage = diskStorage({
   destination: (req, file, cb) => cb(null, "./uploads/slider/"),
   filename: (req, file, cb) => cb(null, Date.now() + "-" + file.originalname),
 });
@@ -39,7 +39,7 @@ router.delete("/:id", async (req, res) => {
     const image = await Image.findById(req.params.id);
     if (!image) return res.status(404).json({ error: "Image not found" });
 
-    fs.unlinkSync(`./uploads/slider/${image.url.split("/").pop()}`);
+    unlinkSync(`./uploads/slider/${image.url.split("/").pop()}`);
     await Image.findByIdAndDelete(req.params.id);
     res.json({ message: "Image deleted" });
   } catch (error) {
@@ -47,4 +47,4 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

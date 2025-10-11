@@ -1,9 +1,9 @@
-const express = require("express");
-const router = express.Router();
-const Promo = require("../models/promo");
+import { Router } from "express";
+const router = Router();
+import Promo from "../models/promo.js";
 
 // Add a promo
-router.post("/add", async(req, res) => {
+router.post("/add", async (req, res) => {
     const promo = new Promo({
         item: req.body.item,
         startDate: req.body.startDate,
@@ -24,8 +24,8 @@ router.get("/", async (req, res) => {
 
 // delete a promo
 router.delete("/:id", async (req, res) => {
-  await Promo.findByIdAndDelete(req.params.id);
-  res.status(204).send();
+    await Promo.findByIdAndDelete(req.params.id);
+    res.status(204).send();
 });
 
-module.exports = router;
+export default router;
