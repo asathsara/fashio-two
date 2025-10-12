@@ -1,52 +1,133 @@
-import { useState, useEffect, type ReactNode } from "react";
-import { AuthContext } from "./AuthContext";
-import type { User } from "../../types/auth";
+import { useEffect, useState, type ReactNode } from "react";
+import { AuthContext, type User } from "./AuthContext";
+import { authService } from "@/services/authService";
 
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
+
+interface AuthProviderProps {
+  children: ReactNode;
+}
+
+export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(true);
 
-    useEffect(() => {
-      
-    login('hello@example.com')
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
+  // Derived state
+  const isAuthenticated = !!user;
+
+  // Fetch current user on mount
+  useEffect(() => {
+    const fetchUser = async () => {
       try {
-        setUser(JSON.parse(storedUser));
-      } catch (error) {
-        console.error("Failed to parse user from localStorage", error);
-        localStorage.removeItem("user");
+        setLoading(true);
+        const currentUser = await authService.getCurrentUser();
+        setUser(currentUser);
+      } catch {
+        setUser(null);
+      } finally {
+        setLoading(false);
       }
-    }
-    setIsLoading(false);
-  }, []);
-
-  const login = async (email: string) => {
-    // Replace with real API later
-    const mockUser: User = {
-      id: "1",
-      email,
-      name: "Admin User",
-      role: "admin",
     };
 
-      setUser(mockUser);
-    localStorage.setItem("user", JSON.stringify(mockUser));
+    fetchUser();
+  }, []);
+
+  // Login
+  const login = async (email: string, password: string) => {
+    setLoading(true);
+    try {
+      const data = await authService.login(email, password);
+      setUser(data.user);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const logout = () => {
-    setUser(null);
-    localStorage.removeItem("user");
+  // Google login
+  const loginWithGoogle = async (credential?: string) => {
+    setLoading(true);
+    try {
+      const data = await authService.loginWithGoogle(credential || '');
+      setUser(data.user);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Register
+  const register = async (name: string, email: string, password: string) => {
+    setLoading(true);
+    try {
+      await authService.register(name, email, password);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Logout
+  const logout = async () => {
+    setLoading(true);
+    try {
+      await authService.logout();
+      setUser(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Forgot password
+  const forgotPassword = async (email: string) => {
+    setLoading(true);
+    try {
+      await authService.forgotPassword(email);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Reset password
+  const resetPassword = async (token: string, newPassword: string) => {
+    setLoading(true);
+    try {
+      await authService.resetPassword(token, newPassword);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Verify email
+  const verifyEmail = async (token: string) => {
+    setLoading(true);
+    try {
+      await authService.verifyEmail(token);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Resend verification email
+  const resendVerificationEmail = async () => {
+    setLoading(true);
+    try {
+      await authService.resendVerificationEmail();
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <AuthContext.Provider
       value={{
         user,
-        isAuthenticated: !!user,
-        isLoading,
+        isAuthenticated,
+        loading,
         login,
+        loginWithGoogle,
+        register,
         logout,
+        forgotPassword,
+        resetPassword,
+        verifyEmail,
+        resendVerificationEmail
       }}
     >
       {children}

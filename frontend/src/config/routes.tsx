@@ -13,6 +13,8 @@ import PromoPage from "../pages/client/PromoPage";
 import HelpPage from "../pages/client/HelpPage";
 import LoginPage from "../pages/client/LoginPage";
 import ProfilePage from "../pages/client/ProfilePage";
+import VerifyEmailPage from "@/pages/client/auth/VerifyEmailPage";
+import ResetPasswordPage from "@/pages/client/auth/ResetPasswordPage";
 
 export type AppRoute = {
     path: string;
@@ -55,7 +57,19 @@ export const publicRoutes: AppRoute[] = [
         element: <ProfilePage />,
         showInNav: false,
         protected: true
-    }
+    },
+    {
+    path: "/verify-email",
+    label: "Verify Email",
+    element: <VerifyEmailPage />,
+    showInNav: false,
+  },
+  {
+    path: "/reset-password",
+    label: "Reset Password",
+    element: <ResetPasswordPage />,
+    showInNav: false,
+  }
 ];
 
 // Admin routes (protected)
