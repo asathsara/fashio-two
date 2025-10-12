@@ -7,10 +7,29 @@ const axiosInstance = axios.create({
 });
 
 
+// Request interceptor - Add token to requests
+axiosInstance.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('fashio_auth_token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+// Response interceptor - Handle 401 errors
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
-    console.error("API Error:", error);
+    if (error.response?.status === 401) {
+      // Token expired or invalid
+      localStorage.removeItem('fashio_auth_token');
+      window.location.href = '/login';
+    }
     return Promise.reject(error);
   }
 );

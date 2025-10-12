@@ -10,33 +10,44 @@ interface AuthProviderProps {
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // Derived state
-  const isAuthenticated = !!user;
-
+  useEffect(() => {
+    setIsAuthenticated(!!user);
+  }, [user]);
   // Fetch current user on mount
   useEffect(() => {
-    const fetchUser = async () => {
+    const restoreSession = async () => {
       try {
-        setLoading(true);
-        const currentUser = await authService.getCurrentUser();
-        setUser(currentUser);
-      } catch {
+        const token = localStorage.getItem("fashio_auth_token");
+        if (!token) {
+          setLoading(false);
+          return;
+        }
+
+        const userData = await authService.getCurrentUser();
+        setUser(userData);
+        setIsAuthenticated(true);
+      } catch (err) {
+        console.error("Session restore failed:", err);
+        localStorage.removeItem("fashio_auth_token");
         setUser(null);
+        setIsAuthenticated(false);
       } finally {
         setLoading(false);
       }
     };
-
-    fetchUser();
+    restoreSession();
   }, []);
 
   // Login
   const login = async (email: string, password: string) => {
     setLoading(true);
     try {
-      const data = await authService.login(email, password);
-      setUser(data.user);
+      const { token, user } = await authService.login(email, password);
+      localStorage.setItem("fashio_auth_token", token);
+      setUser(user);
+      setIsAuthenticated(true);
     } finally {
       setLoading(false);
     }
