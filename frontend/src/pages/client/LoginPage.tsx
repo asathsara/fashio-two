@@ -1,14 +1,16 @@
-import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { LoginForm } from '@/components/auth/LoginForm';
-import { RegisterForm } from '@/components/auth/RegisterForm';
-import { ForgotPasswordForm } from '@/components/auth/ForgotPasswordForm';
+import { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { LoginForm } from "@/components/auth/LoginForm";
+import { RegisterForm } from "@/components/auth/RegisterForm";
+import { ForgotPasswordForm } from "@/components/auth/ForgotPasswordForm";
 
 const LoginPage = () => {
   const [showForgotPassword, setShowForgotPassword] = useState(false);
 
-  if (showForgotPassword) return <ForgotPasswordForm onBack={() => setShowForgotPassword(false)} />;
+  if (showForgotPassword) {
+    return <ForgotPasswordForm onBack={() => setShowForgotPassword(false)} />;
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-pink-50 px-4 py-12">
@@ -24,8 +26,9 @@ const LoginPage = () => {
             </TabsList>
 
             <TabsContent value="login">
-              <LoginForm />
+              <LoginForm onForgotPassword={() => setShowForgotPassword(true)} />
             </TabsContent>
+
             <TabsContent value="register">
               <RegisterForm />
             </TabsContent>
