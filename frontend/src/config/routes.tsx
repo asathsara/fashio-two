@@ -11,7 +11,6 @@ import PromoAddPage from "../pages/admin/PromoAddPge";
 import HomePage from "../pages/client/HomePage";
 import PromoPage from "../pages/client/PromoPage";
 import HelpPage from "../pages/client/HelpPage";
-import LoginPage from "../pages/client/LoginPage";
 import ProfilePage from "../pages/client/ProfilePage";
 import VerifyEmailPage from "@/pages/client/auth/VerifyEmailPage";
 import ResetPasswordPage from "@/pages/client/auth/ResetPasswordPage";
@@ -46,12 +45,6 @@ export const publicRoutes: AppRoute[] = [
         showInNav: true
     },
     {
-        path: "/login",
-        label: "Login",
-        element: <LoginPage />,
-        showInNav: true
-    },
-    {
         path: "/profile",
         label: "Profile",
         element: <ProfilePage />,
@@ -78,7 +71,6 @@ export const adminRoutes: AppRoute[] = [
         path: "/admin/image-slider",
         label: "Image Slider",
         element: <ImageSliderManagerPage />,
-        showInNav: true,
         protected: true,
         requiredRole: 'admin'
     },
@@ -86,7 +78,6 @@ export const adminRoutes: AppRoute[] = [
         path: "/admin/items/insert",
         label: "Items Insert",
         element: <ItemInsertPage />,
-        showInNav: true,
         protected: true,
         requiredRole: 'admin'
     },
@@ -94,7 +85,6 @@ export const adminRoutes: AppRoute[] = [
         path: "/admin/items/list",
         label: "Items List",
         element: <ItemListPage />,
-        showInNav: true,
         protected: true,
         requiredRole: 'admin'
     },
@@ -102,7 +92,6 @@ export const adminRoutes: AppRoute[] = [
         path: "/admin/categories",
         label: "Categories",
         element: <CategoriesInsertPage />,
-        showInNav: true,
         protected: true,
         requiredRole: 'admin'
     },
@@ -110,19 +99,12 @@ export const adminRoutes: AppRoute[] = [
         path: "/admin/promo",
         label: "Promo",
         element: <PromoAddPage />,
-        showInNav: true,
         protected: true,
         requiredRole: 'admin'
     }
 ];
 
-// All routes combined
-export const allRoutes = [...publicRoutes, ...adminRoutes];
-
 // Navigation routes (filtered for nav display)
 export const publicNavRoutes = publicRoutes.filter(r => r.showInNav === true);
-export const adminNavRoutes = adminRoutes.filter(r => r.showInNav === true);
+export const adminNavRoutes = adminRoutes
 
-// Default routes
-export const DEFAULT_PUBLIC_ROUTE = "/";
-export const DEFAULT_ADMIN_ROUTE = "/admin/image-slider";

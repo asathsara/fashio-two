@@ -12,7 +12,7 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { publicNavRoutes } from "@/config/routes";
+import { publicNavRoutes } from "@/config/routes"; // ✅ uses route config
 import { useAuth } from "@/hooks/UseAuth";
 
 type NavbarProps = {
@@ -38,21 +38,12 @@ const Navbar = ({ onOpenDrawer }: NavbarProps) => {
 
         {/* Center Navigation */}
         <div className="flex items-center">
-          <ul className="hidden md:flex gap-6 font-poppins font-semibold text-background-gray">
-            {isAuthenticated
-              ? [
-                  { path: "/shop", label: "Shop" },
-                  { path: "/orders", label: "Orders" },
-                ].map((item) => (
-                  <li key={item.path}>
-                    <Link to={item.path}>{item.label}</Link>
-                  </li>
-                ))
-              : publicNavRoutes.map((item) => (
-                  <li key={item.path}>
-                    <Link to={item.path}>{item.label}</Link>
-                  </li>
-                ))}
+          <ul className="hidden md:flex gap-6 font-poppins font-semibold text-background-gray mx-4">
+            {publicNavRoutes.map((route) => (
+              <li key={route.path}>
+                <Link to={route.path}>{route.label}</Link>
+              </li>
+            ))}
           </ul>
 
           {/* Mobile Menu Button */}
