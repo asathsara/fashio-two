@@ -26,7 +26,6 @@ const Navbar = ({ onOpenDrawer }: NavbarProps) => {
 
   const handleLogout = async () => {
     await logout();
-    navigate("/login");
   };
 
   return (

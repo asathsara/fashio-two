@@ -1,37 +1,22 @@
-import axios from "axios";
+import axios from 'axios';
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
 
-const axiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api",
-  timeout: 10000, // Optional: timeout of 10 seconds
+export const api = axios.create({
+  baseURL: API_BASE_URL,
+  withCredentials: true, // Important for HTTP-only cookies
+  headers: {
+    'Content-Type': 'application/json',
+  },
 });
 
-
-// Request interceptor - Add token to requests
-axiosInstance.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('fashio_auth_token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
-
-// Response interceptor - Handle 401 errors
-axiosInstance.interceptors.response.use(
+// Response interceptor 
+api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
-      // Token expired or invalid
-      localStorage.removeItem('fashio_auth_token');
-      window.location.href = '/login';
-    }
+    // Just throw the error, let the calling code handle it
     return Promise.reject(error);
   }
 );
 
-export default axiosInstance;
+export default api;

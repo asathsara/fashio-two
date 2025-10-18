@@ -2,7 +2,6 @@ import { useEffect, useState, type ReactNode } from "react";
 import { AuthContext, type User } from "./AuthContext";
 import { authService } from "@/services/authService";
 
-
 interface AuthProviderProps {
   children: ReactNode;
 }
@@ -12,25 +11,20 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
+  // Update authentication state whenever user changes
   useEffect(() => {
     setIsAuthenticated(!!user);
   }, [user]);
-  // Fetch current user on mount
+
+  // Restore session on mount
   useEffect(() => {
     const restoreSession = async () => {
       try {
-        const token = localStorage.getItem("fashio_auth_token");
-        if (!token) {
-          setLoading(false);
-          return;
-        }
-
-        const userData = await authService.getCurrentUser();
+        const userData = await authService.getCurrentUser(); // HTTP-only cookie is sent automatically
         setUser(userData);
         setIsAuthenticated(true);
       } catch (err) {
         console.error("Session restore failed:", err);
-        localStorage.removeItem("fashio_auth_token");
         setUser(null);
         setIsAuthenticated(false);
       } finally {
@@ -40,12 +34,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     restoreSession();
   }, []);
 
-  // Login
+  // Login with email/password
   const login = async (email: string, password: string) => {
     setLoading(true);
     try {
-      const { token, user } = await authService.login(email, password);
-      localStorage.setItem("fashio_auth_token", token);
+      const { user } = await authService.login(email, password); // backend sets cookie
       setUser(user);
       setIsAuthenticated(true);
     } finally {
@@ -53,12 +46,25 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   };
 
-  // Google login
+  // Login with Google
   const loginWithGoogle = async (credential?: string) => {
     setLoading(true);
     try {
-      const data = await authService.loginWithGoogle(credential || '');
-      setUser(data.user);
+      const { user } = await authService.loginWithGoogle(credential || "");
+      setUser(user);
+      setIsAuthenticated(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Logout
+  const logout = async () => {
+    setLoading(true);
+    try {
+      await authService.logout(); // backend clears cookie
+      setUser(null);
+      setIsAuthenticated(false);
     } finally {
       setLoading(false);
     }
@@ -69,17 +75,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     setLoading(true);
     try {
       await authService.register(name, email, password);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Logout
-  const logout = async () => {
-    setLoading(true);
-    try {
-      await authService.logout();
-      setUser(null);
     } finally {
       setLoading(false);
     }
