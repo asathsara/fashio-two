@@ -13,7 +13,7 @@ export const AppRoutes = () => {
           if (route.requiredRole === "admin") return null; // skip admin here
           const Element = (
             <ProtectedRoute
-              requireAuth={route.protected}
+              requireAuth={!!route.protected}
               requireAdmin={false}
             >
               {route.element}

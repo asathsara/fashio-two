@@ -16,23 +16,31 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     setIsAuthenticated(!!user);
   }, [user]);
 
-  // Restore session on mount
+  // Restore session on mount - ONLY ONCE
   useEffect(() => {
     const restoreSession = async () => {
       try {
-        const userData = await authService.getCurrentUser(); // HTTP-only cookie is sent automatically
+        const userData = await authService.getCurrentUser();
         setUser(userData);
         setIsAuthenticated(true);
-      } catch (err) {
-        console.error("Session restore failed:", err);
+      } catch (err: unknown) {
+        const status = (err as { response?: { status?: number } })?.response?.status;
+
+        // Ignore 401 - expected for unauthenticated users
+        if (status !== 401) {
+          console.error("Session restore failed:", err);
+        }
+
         setUser(null);
         setIsAuthenticated(false);
       } finally {
         setLoading(false);
       }
     };
+
     restoreSession();
   }, []);
+
 
   // Login with email/password
   const login = async (email: string, password: string) => {
