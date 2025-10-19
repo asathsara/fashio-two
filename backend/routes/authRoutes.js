@@ -5,7 +5,7 @@ import authMiddleware from '../middleware/auth.js';
 
 const { protect } = authMiddleware;
 
-const { register, login, googleLogin, verifyEmail, resendVerification, forgotPassword, resetPassword, getMe, logout } = authController;
+const { register, login, googleLogin, verifyEmail, resendVerification, forgotPassword, resetPassword, getMe, logout, googleCallback } = authController;
 
 const router = Router();
 
@@ -24,7 +24,6 @@ const loginValidation = [
 // Public routes
 router.post('/register', registerValidation, register);
 router.post('/login', loginValidation, login);
-router.post('/google', googleLogin);
 router.post('/verify-email', verifyEmail);
 router.post('/forgot-password', body('email').isEmail(), forgotPassword);
 router.post('/reset-password',
@@ -32,6 +31,9 @@ router.post('/reset-password',
     body('newPassword').isLength({ min: 6 }),
     resetPassword
 );
+// Google OAuth routes
+router.get('/google', googleLogin);
+router.get('/google/callback', googleCallback);
 
 // Protected routes
 router.get('/me', protect, getMe);

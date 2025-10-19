@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 export const useLoginForm = () => {
   const navigate = useNavigate();
-  const { login, loginWithGoogle, loading } = useAuth();
+  const { login, loading } = useAuth();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -30,8 +30,8 @@ export const useLoginForm = () => {
   const handleGoogleLogin = async () => {
     setError('');
     try {
-      await loginWithGoogle();
-      navigate('/');
+      window.location.href = 'http://localhost:5000/api/auth/google'
+      
     } catch {
       setError('Google login failed');
     }

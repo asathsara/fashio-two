@@ -12,6 +12,9 @@ import promoRoutes from "./routes/promoRoutes.js";
 import itemRoutes from "./routes/itemRoute.js";
 import authRoutes from './routes/authRoutes.js';
 
+import passport from './config/passport.js';
+import session from 'express-session';
+
 dotenv.config();
 
 // recreate __dirname in ESM
@@ -28,6 +31,18 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || 'supersecret',
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: false }, // true if HTTPS
+  })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Serve static files
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));

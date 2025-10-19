@@ -23,6 +23,9 @@ importers:
       express:
         specifier: ^4.21.2
         version: 4.21.2
+      express-session:
+        specifier: ^1.18.2
+        version: 1.18.2
       express-validator:
         specifier: ^7.2.1
         version: 7.2.1
@@ -123,6 +126,9 @@ packages:
   cookie-signature@1.0.6:
     resolution: {integrity: sha512-QADzlaHc8icV8I7vbaJXJwod9HWYp8uCqf1xa4OfNu1T7JVxQIrUgOWtHdNDtPiywmFbiS12VjotIXLrKM3orQ==}
 
+  cookie-signature@1.0.7:
+    resolution: {integrity: sha512-NXdYc3dLr47pBkpUCHtKSwIOQXLVn8dZEuywboCOJY/osA0wFSLlSawr3KN8qXJEyX66FcONTH8EIlVuK0yyFA==}
+
   cookie@0.7.1:
     resolution: {integrity: sha512-6DnInpx7SJ2AK3+CTUE/ZM0vWTUboZCegxhC2xiIydHR9jNuTAASBrfEpHhiGOZw/nX51bHt6YQl8jsGo4y/0w==}
     engines: {node: '>= 0.6'}
@@ -203,6 +209,10 @@ packages:
   etag@1.8.1:
     resolution: {integrity: sha512-aIL5Fx7mawVa300al2BnEE4iNvo1qETxLrPI/o05L7z6go7fCw1J6EQmbK4FmJ2AS7kgVF/KEZWufBfdClMcPg==}
     engines: {node: '>= 0.6'}
+
+  express-session@1.18.2:
+    resolution: {integrity: sha512-SZjssGQC7TzTs9rpPDuUrR23GNZ9+2+IkA/+IJWmvQilTr5OSliEHGF+D9scbIpdC6yGtTI0/VhaHoVes2AN/A==}
+    engines: {node: '>= 0.8.0'}
 
   express-validator@7.2.1:
     resolution: {integrity: sha512-CjNE6aakfpuwGaHQZ3m8ltCG2Qvivd7RHtVMS/6nVxOM7xVGqr4bhflsm4+N5FP5zI7Zxp+Hae+9RE+o8e3ZOQ==}
@@ -417,6 +427,10 @@ packages:
     resolution: {integrity: sha512-oVlzkg3ENAhCk2zdv7IJwd/QUD4z2RxRwpkcGY8psCVcCYZNq4wYnVWALHM+brtuJjePWiYF/ClmuDr8Ch5+kg==}
     engines: {node: '>= 0.8'}
 
+  on-headers@1.1.0:
+    resolution: {integrity: sha512-737ZY3yNnXy37FHkQxPzt4UZ2UWPWiCZWLvFZ4fu5cueciegX0zGPnrlY6bwRg4FdQOe9YU8MkmJwGhoMybl8A==}
+    engines: {node: '>= 0.8'}
+
   parseurl@1.3.3:
     resolution: {integrity: sha512-CiyeOxFT/JZyN5m0z9PfXw4SCBJ6Sygz1Dpl0wqjlhDEGGBP1GnsUVEL0p63hoG1fcj3fHynXi9NYO4nWOL+qQ==}
     engines: {node: '>= 0.8'}
@@ -457,6 +471,10 @@ packages:
   qs@6.13.0:
     resolution: {integrity: sha512-+38qI9SOr8tfZ4QmJNplMUxqjbe7LKvvZgWdExBOmd+egZTtjLB67Gu0HRX3u/XOq7UU2Nx6nsjvS16Z9uwfpg==}
     engines: {node: '>=0.6'}
+
+  random-bytes@1.0.0:
+    resolution: {integrity: sha512-iv7LhNVO047HzYR3InF6pUcUsPQiHTM1Qal51DcGSuZFBil1aBBWG5eHPNek7bvILMaYJ/8RU1e8w1AMdHmLQQ==}
+    engines: {node: '>= 0.8'}
 
   range-parser@1.2.1:
     resolution: {integrity: sha512-Hrgsx+orqoygnmhFbKaHE6c296J+HTAQXoxEF6gNupROmmGJRoyzfG3ccAveqCBrwr/2yxQ5BVd/GTl5agOwSg==}
@@ -541,6 +559,10 @@ packages:
 
   typedarray@0.0.6:
     resolution: {integrity: sha512-/aCDEGatGvZ2BIk+HmLf4ifCJFwvKFNb9/JeZPMulfgFracn9QFcAf5GO8B/mweUjSoblS5In0cWhqpfs/5PQA==}
+
+  uid-safe@2.1.5:
+    resolution: {integrity: sha512-KPHm4VL5dDXKz01UuEd88Df+KzynaohSL9fBh096KWAxSKZQDI2uBrVqtvRM4rwrIrRRKsdLNML/lnaaVSRioA==}
+    engines: {node: '>= 0.8'}
 
   uid2@0.0.4:
     resolution: {integrity: sha512-IevTus0SbGwQzYh3+fRsAMTVVPOoIVufzacXcHPmdlle1jUpq7BRL+mw3dgeLanvGZdwwbWhRV6XrcFNdBmjWA==}
@@ -660,6 +682,8 @@ snapshots:
 
   cookie-signature@1.0.6: {}
 
+  cookie-signature@1.0.7: {}
+
   cookie@0.7.1: {}
 
   cookie@0.7.2: {}
@@ -712,6 +736,19 @@ snapshots:
   escape-html@1.0.3: {}
 
   etag@1.8.1: {}
+
+  express-session@1.18.2:
+    dependencies:
+      cookie: 0.7.2
+      cookie-signature: 1.0.7
+      debug: 2.6.9
+      depd: 2.0.0
+      on-headers: 1.1.0
+      parseurl: 1.3.3
+      safe-buffer: 5.2.1
+      uid-safe: 2.1.5
+    transitivePeerDependencies:
+      - supports-color
 
   express-validator@7.2.1:
     dependencies:
@@ -948,6 +985,8 @@ snapshots:
     dependencies:
       ee-first: 1.1.1
 
+  on-headers@1.1.0: {}
+
   parseurl@1.3.3: {}
 
   passport-google-oauth20@2.0.0:
@@ -986,6 +1025,8 @@ snapshots:
   qs@6.13.0:
     dependencies:
       side-channel: 1.1.0
+
+  random-bytes@1.0.0: {}
 
   range-parser@1.2.1: {}
 
@@ -1097,6 +1138,10 @@ snapshots:
       mime-types: 2.1.35
 
   typedarray@0.0.6: {}
+
+  uid-safe@2.1.5:
+    dependencies:
+      random-bytes: 1.0.0
 
   uid2@0.0.4: {}
 

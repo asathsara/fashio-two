@@ -55,10 +55,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   // Login with Google
-  const loginWithGoogle = async (credential?: string) => {
+  const loginWithGoogle = async () => {
     setLoading(true);
     try {
-      const { user } = await authService.loginWithGoogle(credential || "");
+      const { user } = await authService.loginWithGoogle();
       setUser(user);
       setIsAuthenticated(true);
     } finally {

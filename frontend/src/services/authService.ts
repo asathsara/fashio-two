@@ -11,13 +11,13 @@ export const authService = {
         return response.data;
     },
 
-    loginWithGoogle: async (credential: string) => {
-        const response = await api.post('/auth/google', { credential });
+    loginWithGoogle: async () => {
+        const response = await api.get('/auth/google');
         return response.data;
     },
 
     logout: async () => {
-        const response = await api.post('/auth/logout');
+        const response = await api.post('/auth/logout ');
         return response.data;
     },
 

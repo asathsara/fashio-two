@@ -1,58 +1,31 @@
-import User from '../../models/user.js';
-import pkg from 'jsonwebtoken';
-const { sign } = pkg;
+import passport from 'passport';
+import jwt from 'jsonwebtoken';
 
-const generateToken = (id) => {
-    return sign({ id }, process.env.JWT_SECRET, { expiresIn: '30d' });
-};
+export const googleLogin = passport.authenticate('google', { scope: ['profile', 'email'] });
 
-export const googleLogin = async (req, res) => {
-    try {
-        const { credential, name, email, googleId, avatar } = req.body;
-        if (!email || !googleId) return res.status(400).json({ message: 'Invalid Google credentials' });
+export const googleCallback = (req, res, next) => {
+  passport.authenticate(
+    'google',
+    { failureRedirect: `${process.env.FRONTEND_URL}/login`, session: false },
+    (err, user) => {
+      if (err || !user) {
+        console.error('Google auth failed:', err);
+        return res.redirect(`${process.env.FRONTEND_URL}/login?error=unauthorized`);
+      }
 
-        let user = await User.findOne({ $or: [{ email }, { googleId }] });
+      // Create JWT
+      const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '30d' });
 
-        if (user) {
-            if (!user.googleId) {
-                user.googleId = googleId;
-                user.emailVerified = true;
-            }
-            if (avatar && !user.avatar) user.avatar = avatar;
-            user.lastLogin = Date.now();
-            await user.save();
-        } else {
-            user = await User.create({
-                name,
-                email,
-                googleId,
-                avatar,
-                emailVerified: true,
-                role: 'user'
-            });
-        }
+      // Set cookie
+      res.cookie('token', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+      });
 
-        const token = generateToken(user._id);
-        res.cookie('token', token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict',
-            maxAge: 30 * 24 * 60 * 60 * 1000
-        });
-
-        res.json({
-            token,
-            user: {
-                id: user._id,
-                name: user.name,
-                email: user.email,
-                role: user.role,
-                emailVerified: user.emailVerified,
-                avatar: user.avatar
-            }
-        });
-    } catch (error) {
-        console.error('Google login error:', error);
-        res.status(500).json({ message: 'Server error during Google login' });
+      // Redirect to frontend home
+      res.redirect(`${process.env.FRONTEND_URL}/`);
     }
+  )(req, res, next);
 };
