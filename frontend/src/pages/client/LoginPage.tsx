@@ -1,13 +1,11 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import LoginForm  from "@/components/auth/LoginForm";
 import { RegisterForm } from "@/components/auth/RegisterForm";
-import { ForgotPasswordForm } from "@/components/auth/ForgotPasswordForm";
 import { useAuth } from "@/hooks/UseAuth";
 
 const LoginPage = () => {
-  const [showForgotPassword, setShowForgotPassword] = useState(false);
   const { isAuthenticated, loading, user } = useAuth();
   const navigate = useNavigate();
 
@@ -23,9 +21,7 @@ const LoginPage = () => {
   }, [isAuthenticated, loading, user, navigate]);
 
 
-  if (showForgotPassword) {
-    return <ForgotPasswordForm onBack={() => setShowForgotPassword(false)} />;
-  }
+  
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-200 via-white to-gray-200 px-4">
@@ -67,7 +63,7 @@ const LoginPage = () => {
           </TabsList>
 
           <TabsContent value="login">
-            <LoginForm onForgotPassword={() => setShowForgotPassword(true)} />
+            <LoginForm />
           </TabsContent>
 
           <TabsContent value="register">

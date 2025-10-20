@@ -3,7 +3,6 @@ import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { publicRoutes, adminRoutes, DEFAULT_ADMIN_ROUTE } from "@/config/routes";
 import PublicLayout from "@/layouts/PublicLayout";
 import AdminLayout from "@/layouts/AdminLayout";
-import LoginPage from "./pages/client/LoginPage";
 
 export const AppRoutes = () => {
   return (
@@ -23,8 +22,6 @@ export const AppRoutes = () => {
           return <Route key={route.path} path={route.path} element={Element} />;
         })}
       </Route>
-      <Route path="/login" element={<LoginPage />} />
-
 
       {/* Admin Routes */}
       <Route

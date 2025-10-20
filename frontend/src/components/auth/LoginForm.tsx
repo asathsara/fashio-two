@@ -4,12 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useLoginForm } from "@/hooks/auth/useLoginForm";
 import { GoogleSignInButton } from "./GoogleSigninButton";
+import { useNavigate } from "react-router-dom";
 
-interface LoginFormProps {
-    onForgotPassword: () => void;
-}
 
-const LoginForm = ({ onForgotPassword }: LoginFormProps) => {
+const LoginForm = () => {
     const {
         email,
         setEmail,
@@ -20,6 +18,8 @@ const LoginForm = ({ onForgotPassword }: LoginFormProps) => {
         handleLogin,
         handleGoogleLogin,
     } = useLoginForm();
+
+    const navigate = useNavigate();
 
     return (
         <form onSubmit={handleLogin} className="space-y-5">
@@ -44,18 +44,10 @@ const LoginForm = ({ onForgotPassword }: LoginFormProps) => {
             </div>
 
             <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                    <Label className="text-xs font-semibold text-gray-700 uppercase tracking-wide">
-                        Password
-                    </Label>
-                    <button
-                        type="button"
-                        onClick={onForgotPassword}
-                        className="text-xs text-gray-600 hover:text-gray-900 transition-colors font-medium"
-                    >
-                        Forgot?
-                    </button>
-                </div>
+                <Label className="text-xs font-semibold text-gray-700 uppercase tracking-wide">
+                    Password
+                </Label>
+
                 <Input
                     type="password"
                     value={password}
@@ -64,6 +56,13 @@ const LoginForm = ({ onForgotPassword }: LoginFormProps) => {
                     className="h-11 text-base border-gray-300 focus:ring-2 focus:ring-gray-900"
                     placeholder="Enter your password"
                 />
+                <button
+                    type="button"
+                    onClick={() => navigate("/forgot-password")}
+                    className="text-xs text-gray-600 hover:text-gray-900 transition-colors font-medium cursor-pointer"
+                >
+                    Forgot Password?
+                </button>
             </div>
 
             <Button

@@ -14,6 +14,8 @@ import HelpPage from "@/pages/client/HelpPage";
 import ProfilePage from "@/pages/client/ProfilePage";
 import VerifyEmailPage from "@/pages/client/auth/VerifyEmailPage";
 import ResetPasswordPage from "@/pages/client/auth/ResetPasswordPage";
+import ForgotPasswordPage from "@/pages/client/auth/ForgotPasswordPage";
+import LoginPage from "@/pages/client/LoginPage";
 
 export type AppRoute = {
     path: string;
@@ -49,6 +51,11 @@ export const publicRoutes: AppRoute[] = [
         protected: true,
     },
     {
+        path: "/login",
+        label: "Login",
+        element: <LoginPage />,
+    },
+    {
         path: "/verify-email",
         label: "Verify Email",
         element: <VerifyEmailPage />,
@@ -58,6 +65,11 @@ export const publicRoutes: AppRoute[] = [
         label: "Reset Password",
         element: <ResetPasswordPage />,
     },
+    {
+        path: "forgot-password",
+        label: "Forgot Password",
+        element: <ForgotPasswordPage />,
+    }
 ];
 
 export const adminRoutes: AppRoute[] = [
