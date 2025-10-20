@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { useAuth } from '@/hooks/UseAuth';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 export const useLoginForm = () => {
   const navigate = useNavigate();
-  const { login, loading } = useAuth();
+  const { login, loading, loginWithGoogle } = useAuth();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -13,16 +14,18 @@ export const useLoginForm = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-
     try {
       if (!email || !password) throw new Error('Please fill in all fields');
-      await login(email, password);
+      await login(email, password); // throws if 401
       navigate('/');
     } catch (err: unknown) {
-      if (err instanceof Error) {
+      if (axios.isAxiosError(err)) {
+        const message = err.response?.data?.message || 'Login failed';
+        setError(message);
+      } else if (err instanceof Error) {
         setError(err.message);
       } else {
-        setError('Login failed');
+        setError('Something went wrong');
       }
     }
   };
@@ -30,8 +33,7 @@ export const useLoginForm = () => {
   const handleGoogleLogin = async () => {
     setError('');
     try {
-      window.location.href = 'http://localhost:5000/api/auth/google'
-      
+      loginWithGoogle();
     } catch {
       setError('Google login failed');
     }

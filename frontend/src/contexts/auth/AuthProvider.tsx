@@ -49,7 +49,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       const { user } = await authService.login(email, password); // backend sets cookie
       setUser(user);
       setIsAuthenticated(true);
-    } finally {
+    }  finally {
       setLoading(false);
     }
   };
@@ -58,9 +58,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const loginWithGoogle = async () => {
     setLoading(true);
     try {
-      const { user } = await authService.loginWithGoogle();
-      setUser(user);
-      setIsAuthenticated(true);
+      window.location.href = 'http://localhost:5000/api/auth/google'
     } finally {
       setLoading(false);
     }

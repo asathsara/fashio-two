@@ -9,7 +9,7 @@ interface LoginFormProps {
     onForgotPassword: () => void;
 }
 
-export const LoginForm = ({ onForgotPassword }: LoginFormProps) => {
+const LoginForm = ({ onForgotPassword }: LoginFormProps) => {
     const {
         email,
         setEmail,
@@ -87,3 +87,7 @@ export const LoginForm = ({ onForgotPassword }: LoginFormProps) => {
         </form>
     );
 };
+
+export default LoginForm;
+
+
