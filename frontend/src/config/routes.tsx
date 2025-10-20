@@ -14,7 +14,6 @@ import HelpPage from "@/pages/client/HelpPage";
 import ProfilePage from "@/pages/client/ProfilePage";
 import VerifyEmailPage from "@/pages/client/auth/VerifyEmailPage";
 import ResetPasswordPage from "@/pages/client/auth/ResetPasswordPage";
-import LoginPage from "@/pages/client/LoginPage";
 
 export type AppRoute = {
     path: string;
@@ -42,12 +41,6 @@ export const publicRoutes: AppRoute[] = [
         label: "Help",
         element: <HelpPage />,
         showInNav: true,
-    },
-    {
-        path: "/login",
-        label: "Login",
-        element: <LoginPage />,
-        showInNav: false,
     },
     {
         path: "/profile",

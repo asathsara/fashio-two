@@ -1,48 +1,95 @@
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { useLoginForm } from '@/hooks/auth/useLoginForm';
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useLoginForm } from "@/hooks/auth/useLoginForm";
 
 interface LoginFormProps {
-    onForgotPassword: () => void;
+  onForgotPassword: () => void;
 }
 
 export const LoginForm = ({ onForgotPassword }: LoginFormProps) => {
-    const { email, setEmail, password, setPassword, error, loading, handleLogin, handleGoogleLogin } = useLoginForm();
+  const {
+    email,
+    setEmail,
+    password,
+    setPassword,
+    error,
+    loading,
+    handleLogin,
+    handleGoogleLogin,
+  } = useLoginForm();
 
-    return (
-        <form onSubmit={handleLogin} className="space-y-4">
-            {error && (
-                <Alert variant="destructive">
-                    <AlertDescription>{error}</AlertDescription>
-                </Alert>
-            )}
+  return (
+    <form onSubmit={handleLogin} className="space-y-5">
+      {error && (
+        <Alert variant="destructive" className="text-sm">
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      )}
 
-            <div className="space-y-2">
-                <Label>Email</Label>
-                <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} disabled={loading} />
-            </div>
+      <div className="space-y-2">
+        <Label className="text-xs font-semibold text-gray-700 uppercase tracking-wide">
+          Email Address
+        </Label>
+        <Input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          disabled={loading}
+          className="h-11 text-base border-gray-300 focus:ring-2 focus:ring-gray-900"
+          placeholder="you@example.com"
+        />
+      </div>
 
-            <div className="space-y-2">
-                <Label>Password</Label>
-                <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} disabled={loading} />
-            </div>
+      <div className="space-y-2">
+        <div className="flex items-center justify-between">
+          <Label className="text-xs font-semibold text-gray-700 uppercase tracking-wide">
+            Password
+          </Label>
+          <button
+            type="button"
+            onClick={onForgotPassword}
+            className="text-xs text-gray-600 hover:text-gray-900 transition-colors font-medium"
+          >
+            Forgot?
+          </button>
+        </div>
+        <Input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          disabled={loading}
+          className="h-11 text-base border-gray-300 focus:ring-2 focus:ring-gray-900"
+          placeholder="Enter your password"
+        />
+      </div>
 
-            <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? 'Signing in...' : 'Sign In'}
-            </Button>
+      <Button
+        type="submit"
+        className="w-full h-11 text-base font-semibold bg-gray-900 hover:bg-gray-800 text-white"
+        disabled={loading}
+      >
+        {loading ? "Signing in..." : "Sign In"}
+      </Button>
 
-            <Button type="button" variant="outline" className="w-full" onClick={handleGoogleLogin}>
-                Sign in with Google
-            </Button>
-            <button
-                type="button"
-                onClick={onForgotPassword}
-                className="text-sm text-blue-600 hover:underline mt-2"
-            >
-                Forgot Password?
-            </button>
-        </form>
-    );
+      <div className="relative my-6">
+        <div className="absolute inset-0 flex items-center">
+          <span className="w-full border-t border-gray-200" />
+        </div>
+        <div className="relative flex justify-center text-xs uppercase">
+          <span className="bg-white px-3 text-gray-500 font-medium">Or</span>
+        </div>
+      </div>
+
+      <Button
+        type="button"
+        variant="outline"
+        className="w-full h-11 text-sm font-medium border-gray-300 hover:bg-gray-50"
+        onClick={handleGoogleLogin}
+      >
+        Continue with Google
+      </Button>
+    </form>
+  );
 };
