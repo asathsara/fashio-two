@@ -1,18 +1,14 @@
-import axios from "axios";
+import axios from 'axios';
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
 
-const axiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api",
-  timeout: 10000, // Optional: timeout of 10 seconds
+export const api = axios.create({
+  baseURL: API_BASE_URL,
+  withCredentials: true, // Important for HTTP-only cookies
+  headers: {
+    'Content-Type': 'application/json',
+  },
 });
 
 
-axiosInstance.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    console.error("API Error:", error);
-    return Promise.reject(error);
-  }
-);
-
-export default axiosInstance;
+export default api;
