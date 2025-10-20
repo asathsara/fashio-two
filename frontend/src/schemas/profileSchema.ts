@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export const profileFormSchema = z.object({
     name: z.string().min(2, 'Name must be at least 2 characters').max(50, 'Name is too long'),
-    email: z.string().email('Invalid email address'),
+    email: z.email({ message: "Invalid email address" }),
     phone: z.string().optional().refine(
         (val) => !val || /^[\d\s+()-]+$/.test(val),
         'Invalid phone number format'
