@@ -35,11 +35,5 @@ export const ProtectedRoute = ({
     return <Navigate to="/" replace />;
   }
 
-  // If route is public-only (login/register) but user already logged in
-  if (!requireAuth && isAuthenticated) {
-    const target = user?.role === "admin" ? "/admin" : "/";
-    return <Navigate to={target} replace />;
-  }
-
   return <>{children}</>;
 };
