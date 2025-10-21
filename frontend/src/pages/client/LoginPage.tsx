@@ -20,7 +20,6 @@ const LoginPage = () => {
   }, [isAuthenticated, loading, user, navigate]);
 
 
-  
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-200 via-white to-gray-200 px-4">

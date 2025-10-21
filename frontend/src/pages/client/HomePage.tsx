@@ -8,6 +8,8 @@ import DetailsBar from "../../components/client/detailsbar/Detailsbar";
 import type { Category } from "../../types/category";
 import type { Image } from "../../types/image";
 import type { Item } from "../../types/item";
+import { Spinner } from "@/components/common/Spinner";
+import { ErrorMessage } from "@/components/common/ErrorMessage";
 
 const HomePage = () => {
   const [images, setImages] = useState<Image[]>([]);
@@ -16,7 +18,7 @@ const HomePage = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [items, setItems] = useState<Item[]>([]);
   const [loading, setLoading] = useState(true);
-  //const [uniqueCategories, setUniqueCategories] = useState([]);
+
 
   useEffect(() => {
     fetchImages()
@@ -55,12 +57,6 @@ const HomePage = () => {
     loadItems();
   }, []);
 
-  // useEffect(() => {
-  //   setUniqueCategories(
-  //     Array.from(new Set(items.map((item) => item.category)))
-  //   );
-  //   console.log(uniqueCategories);
-  // }, [items]);
 
   return (
     <div className="flex flex-col w-full">
@@ -86,7 +82,6 @@ const HomePage = () => {
             />
           </AnimatePresence>
         )}
-        {error && <p className="text-red-500">{error}</p>}
       </div>
 
       <DetailsBar className={"mt-8"} />
@@ -104,11 +99,14 @@ const HomePage = () => {
         })}
       </div>
 
+      
       <div className="mt-8 w-full">
         {loading ? (
-          <p>Loading...</p>
+          <div className="flex justify-center items-center py-20">
+            <Spinner size="lg" variant="bars" label="Loading products..." />
+          </div>
         ) : error ? (
-          <p className="text-red-500">{error}</p>
+          <ErrorMessage message={error} />
         ) : (
           categories.map((category, index) => {
             // Filter items belonging to the current category
