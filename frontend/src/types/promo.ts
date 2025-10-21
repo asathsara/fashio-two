@@ -21,3 +21,13 @@ export interface PromoFormProps {
   onError: (message: string) => void;
 }
 
+export interface PromoWithItem extends Omit<Promo, 'item'> {
+  item: {
+    _id: string;
+    name: string;
+    price: number;
+    category: string;
+    urls?: string[];
+  };
+}
+

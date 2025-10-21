@@ -27,8 +27,11 @@ export const PromoForm = ({ items, onSubmit, loading, onSuccess, onError }: Prom
     },
   });
 
+  // Handle form submission to create a new promo
   const onFormSubmit  = handleSubmit(async (data: PromoFormData) => {
     try {
+      
+      // Map form data to promo request payload
       const payload = mapFormToPromo(data);
       await onSubmit(payload);
       reset();
