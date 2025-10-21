@@ -1,7 +1,11 @@
 import { Schema, model } from "mongoose"
 
 const promoScheme = new Schema({
-    item: { type: Object, required: true },
+    item: {
+        type: Schema.Types.ObjectId, 
+        ref: "Item",                 
+        required: true,
+    },
     startDate: { type: String, required: true },
     startTime: { type: String, required: true },
     endDate: { type: String, required: true },

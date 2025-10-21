@@ -18,7 +18,7 @@ router.post("/add", async (req, res) => {
 
 // Fetch all promos
 router.get("/", async (req, res) => {
-    const promos = await Promo.find();
+    const promos = await Promo.find().populate("item");
     res.send(promos);
 })
 
