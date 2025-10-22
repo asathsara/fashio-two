@@ -1,8 +1,9 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { fetchItems, insertItem, deleteItem } from '../services/itemService';
+import type { Item } from '@/types/item';
 
 export const useItems = () => {
-    return useQuery({
+    return useQuery<Item[]>({
         queryKey: ['items'],
         queryFn: fetchItems,
     });

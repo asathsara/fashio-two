@@ -1,16 +1,18 @@
-import { useState, useEffect } from "react";
-import { deleteItem, fetchItems } from "../../services/itemService";
+import { useState } from "react";
 import { FaTrash } from "react-icons/fa";
 import Dialog from "../../components/admin/Dialog";
 import type { Item } from "../../types/item";
+import { useDeleteItem, useItems } from "@/hooks/useItems";
+import { Spinner } from "@/components/common/Spinner";
+import { ErrorMessage } from "@/components/common/ErrorMessage";
 
 
 const ItemListPage = () => {
-  const [items, setItems] = useState<Item[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const [itemToDelete, setItemToDelete] = useState<Item | null>(null); // Track the item to delete
+
+  const { data: items = [], isLoading , error } = useItems();
+  const deleteMutation = useDeleteItem();
 
   const handleOk = () => {
     if (itemToDelete) {
@@ -25,32 +27,14 @@ const ItemListPage = () => {
     setItemToDelete(null); // Reset itemToDelete
   };
 
-  useEffect(() => {
-    // Fetch items from the API
-    const loadItems = async () => {
-      try {
-        const data: Item[] = await fetchItems();
-        setItems(data);
-      } catch {
-        setError("Failed to fetch items");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadItems();
-  }, []);
-
   const handleDelete = async (id: string) => {
-    try {
-      await deleteItem(id);
-      setItems((prevItems) => prevItems.filter((item) => item._id !== id));
-    } catch {
-      setError("Failed to delete item");
-    }
+
+    // Call the delete mutation
+    deleteMutation.mutate(id);
   };
 
   const openDeleteDialog = (item: Item) => {
+
     setItemToDelete(item);
     setIsDialogOpen(true);
   };
@@ -58,10 +42,10 @@ const ItemListPage = () => {
   return (
     <>
       <h1 className="font-poppins text-3xl font-semibold mb-6">Items List</h1>
-      {loading ? (
-        <p>Loading...</p>
+      {isLoading ? (
+        <Spinner/>
       ) : error ? (
-        <p className="text-red-500">{error}</p>
+        <ErrorMessage message="Failed to load items." />
       ) : (
         <div className="w-full mt-8 overflow-x-auto">
           {/* Header Row */}

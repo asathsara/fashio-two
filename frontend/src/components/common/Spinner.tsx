@@ -14,7 +14,7 @@ export const Spinner: React.FC<SpinnerProps> = ({
   color = "bg-gray-900",
   className,
   label = "Loading...",
-  variant = "scale",
+  variant = "bars",
 }) => {
   
 

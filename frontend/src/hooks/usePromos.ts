@@ -1,8 +1,9 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { fetchPromos, insertPromo, deletePromo } from '../services/promoService';
+import type {  PromoWithItem } from '@/types/promo';
 
 export const usePromos = () => {
-    return useQuery({
+    return useQuery<PromoWithItem[]>({
         queryKey: ['promos'],
         queryFn: fetchPromos,
     });
