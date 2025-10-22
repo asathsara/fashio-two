@@ -1,36 +1,20 @@
 import { useState, useEffect } from "react";
-import { fetchImages } from "../../services/imageService";
-import { fetchCategories } from "../../services/categoryService";
 import { motion, AnimatePresence } from "framer-motion";
-import { fetchItems } from "../../services/itemService";
 import ItemCategory from "../../components/client/ItemCategory";
 import DetailsBar from "../../components/client/detailsbar/Detailsbar";
-import type { Category } from "../../types/category";
-import type { Image } from "../../types/image";
-import type { Item } from "../../types/item";
 import { Spinner } from "@/components/common/Spinner";
 import { ErrorMessage } from "@/components/common/ErrorMessage";
+import { useImages } from "@/hooks/useImages";
+import { useCategories } from "@/hooks/useCategories";
+import {useItems} from "@/hooks/useItems";
 
 const HomePage = () => {
-  const [images, setImages] = useState<Image[]>([]);
-  const [error, setError] = useState("");
   const [index, setIndex] = useState(0);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [items, setItems] = useState<Item[]>([]);
-  const [loading, setLoading] = useState(true);
 
 
-  useEffect(() => {
-    fetchImages()
-      .then((data) => setImages(data))
-      .catch(() => setError("Failed to fetch images"));
-  }, []);
-
-  useEffect(() => {
-    fetchCategories()
-      .then((data) => setCategories(data))
-      .catch(() => setError("Failed to fetch categories"));
-  }, []);
+  const {data: images= []} = useImages();
+  const { data: categories = [] } = useCategories();
+  const {data: items = [], isLoading: loading, error} = useItems()
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -40,22 +24,6 @@ const HomePage = () => {
     }, 5000);
     return () => clearInterval(interval);
   }, [images.length]);
-
-  useEffect(() => {
-    // Fetch items from the API
-    const loadItems = async () => {
-      try {
-        const data = await fetchItems();
-        setItems(data);
-      } catch {
-        setError("Failed to fetch items");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadItems();
-  }, []);
 
 
   return (
@@ -106,7 +74,7 @@ const HomePage = () => {
             <Spinner size="lg" variant="bars" label="Loading products..." />
           </div>
         ) : error ? (
-          <ErrorMessage message={error} />
+          <ErrorMessage message={error.message} />
         ) : (
           categories.map((category, index) => {
             // Filter items belonging to the current category
