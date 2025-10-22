@@ -4,8 +4,8 @@ import { PromoForm } from "../../components/admin/promo/forms/PromoForm";
 import { PromoList } from "../../components/admin/promo/PromoList";
 import Dialog from "../../components/admin/Dialog";
 import type { Promo } from "../../types/promo";
-import { useItems } from "@/hooks/useItems";
-import { useDeletePromo, useInsertPromo, usePromos } from "@/hooks/usePromos";
+import { useDeletePromo, useInsertPromo } from "@/hooks/usePromos";
+import { PromoProvider } from "@/contexts/PromoContext";
 
 interface DialogContent {
   title: string;
@@ -15,9 +15,6 @@ interface DialogContent {
 const PromoAddPage = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [dialogContent, setDialogContent] = useState<DialogContent | null>(null);
-
-  const { data: items = [] } = useItems();
-  const { data: promos = [], isLoading } = usePromos();
 
   const insertMutation = useInsertPromo();
   const deleteMutation = useDeletePromo();
@@ -68,7 +65,7 @@ const PromoAddPage = () => {
     };
 
     return (
-      <>
+      <PromoProvider>
         <div className="space-y-6">
           <div>
             <h1 className="text-3xl font-bold tracking-tight font-poppins">Promotions</h1>
@@ -79,13 +76,11 @@ const PromoAddPage = () => {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <PromoForm
-              items={items}
-              loading={isLoading}
               onSubmit={handleCreatePromo}
               onSuccess={handleSuccess}
               onError={handleError}
             />
-            <PromoList promos={promos} loading={isLoading} onDelete={handleDeletePromo} items={items} />
+            <PromoList onDelete={handleDeletePromo} />
           </div>
         </div>
 
@@ -98,7 +93,7 @@ const PromoAddPage = () => {
             onCancel={() => setIsDialogOpen(false)}
           />
         )}
-      </>
+      </PromoProvider>
     );
   };
 

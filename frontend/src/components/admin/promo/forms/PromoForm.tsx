@@ -9,8 +9,10 @@ import { PromoDateTimePicker } from "./PromoDateTimePicker";
 import { PromoItemSelect } from "./PromoItemSelect";
 import type { PromoFormProps } from "@/types/promo";
 import { mapFormToPromo } from "@/utils/mappers/promoMapper";
+import { usePromoData } from "@/hooks/usePromoData";
 
-export const PromoForm = ({ items, onSubmit, loading, onSuccess, onError }: PromoFormProps) => {
+export const PromoForm = ({ onSubmit, onSuccess, onError }: PromoFormProps) => {
+  const { isLoading } = usePromoData();
   const {
     control,
     register,
@@ -45,7 +47,7 @@ export const PromoForm = ({ items, onSubmit, loading, onSuccess, onError }: Prom
     <Card>
       <CardHeader><CardTitle>Create Promotion</CardTitle></CardHeader>
       <CardContent className="space-y-6">
-        <PromoItemSelect control={control} name="item" items={items} />
+        <PromoItemSelect control={control} name="item" />
         <PromoDateTimePicker control={control} name="startDate" label="Start Date" />
         <PromoDateTimePicker control={control} name="endDate" label="End Date" />
 
@@ -61,8 +63,8 @@ export const PromoForm = ({ items, onSubmit, loading, onSuccess, onError }: Prom
           )}
         </div>
 
-        <Button onClick={onFormSubmit} disabled={loading} className="w-full">
-          {loading ? "Creating..." : "Create Promotion"}
+        <Button onClick={onFormSubmit} disabled={isLoading} className="w-full">
+          {isLoading ? "Creating..." : "Create Promotion"}
         </Button>
       </CardContent>
     </Card>
