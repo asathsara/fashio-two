@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import ItemCategory from "../../components/client/ItemCategory";
 import DetailsBar from "../../components/client/detailsbar/Detailsbar";
@@ -6,25 +5,16 @@ import { Spinner } from "@/components/common/Spinner";
 import { ErrorMessage } from "@/components/common/ErrorMessage";
 import { useImages } from "@/hooks/useImages";
 import { useCategories } from "@/hooks/useCategories";
-import {useItems} from "@/hooks/useItems";
+import { useItems } from "@/hooks/useItems";
+import { useImageCarousel } from "@/hooks/useImageCarousel";
 
 const HomePage = () => {
-  const [index, setIndex] = useState(0);
 
-
-  const {data: images= []} = useImages();
+  const { data: images = [] } = useImages();
   const { data: categories = [] } = useCategories();
-  const {data: items = [], isLoading: loading, error} = useItems()
+  const { data: items = [], isLoading: loading, error } = useItems()
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setIndex((prevIndex) =>
-        prevIndex === images.length - 1 ? 0 : prevIndex + 1
-      );
-    }, 5000);
-    return () => clearInterval(interval);
-  }, [images.length]);
-
+  const { currentImage, index } = useImageCarousel(images, 5000);
 
   return (
     <div className="flex flex-col w-full">
@@ -32,10 +22,8 @@ const HomePage = () => {
         {images.length > 0 && (
           <AnimatePresence mode="wait">
             <motion.img
-              key={index} // This will trigger re-render and animation
-              src={
-                import.meta.env.VITE_API_UPLOAD_IMAGES_URL + images[index].url
-              }
+              key={index}
+              src={`${import.meta.env.VITE_API_UPLOAD_IMAGES_URL}${currentImage.url}`}
               alt="slide"
               className="object-cover w-4/5 md:h-144 sm:min-h-72 min-w-4/5 rounded-2xl mt-8 shadow-sm"
               initial={{ opacity: 0, x: 100 }}
@@ -48,8 +36,7 @@ const HomePage = () => {
                 duration: 1,
               }}
             />
-          </AnimatePresence>
-        )}
+          </AnimatePresence>)}
       </div>
 
       <DetailsBar className={"mt-8"} />
@@ -67,7 +54,7 @@ const HomePage = () => {
         })}
       </div>
 
-      
+
       <div className="mt-8 w-full">
         {loading ? (
           <div className="flex justify-center items-center py-20">
