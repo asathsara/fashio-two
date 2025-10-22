@@ -1,82 +1,55 @@
-import { useState, useRef, useEffect } from "react";
+import { useRef } from "react";
 import { FaSearch } from "react-icons/fa";
-import {
-  fetchCategories,
-  insertCategory,
-  deleteCategory,
-  deleteSubCategory,
-  insertSubCategory,
-} from "../../services/categoryService";
+
 import CategoryItem from "../../components/admin/category/CategoryItem";
-import type { Category } from "../../types/category";
+import { useCategories, useInsertCategory, useDeleteCategory, useInsertSubCategory, useDeleteSubCategory } from "../../hooks/useCategories";
+import { Spinner } from "@/components/common/Spinner";
+import { ErrorMessage } from "@/components/common/ErrorMessage";
 
 const CategoriesInsertPage = () => {
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [error, setError] = useState(null);
+
+  const { data: categories = [], isLoading, error } = useCategories();
+  const insertCategoryMutation = useInsertCategory();
+  const deleteCategoryMutation = useDeleteCategory();
+  const insertSubCategoryMutation = useInsertSubCategory();
+  const deleteSubCategoryMutation = useDeleteSubCategory();
+
   const inputRef = useRef<HTMLInputElement | null>(null);
 
-  // Fetch categories on mount
-  useEffect(() => {
-    fetchCategories()
-      .then((data) => setCategories(data))
-      .catch((error) => setError(error));
-  }, []);
-
+  
   const handleAddCategory = () => {
     const name = inputRef.current?.value;
     if (!name) {
       return;
     }
 
-    insertCategory(name).then((data) => {
-      setCategories([...categories, data]);
-      if (inputRef.current) {
-        inputRef.current.value = "";
+    insertCategoryMutation.mutate(name, {
+      onSuccess: () => {
+        if (inputRef.current) inputRef.current.value = "";
       }
     });
   };
 
   const addSubItem = (categoryId: string, subItemName: string) => {
-    insertSubCategory(categoryId, subItemName).then((newSubItem) => {
-
-      setCategories((prevCategories) =>
-        prevCategories.map((category) =>
-          category._id === categoryId
-            ? {
-              ...category,
-              subCategories: [...category.subCategories, newSubItem],
-            }
-            : category
-        )
-      );
-    });
+    insertSubCategoryMutation.mutate({ id: categoryId, name: subItemName });
   };
 
 
   const handleDeleteCategory = (categoryId: string) => {
-    deleteCategory(categoryId).then(() => {
-      setCategories(
-        categories.filter((category) => category._id !== categoryId)
-      );
-    });
+    deleteCategoryMutation.mutate(categoryId);
   };
 
   const handleDeleteSubCategory = (categoryId: string, subCategoryName: string) => {
-    deleteSubCategory(categoryId, subCategoryName).then(() => {
-      setCategories((prevCategories) =>
-        prevCategories.map((category) =>
-          category._id === categoryId
-            ? {
-              ...category,
-              subCategories: category.subCategories.filter(
-                (subItem) => subItem.name !== subCategoryName
-              ),
-            }
-            : category
-        )
-      );
-    });
+    deleteSubCategoryMutation.mutate({ categoryId, subItemName: subCategoryName });
   };
+
+  if (isLoading) {
+    return <Spinner />;
+  }
+
+  if (error) {
+    return <ErrorMessage message="Failed to load categories." />;
+  }
 
   return (
     <>
