@@ -1,16 +1,18 @@
 import { Controller, type Control, type FieldValues, type Path } from "react-hook-form";
 import { Label } from "@/components/ui/label";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
-import type { PromoSelectableItem } from "@/types/promo";
+import { usePromoData } from "@/hooks/usePromoData";
 
 
 interface Props<T extends FieldValues> {
   name: Path<T>; 
   control: Control<T>;
-  items: PromoSelectableItem[];
 }
 
-export const PromoItemSelect = <T extends FieldValues>({ name, control, items }: Props<T>) => (
+export const PromoItemSelect = <T extends FieldValues>({ name, control }: Props<T>) => {
+  const { items } = usePromoData();
+  
+  return (
   <Controller
     name={name}
     control={control}
@@ -35,4 +37,5 @@ export const PromoItemSelect = <T extends FieldValues>({ name, control, items }:
       </div>
     )}
   />
-);
+  );
+};

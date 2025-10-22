@@ -14,16 +14,14 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Calendar, Clock, Percent, Trash2, Tag } from "lucide-react";
 import type { PromoWithItem } from "../../../types/promo";
-import type { Item } from "@/types/item";
+import { usePromoData } from "@/hooks/usePromoData";
 
 interface PromoListProps {
-  promos: PromoWithItem[];
-  loading: boolean;
   onDelete: (id: string) => Promise<void>;
-  items: Item[];
 }
 
-export const PromoList = ({ promos, loading, onDelete }: PromoListProps) => {
+export const PromoList = ({ onDelete }: PromoListProps) => {
+  const { promos, isLoading } = usePromoData();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [promoToDelete, setPromoToDelete] = useState<string | null>(null);
 
@@ -60,7 +58,7 @@ export const PromoList = ({ promos, loading, onDelete }: PromoListProps) => {
     });
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
       <Card>
         <CardContent className="p-6">
