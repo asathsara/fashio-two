@@ -1,12 +1,6 @@
-import { createContext } from 'react';
 
-export interface User {
-    id: string;
-    email: string;
-    name: string;
-    role: 'admin' | 'user';
-    emailVerified: boolean;
-}
+import type { User } from '@/types/auth';
+import { createContext } from 'react';
 
 export interface AuthContextType {
     user: User | null;

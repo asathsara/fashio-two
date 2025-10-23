@@ -5,7 +5,7 @@ import { PromoList } from "../../components/admin/promo/PromoList";
 import Dialog from "../../components/admin/Dialog";
 import type { Promo } from "../../types/promo";
 import { useDeletePromo, useInsertPromo } from "@/hooks/usePromos";
-import { PromoProvider } from "@/contexts/PromoContext";
+import { PromoProvider } from "@/contexts/PromoProvider";
 
 interface DialogContent {
   title: string;

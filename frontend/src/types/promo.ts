@@ -29,3 +29,9 @@ export interface PromoWithItem extends Omit<Promo, 'item'> {
   };
 }
 
+export interface PromoContextValue {
+  items: PromoSelectableItem[];
+  promos: PromoWithItem[];
+  isLoading: boolean;
+}
+
