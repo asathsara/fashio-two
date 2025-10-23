@@ -1,147 +1,47 @@
-import { useEffect, useState, type ReactNode } from "react";
-import { AuthContext, type User } from "./AuthContext";
-import { authService } from "@/services/authService";
+import { type ReactNode } from "react";
+import { AuthContext, type AuthContextType } from "./AuthContext";
+import { useCurrentUser, useForgotPassword, useGoogleLogin, useLogin, useLogout, useRegister, useResendVerification, useResetPassword, useVerifyEmail } from "@/hooks/useAuthQueries.ts";
 
 interface AuthProviderProps {
   children: ReactNode;
 }
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { data: user, isLoading: loading } = useCurrentUser();
+  const isAuthenticated = !!user;
 
-  // Update authentication state whenever user changes
-  useEffect(() => {
-    setIsAuthenticated(!!user);
-  }, [user]);
+  // Mutations
+  const login = useLogin();
+  const loginWithGoogle = useGoogleLogin();
+  const logout = useLogout();
+  const register = useRegister();
+  const forgotPassword = useForgotPassword();
+  const resetPassword = useResetPassword();
+  const verifyEmail = useVerifyEmail();
+  const resendVerificationEmail = useResendVerification();
 
-  // Restore session on mount - ONLY ONCE
-  useEffect(() => {
-    const restoreSession = async () => {
-      try {
-        const userData = await authService.getCurrentUser();
-        setUser(userData);
-        setIsAuthenticated(true);
-      } catch (err: unknown) {
-        const status = (err as { response?: { status?: number } })?.response?.status;
+  const value: AuthContextType = {
+    user: user || null,
+    isAuthenticated,
+    loading,
 
-        // Ignore 401 - expected for unauthenticated users
-        if (status !== 401) {
-          console.error("Session restore failed:", err);
-        }
-
-        setUser(null);
-        setIsAuthenticated(false);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    restoreSession();
-  }, []);
-
-
-  // Login with email/password
-  const login = async (email: string, password: string) => {
-    setLoading(true);
-    try {
-      const { user } = await authService.login(email, password); // backend sets cookie
-      setUser(user);
-      setIsAuthenticated(true);
-    }  finally {
-      setLoading(false);
-    }
-  };
-
-  // Login with Google
-  const loginWithGoogle = async () => {
-    setLoading(true);
-    try {
-      window.location.href = 'http://localhost:5000/api/auth/google'
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Logout
-  const logout = async () => {
-    setLoading(true);
-    try {
-      await authService.logout(); // backend clears cookie
-      setUser(null);
-      setIsAuthenticated(false);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Register
-  const register = async (name: string, email: string, password: string) => {
-    setLoading(true);
-    try {
-      await authService.register(name, email, password);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Forgot password
-  const forgotPassword = async (email: string) => {
-    setLoading(true);
-    try {
-      await authService.forgotPassword(email);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Reset password
-  const resetPassword = async (token: string, newPassword: string) => {
-    setLoading(true);
-    try {
-      await authService.resetPassword(token, newPassword);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Verify email
-  const verifyEmail = async (token: string) => {
-    setLoading(true);
-    try {
-      await authService.verifyEmail(token);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Resend verification email
-  const resendVerificationEmail = async () => {
-    setLoading(true);
-    try {
-      await authService.resendVerificationEmail();
-    } finally {
-      setLoading(false);
-    }
+    // Each of these wraps the mutateAsync call to match AuthContextType
+    login: async (email, password) => login.mutateAsync({ email, password }),
+    loginWithGoogle: async () =>
+      loginWithGoogle.mutateAsync(),
+    register: async (name, email, password) =>
+      register.mutateAsync({ name, email, password }),
+    logout: async () => logout.mutateAsync(),
+    forgotPassword: async (email) => forgotPassword.mutateAsync(email),
+    resetPassword: async (token, newPassword) =>
+      resetPassword.mutateAsync({ token, newPassword }),
+    verifyEmail: async (token) => verifyEmail.mutateAsync(token),
+    resendVerificationEmail: async () => resendVerificationEmail.mutateAsync(),
   };
 
   return (
     <AuthContext.Provider
-      value={{
-        user,
-        isAuthenticated,
-        loading,
-        login,
-        loginWithGoogle,
-        register,
-        logout,
-        forgotPassword,
-        resetPassword,
-        verifyEmail,
-        resendVerificationEmail
-      }}
-    >
+      value={value}>
       {children}
     </AuthContext.Provider>
   );
