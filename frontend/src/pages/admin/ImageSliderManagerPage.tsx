@@ -1,45 +1,30 @@
-import  { useState, useEffect } from "react";
-import { fetchImages, uploadImage, deleteImage } from "../../services/imageService";
 import ImageUploader from "../../components/admin/ImageUploader";
 import ImageCard from "../../components/admin/ImageCard";
-import type { Image } from "../../types/image";
+import { useImages, useUploadImage, useDeleteImage } from "@/hooks/useImages";
 
 const ImageSliderManager = () => {
-  const [images, setImages] = useState<Image[]>([]);
-  const [error, setError] = useState("");
+  const { data: images = [], error } = useImages();
 
-  useEffect(() => {
-    fetchImages()
-      .then((data) => setImages(data))
-      .catch(() => setError("Failed to fetch images"));
-  }, []);
+  const uploadMutation = useUploadImage();
+  const deleteMutation = useDeleteImage();
 
   const handleUpload = async (file: File) => {
     const formData = new FormData();
     formData.append("image", file);
 
-    try {
-      const newImage = await uploadImage(formData);
-      setImages((prev) => [...prev, newImage]);
-    } catch {
-      setError("Failed to upload image");
-    }
+    uploadMutation.mutate(formData)
   };
 
   const handleDelete = async (id: string) => {
-    try {
-      await deleteImage(id);
-      setImages((prev) => prev.filter((image) => image._id !== id));
-    } catch {
-      setError("Failed to delete image");
-    }
+
+    deleteMutation.mutate(id)
   };
 
   return (
     <div>
       <h1 className="font-poppins text-3xl font-semibold">Images for Slider</h1>
-      <ImageUploader onUpload={handleUpload}/>
-      {error && <p className="text-red-500">{error}</p>}
+      <ImageUploader onUpload={handleUpload} />
+      {error && <p className="text-red-500">{error.message}</p>}
       <div className="flex flex-wrap">
         {images.map((image) => (
           <ImageCard

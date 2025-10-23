@@ -1,13 +1,13 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useRef } from "react";
 
-import { fetchCategories } from "../../services/categoryService";
-import { insertItem } from "../../services/itemService";
 import ImageUploaderGroup from "../../components/admin/ImageUploaderGroup";
 import FormInput from "../../components/admin/FormInput";
 import SizeSelector from "../../components/admin/SizeSelector";
 import CategorySelector from "../../components/admin/CategorySelector";
 import Dialog from "../../components/admin/Dialog";
 import type { Category } from "../../types/category";
+import { useInsertItem } from "@/hooks/useItems";
+import { useCategories } from "@/hooks/useCategories";
 
 
 
@@ -24,7 +24,6 @@ interface DialogContent {
 }
 
 const ItemInsertPage: React.FC = () => {
-  const [categories, setCategories] = useState<Category[]>([]);
   const [category, setCategory] = useState<Category | null>(null);
   const [subCategory, setSubCategory] = useState<string | null>(null);
   const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
@@ -40,6 +39,9 @@ const ItemInsertPage: React.FC = () => {
     title: "",
     subText: "",
   });
+
+  const {data: categories = []} = useCategories();
+  const insertMutation = useInsertItem()
 
   // Refs
   const nameRef = useRef<HTMLInputElement>(null);
@@ -122,7 +124,10 @@ const ItemInsertPage: React.FC = () => {
     formData.append("description", description);
 
     try {
-      await insertItem(formData);
+      
+      // insert items 
+      insertMutation.mutate(formData);
+
       setDialogContent({ title: "Success", subText: "Item added successfully!" });
       setIsDialogOpen(true);
 
@@ -143,12 +148,6 @@ const ItemInsertPage: React.FC = () => {
       setIsDialogOpen(true);
     }
   };
-
-  useEffect(() => {
-    fetchCategories()
-      .then((data: Category[]) => setCategories(data))
-      .catch(() => alert("Failed to fetch categories"));
-  }, []);
 
   const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedCategory = categories.find((cat) => cat._id === e.target.value) || null;

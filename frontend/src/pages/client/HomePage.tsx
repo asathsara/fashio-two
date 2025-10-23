@@ -1,62 +1,20 @@
-import { useState, useEffect } from "react";
-import { fetchImages } from "../../services/imageService";
-import { fetchCategories } from "../../services/categoryService";
 import { motion, AnimatePresence } from "framer-motion";
-import { fetchItems } from "../../services/itemService";
 import ItemCategory from "../../components/client/ItemCategory";
 import DetailsBar from "../../components/client/detailsbar/Detailsbar";
-import type { Category } from "../../types/category";
-import type { Image } from "../../types/image";
-import type { Item } from "../../types/item";
 import { Spinner } from "@/components/common/Spinner";
 import { ErrorMessage } from "@/components/common/ErrorMessage";
+import { useImages } from "@/hooks/useImages";
+import { useCategories } from "@/hooks/useCategories";
+import { useItems } from "@/hooks/useItems";
+import { useImageCarousel } from "@/hooks/useImageCarousel";
 
 const HomePage = () => {
-  const [images, setImages] = useState<Image[]>([]);
-  const [error, setError] = useState("");
-  const [index, setIndex] = useState(0);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [items, setItems] = useState<Item[]>([]);
-  const [loading, setLoading] = useState(true);
 
+  const { data: images = [] } = useImages();
+  const { data: categories = [] } = useCategories();
+  const { data: items = [], isLoading: loading, error } = useItems()
 
-  useEffect(() => {
-    fetchImages()
-      .then((data) => setImages(data))
-      .catch(() => setError("Failed to fetch images"));
-  }, []);
-
-  useEffect(() => {
-    fetchCategories()
-      .then((data) => setCategories(data))
-      .catch(() => setError("Failed to fetch categories"));
-  }, []);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setIndex((prevIndex) =>
-        prevIndex === images.length - 1 ? 0 : prevIndex + 1
-      );
-    }, 5000);
-    return () => clearInterval(interval);
-  }, [images.length]);
-
-  useEffect(() => {
-    // Fetch items from the API
-    const loadItems = async () => {
-      try {
-        const data = await fetchItems();
-        setItems(data);
-      } catch {
-        setError("Failed to fetch items");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadItems();
-  }, []);
-
+  const { currentImage, index } = useImageCarousel(images, 5000);
 
   return (
     <div className="flex flex-col w-full">
@@ -64,10 +22,8 @@ const HomePage = () => {
         {images.length > 0 && (
           <AnimatePresence mode="wait">
             <motion.img
-              key={index} // This will trigger re-render and animation
-              src={
-                import.meta.env.VITE_API_UPLOAD_IMAGES_URL + images[index].url
-              }
+              key={index}
+              src={`${import.meta.env.VITE_API_UPLOAD_IMAGES_URL}${currentImage.url}`}
               alt="slide"
               className="object-cover w-4/5 md:h-144 sm:min-h-72 min-w-4/5 rounded-2xl mt-8 shadow-sm"
               initial={{ opacity: 0, x: 100 }}
@@ -80,8 +36,7 @@ const HomePage = () => {
                 duration: 1,
               }}
             />
-          </AnimatePresence>
-        )}
+          </AnimatePresence>)}
       </div>
 
       <DetailsBar className={"mt-8"} />
@@ -99,14 +54,14 @@ const HomePage = () => {
         })}
       </div>
 
-      
+
       <div className="mt-8 w-full">
         {loading ? (
           <div className="flex justify-center items-center py-20">
             <Spinner size="lg" variant="bars" label="Loading products..." />
           </div>
         ) : error ? (
-          <ErrorMessage message={error} />
+          <ErrorMessage message={error.message} />
         ) : (
           categories.map((category, index) => {
             // Filter items belonging to the current category

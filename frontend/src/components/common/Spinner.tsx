@@ -14,9 +14,9 @@ export const Spinner: React.FC<SpinnerProps> = ({
   color = "bg-gray-900",
   className,
   label = "Loading...",
-  variant = "scale",
+  variant = "bars",
 }) => {
-  
+
 
   // Bar spinner sizes
   const barSizeMap = {
@@ -37,77 +37,81 @@ export const Spinner: React.FC<SpinnerProps> = ({
     const { height, width, gap } = barSizeMap[size];
 
     return (
-      <div className="flex flex-col items-center justify-center gap-3" role="status">
-        <div className={cn("flex items-end justify-center", gap, className)}>
-          {[0, 1, 2].map((index) => (
-            <div
-              key={index}
-              className={cn(
-                width,
-                height,
-                color,
-                "rounded-full animate-[wave_1s_ease-in-out_infinite]"
-              )}
-              style={{
-                animationDelay: `${index * 0.15}s`,
-              }}
-            />
-          ))}
-        </div>
-        {label && (
-          <span className="text-sm text-gray-600 font-medium animate-pulse">
-            {label}
-          </span>
-        )}
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="flex flex-col items-center justify-center gap-3" role="status">
+          <div className={cn("flex items-end justify-center", gap, className)}>
+            {[0, 1, 2].map((index) => (
+              <div
+                key={index}
+                className={cn(
+                  width,
+                  height,
+                  color,
+                  "rounded-full animate-[wave_1s_ease-in-out_infinite]"
+                )}
+                style={{
+                  animationDelay: `${index * 0.15}s`,
+                }}
+              />
+            ))}
+          </div>
+          {label && (
+            <span className="text-sm text-gray-600 font-medium animate-pulse">
+              {label}
+            </span>
+          )}
 
-        {/* Keyframes for waveform animation */}
-        <style>{`
+          {/* Keyframes for waveform animation */}
+          <style>{`
           @keyframes wave {
             0%, 100% { transform: scaleY(0.4); opacity: 0.6; }
             50% { transform: scaleY(1); opacity: 1; }
           }
         `}</style>
+        </div>
       </div>
     );
   }
 
-  
+
 
   // Dots variant
   if (variant === "dots") {
     return (
-      <div className="flex flex-col items-center justify-center gap-3" role="status">
-        <div className={cn("flex items-center gap-2", className)}>
-          <div
-            className={cn(
-              dotsSizeMap[size],
-              color,
-              "rounded-full animate-[bounce_1s_ease-in-out_infinite]"
-            )}
-            style={{ animationDelay: "0ms" }}
-          />
-          <div
-            className={cn(
-              dotsSizeMap[size],
-              color,
-              "rounded-full animate-[bounce_1s_ease-in-out_infinite]"
-            )}
-            style={{ animationDelay: "150ms" }}
-          />
-          <div
-            className={cn(
-              dotsSizeMap[size],
-              color,
-              "rounded-full animate-[bounce_1s_ease-in-out_infinite]"
-            )}
-            style={{ animationDelay: "300ms" }}
-          />
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="flex flex-col items-center justify-center gap-3" role="status">
+          <div className={cn("flex items-center gap-2", className)}>
+            <div
+              className={cn(
+                dotsSizeMap[size],
+                color,
+                "rounded-full animate-[bounce_1s_ease-in-out_infinite]"
+              )}
+              style={{ animationDelay: "0ms" }}
+            />
+            <div
+              className={cn(
+                dotsSizeMap[size],
+                color,
+                "rounded-full animate-[bounce_1s_ease-in-out_infinite]"
+              )}
+              style={{ animationDelay: "150ms" }}
+            />
+            <div
+              className={cn(
+                dotsSizeMap[size],
+                color,
+                "rounded-full animate-[bounce_1s_ease-in-out_infinite]"
+              )}
+              style={{ animationDelay: "300ms" }}
+            />
+          </div>
+          {label && (
+            <span className="text-sm text-gray-600 font-medium animate-pulse">
+              {label}
+            </span>
+          )}
         </div>
-        {label && (
-          <span className="text-sm text-gray-600 font-medium animate-pulse">
-            {label}
-          </span>
-        )}
       </div>
     );
   }

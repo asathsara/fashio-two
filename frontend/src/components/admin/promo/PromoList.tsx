@@ -13,16 +13,15 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Calendar, Clock, Percent, Trash2, Tag } from "lucide-react";
-import type { Promo, PromoSelectableItem } from "../../../types/promo";
+import type { PromoWithItem } from "../../../types/promo";
+import { usePromoData } from "@/hooks/usePromoData";
 
 interface PromoListProps {
-  promos: Promo[];
-  loading: boolean;
   onDelete: (id: string) => Promise<void>;
-  items: PromoSelectableItem[];
 }
 
-export const PromoList = ({ promos, loading, onDelete, items }: PromoListProps) => {
+export const PromoList = ({ onDelete }: PromoListProps) => {
+  const { promos, isLoading } = usePromoData();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [promoToDelete, setPromoToDelete] = useState<string | null>(null);
 
@@ -38,7 +37,7 @@ export const PromoList = ({ promos, loading, onDelete, items }: PromoListProps) 
     setPromoToDelete(null);
   };
 
-  const getPromoStatus = (promo: Promo): "active" | "upcoming" | "expired" => {
+  const getPromoStatus = (promo: PromoWithItem): "active" | "upcoming" | "expired" => {
     const now = new Date();
     const start = new Date(`${promo.startDate}T${promo.startTime}`);
     const end = new Date(`${promo.endDate}T${promo.endTime}`);
@@ -59,12 +58,7 @@ export const PromoList = ({ promos, loading, onDelete, items }: PromoListProps) 
     });
   };
 
-  const findItemName = (itemId: string) => {
-    const item = items.find(i => i._id === itemId);
-    return item ? item.name : "Unknown Item";
-  }
-
-  if (loading) {
+  if (isLoading) {
     return (
       <Card>
         <CardContent className="p-6">
@@ -110,7 +104,7 @@ export const PromoList = ({ promos, loading, onDelete, items }: PromoListProps) 
                 {/* Header with status and delete */}
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <h3 className="font-semibold text-lg">{findItemName(promo.item)}</h3>
+                    <h3 className="font-semibold text-lg">{promo.item.name}</h3>
                     <Badge
                       variant={
                         status === "active"

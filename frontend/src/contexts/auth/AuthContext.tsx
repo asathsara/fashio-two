@@ -1,12 +1,6 @@
-import { createContext } from 'react';
 
-export interface User {
-    id: string;
-    email: string;
-    name: string;
-    role: 'admin' | 'user';
-    emailVerified: boolean;
-}
+import type { User } from '@/types/auth';
+import { createContext } from 'react';
 
 export interface AuthContextType {
     user: User | null;
@@ -14,7 +8,7 @@ export interface AuthContextType {
     loading: boolean;
 
     login: (email: string, password: string) => Promise<void>;
-    loginWithGoogle: (credential?: string) => Promise<void>;
+    loginWithGoogle: () => Promise<void>;
     register: (name: string, email: string, password: string) => Promise<void>;
     logout: () => Promise<void>;
 

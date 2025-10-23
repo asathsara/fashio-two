@@ -14,8 +14,6 @@ export interface Promo {
 export type PromoSelectableItem = Pick<Item, "_id" | "name" | "category">;
 
 export interface PromoFormProps {
-  items: PromoSelectableItem[];
-  loading: boolean;
   onSubmit: (promo: Omit<Promo, "_id">) => Promise<void>;
   onSuccess: () => void;
   onError: (message: string) => void;
@@ -29,5 +27,11 @@ export interface PromoWithItem extends Omit<Promo, 'item'> {
     category: string;
     urls?: string[];
   };
+}
+
+export interface PromoContextValue {
+  items: PromoSelectableItem[];
+  promos: PromoWithItem[];
+  isLoading: boolean;
 }
 
