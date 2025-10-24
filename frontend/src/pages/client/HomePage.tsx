@@ -7,6 +7,7 @@ import { useImages } from "@/hooks/useImages";
 import { useCategories } from "@/hooks/useCategories";
 import { useItems } from "@/hooks/useItems";
 import { useImageCarousel } from "@/hooks/useImageCarousel";
+import type { Image } from "@/types/image";
 
 const HomePage = () => {
 
@@ -14,7 +15,7 @@ const HomePage = () => {
   const { data: categories = [] } = useCategories();
   const { data: items = [], isLoading: loading, error } = useItems()
 
-  const { currentImage, index } = useImageCarousel(images, 5000);
+  const { currentImage, index } = useImageCarousel<Image>(images, 5000);
 
   return (
     <div className="flex flex-col w-full">
@@ -23,8 +24,8 @@ const HomePage = () => {
           <AnimatePresence mode="wait">
             <motion.img
               key={index}
-              src={`${import.meta.env.VITE_API_UPLOAD_IMAGES_URL}${currentImage.url}`}
-              alt="slide"
+              src={`${import.meta.env.VITE_API_UPLOAD_IMAGES_URL}${currentImage._id}`}
+              alt={currentImage.filename}
               className="object-cover w-4/5 md:h-144 sm:min-h-72 min-w-4/5 rounded-2xl mt-8 shadow-sm"
               initial={{ opacity: 0, x: 100 }}
               animate={{ opacity: 1, x: 0 }}

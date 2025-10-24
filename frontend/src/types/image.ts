@@ -1,4 +1,6 @@
 export interface Image {
   _id: string;
-  url: string;
+  filename: string;
+  contentType: string;
+  createdAt?: string;
 }

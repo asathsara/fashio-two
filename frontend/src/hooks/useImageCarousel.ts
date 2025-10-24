@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
-export const useImageCarousel = <T extends { url?: string }>(
-  images: T[], // Array of images of generic type T
+export const useImageCarousel = <TImage>(
+  images: TImage[], // Array of images of generic type T
   delay: number = 5000 // Delay in milliseconds (default is 5000ms)
 ) => {
   const [index, setIndex] = useState(0);
