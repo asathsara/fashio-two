@@ -1,12 +1,15 @@
 import ImageUploader from "../../components/admin/ImageUploader";
 import ImageCard from "../../components/admin/ImageCard";
 import { useImages, useUploadImage, useDeleteImage } from "@/hooks/useImages";
+import { Spinner } from "@/components/common/Spinner";
 
 const ImageSliderManager = () => {
   const { data: images = [], error } = useImages();
 
   const uploadMutation = useUploadImage();
   const deleteMutation = useDeleteImage();
+
+  const isLoading = uploadMutation.isPending || deleteMutation.isPending;
 
   const handleUpload = async (file: File) => {
     const formData = new FormData();
@@ -34,6 +37,13 @@ const ImageSliderManager = () => {
           />
         ))}
       </div>
+
+      {/* Full-page Loading Overlay */}
+      {isLoading && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
+          <Spinner />
+        </div>
+      )}
     </div>
   );
 };
