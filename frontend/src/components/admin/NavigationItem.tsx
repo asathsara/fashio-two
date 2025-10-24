@@ -1,13 +1,16 @@
-import React from "react";
+import type { AppRoute } from "../../config/routes";
 
-const NavigationItem = ({ item, selected, onSelect }) => {
+interface NavigationItemProps {
+  item: AppRoute;
+  selected: boolean;
+  onSelect: (itemId: string) => void;
+}
+
+const NavigationItem = ({ item, selected, onSelect }: NavigationItemProps) => {
   return (
     <li
-      key={item.id}
       className={`px-10 py-3 cursor-pointer w-full rounded-full transition items-center text-left ${
-        selected === item.label
-          ? "bg-black rounded-full text-white"
-          : "hover:bg-gray-200 text-gray-800"
+        selected ? "bg-black rounded-full text-white" : "hover:bg-gray-200 text-gray-800"
       }`}
       onClick={() => onSelect(item.label)}
     >
