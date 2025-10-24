@@ -3,6 +3,7 @@ import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { publicRoutes, adminRoutes, DEFAULT_ADMIN_ROUTE } from "@/config/routes";
 import PublicLayout from "@/layouts/PublicLayout";
 import AdminLayout from "@/layouts/AdminLayout";
+import NotFoundPage from "@/pages/NotFoundPage";
 
 export const AppRoutes = () => {
   return (
@@ -39,7 +40,7 @@ export const AppRoutes = () => {
       </Route>
 
       {/* Fallback */}
-      <Route path="*" element={<Navigate to="/" replace />} />
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
 };
