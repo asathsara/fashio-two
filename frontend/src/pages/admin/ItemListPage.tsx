@@ -11,7 +11,7 @@ const ItemListPage = () => {
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const [itemToDelete, setItemToDelete] = useState<Item | null>(null); // Track the item to delete
 
-  const { data: items = [], isLoading , error } = useItems();
+  const { data: items = [], isLoading, error } = useItems();
   const deleteMutation = useDeleteItem();
 
   const handleOk = () => {
@@ -43,7 +43,7 @@ const ItemListPage = () => {
     <>
       <h1 className="font-poppins text-3xl font-semibold mb-6">Items List</h1>
       {isLoading ? (
-        <Spinner/>
+        <Spinner />
       ) : error ? (
         <ErrorMessage message="Failed to load items." />
       ) : (
@@ -67,12 +67,10 @@ const ItemListPage = () => {
               className="min-w-[1000px] grid grid-cols-8 gap-4 items-center text-left text-gray-800 px-4 py-4 hover:bg-gray-50 border-b border-gray-200 font-poppins"
             >
               <div className="flex items-center">
-                {item.urls && item.urls.length > 0 ? (
+                {item.images && item.images.length > 0 ? (
                   <img
-                    src={
-                      import.meta.env.VITE_API_UPLOAD_IMAGES_URL + item.urls[0]
-                    }
-                    alt={item.name}
+                    src={`${import.meta.env.VITE_API_BASE_URL}/items/${item._id}/image/0`}
+                    alt={item.images[0].filename}
                     className="w-16 h-16 object-cover rounded-md"
                   />
                 ) : (

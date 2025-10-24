@@ -1,3 +1,5 @@
+import type { Image } from "./image";
+
 export interface Item {
   _id?: string;
   name: string;
@@ -6,5 +8,5 @@ export interface Item {
   category: string;
   subCategory: string;
   sizes: string[];
-  urls?: string[];
+  images?: Image[];
 }
