@@ -40,7 +40,7 @@ app.use(
     saveUninitialized: false,
     cookie: {
       httpOnly: true,
-      secure: true, // MUST be true 
+      secure: process.env.NODE_ENV === 'production', 
       sameSite: "none", // Required for cross-site cookies
     },
   })
