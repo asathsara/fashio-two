@@ -11,8 +11,8 @@ const ImageCard = ({ image, onDelete }: ImageCardProps) => {
     >
       <div className="flex flex-6 overflow-hidden">
         <img
-          src={import.meta.env.VITE_API_UPLOAD_IMAGES_URL + image.url} // Use the base URL from env file for dynamic API URLs
-          alt="Uploaded"
+          src={import.meta.env.VITE_API_UPLOAD_IMAGES_URL + image._id} // Use the base URL from env file for dynamic API URLs
+          alt={image.filename}
           className="w-full h-full object-cover rounded-xl"
         />
       </div>
