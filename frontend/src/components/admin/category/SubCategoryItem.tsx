@@ -40,7 +40,6 @@ const SubCategoryItem = ({ name, onDeleteSubCategory }: SubCategoryItemProps) =>
         description={`Are you sure you want to delete "${name}"? This action cannot be undone.`}
         onConfirm={handleDelete}
         confirmLabel="Delete"
-        cancelLabel="Cancel"
       />
     </>
   );
