@@ -1,43 +1,42 @@
 import { useState } from "react";
 import { FaTrash } from "react-icons/fa";
-import Dialog from "../../components/admin/Dialog";
 import type { Item } from "../../types/item";
 import { useDeleteItem, useItems } from "@/hooks/useItems";
 import { Spinner } from "@/components/common/Spinner";
 import { ErrorMessage } from "@/components/common/ErrorMessage";
+import { ConfirmDialog } from "@/components/common/ConfirmDialog";
+import { toast } from "sonner";
 
 
 const ItemListPage = () => {
-  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
-  const [itemToDelete, setItemToDelete] = useState<Item | null>(null); // Track the item to delete
+
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState<Item | null>(null);
 
   const { data: items = [], isLoading, error } = useItems();
   const deleteMutation = useDeleteItem();
 
-  const handleOk = () => {
-    if (itemToDelete) {
-      handleDelete(itemToDelete._id!);
-      setIsDialogOpen(false); // Close the dialog
-      setItemToDelete(null); // Reset itemToDelete
-    }
-  };
-
-  const handleCancel = () => {
-    setIsDialogOpen(false); // Just close the dialog
-    setItemToDelete(null); // Reset itemToDelete
-  };
-
-  const handleDelete = async (id: string) => {
-
-    // Call the delete mutation
-    deleteMutation.mutate(id);
-  };
-
   const openDeleteDialog = (item: Item) => {
-
     setItemToDelete(item);
-    setIsDialogOpen(true);
+    setIsDeleteDialogOpen(true);
   };
+
+  const handleDelete = async () => {
+    if (!itemToDelete?._id) return;
+
+    deleteMutation.mutate(itemToDelete._id, {
+      onSuccess: () => {
+        toast.success(`Item "${itemToDelete.name}" deleted successfully`);
+        setIsDeleteDialogOpen(false);
+        setItemToDelete(null);
+      },
+      onError: (error) => {
+        toast.error(`Failed to delete item: ${error.message || "Unknown error"}`);
+      }
+    });
+  };
+
+
 
   return (
     <>
@@ -94,13 +93,16 @@ const ItemListPage = () => {
         </div>
       )}
 
-      <Dialog
-        isOpen={isDialogOpen}
-        title="Delete"
-        subText={`Are you sure you want to delete the item "${itemToDelete?.name}"?`}
-        onOk={handleOk}
-        onCancel={handleCancel}
+      <ConfirmDialog
+        open={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+        title="Delete Item"
+        description={`Are you sure you want to delete "${itemToDelete?.name}"? This action cannot be undone.`}
+        onConfirm={handleDelete}
+        confirmLabel="Delete"
       />
+
+
     </>
   );
 };
