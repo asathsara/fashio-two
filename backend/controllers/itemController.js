@@ -1,4 +1,5 @@
 import Item from "../models/item.js";
+import Category from "../models/category.js";
 
 // Add an item
 export const addItem = async (req, res) => {
@@ -8,6 +9,20 @@ export const addItem = async (req, res) => {
             return res
                 .status(400)
                 .json({ message: "At least one image is required" });
+        }
+
+        // Validate that the category exists
+        const category = await Category.findById(req.body.category);
+        if (!category) {
+            return res.status(404).json({ message: "Category not found" });
+        }
+
+        //  validate that the subcategory exists within the category
+        const subCategoryExists = category.subCategories.some(
+            sub => sub.name === req.body.subCategory
+        );
+        if (!subCategoryExists) {
+            return res.status(404).json({ message: "Subcategory not found in the selected category" });
         }
 
         // Map uploaded files into objects for MongoDB
@@ -23,7 +38,7 @@ export const addItem = async (req, res) => {
             name: req.body.name,
             price: req.body.price,
             stock: req.body.stock,
-            category: req.body.category,
+            category: req.body.category, // Now stores ObjectId
             subCategory: req.body.subCategory,
             sizes: req.body.sizes,
             description: req.body.description,
@@ -43,8 +58,10 @@ export const addItem = async (req, res) => {
 // Fetch all items
 export const getAllItems = async (req, res) => {
     try {
-        // Retrieve all items from the database
-        const items = await Item.find().select("-images.data"); // Exclude image buffer data
+        // Retrieve all items from the database and populate category
+        const items = await Item.find()
+            .select("-images.data") // Exclude image buffer data
+            .populate('category', 'name'); // Populate category with name field
 
         // Respond with the list of items
         res.status(200).json(items);
