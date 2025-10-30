@@ -29,7 +29,7 @@ const AdminLayout = () => {
                 <Navbar openNav={toggleDrawer} />
 
                 {/* Only this scrolls */}
-                <main className="flex-1 overflow-y-auto p-6 pt-20">
+                <main className="flex-1 overflow-y-auto p-6 mt-20">
                     <Outlet />
                 </main>
             </div>
