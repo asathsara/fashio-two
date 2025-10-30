@@ -16,9 +16,9 @@ export function useItemForm() {
             name: "",
             description: "",
             category: "",
-            subCategory: "",
-            price: 0,
-            stock: 0,
+            subCategoryId: "",
+            price: undefined,
+            stock: undefined,
             selectedSizes: [],
             images: [],
         },
@@ -47,11 +47,22 @@ export function useItemForm() {
         formData.append("name", data.name)
         formData.append("description", data.description)
         formData.append("category", data.category)
-        formData.append("subCategory", data.subCategory)
+        formData.append("subCategoryId", data.subCategoryId)
         formData.append("price", data.price.toString())
         formData.append("stock", data.stock.toString())
-        formData.append("selectedSizes", JSON.stringify(data.selectedSizes))
+        formData.append("sizes", JSON.stringify(data.selectedSizes))
 
+        console.log("Form Data to be submitted:", {
+            name: data.name,
+            description: data.description,
+            category: data.category,
+            subCategoryId: data.subCategoryId,
+            price: data.price,
+            stock: data.stock,
+            sizes: data.selectedSizes,
+            images: data.images,
+        })
+        
         insertMutation.mutate(formData)
         toast.success("Item added successfully!")
         reset()

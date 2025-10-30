@@ -34,7 +34,7 @@ const ItemInsertPage = () => {
   return (
     <div className="max-w-5xl">
       <h1 className="text-3xl font-semibold">Item Insert</h1>
-      <form onSubmit={onSubmit} className="mt-8 space-y-6 min-h-144">
+      <form onSubmit={onSubmit} className="mt-8 space-y-6">
         <FieldGroup>
           <FieldSet>
             <FieldLegend>Images</FieldLegend>
@@ -60,10 +60,13 @@ const ItemInsertPage = () => {
             <CategorySelector
               categories={categories}
               category={watch("category") ? categories.find((c) => c._id === watch("category")) || null : null}
-              subCategory={watch("subCategory") || null}
+              subCategoryId={watch("subCategoryId") || null}
               onCategoryChange={(val) => setValue("category", val, { shouldValidate: true })}
-              onSubCategoryChange={(val) => setValue("subCategory", val, { shouldValidate: true })}
+              onSubCategoryChange={(val) => setValue("subCategoryId", val, { shouldValidate: true })}
             />
+            {errors.category && <FieldError>{errors.category.message}</FieldError>}
+            {errors.subCategoryId && <FieldError>{errors.subCategoryId.message}</FieldError>}
+
           </FieldSet>
 
           <FieldSeparator />
@@ -74,10 +77,12 @@ const ItemInsertPage = () => {
               <Field>
                 <FieldLabel>Stock</FieldLabel>
                 <Input type="number" {...register("stock", { valueAsNumber: true })} />
+                <FieldError>{errors.stock?.message}</FieldError>
               </Field>
               <Field>
                 <FieldLabel>Price</FieldLabel>
                 <Input type="number" {...register("price", { valueAsNumber: true })} />
+                <FieldError>{errors.price?.message}</FieldError>
               </Field>
             </FieldGroup>
           </FieldSet>
@@ -85,6 +90,7 @@ const ItemInsertPage = () => {
           <FieldSet>
             <FieldLegend>Sizes</FieldLegend>
             <SizeSelector selectedSizes={watchedSizes} onSizeToggle={handleSizeToggle} />
+            {errors.selectedSizes && <FieldError>{errors.selectedSizes.message}</FieldError>}
           </FieldSet>
 
           <Button type="submit" disabled={insertMutation.isPending} className="w-full">

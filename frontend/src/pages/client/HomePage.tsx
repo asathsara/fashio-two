@@ -67,7 +67,7 @@ const HomePage = () => {
           categories.map((category, index) => {
             // Filter items belonging to the current category
             const categoryItems = items.filter(
-              (item) => item.category === category.name
+              (item) => item.category._id === category._id
             );
 
             return (

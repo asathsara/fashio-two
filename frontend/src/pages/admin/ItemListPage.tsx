@@ -81,8 +81,8 @@ const ItemListPage = () => {
                 Rs. {(Math.round(item.price * 100) / 100).toFixed(2)}
               </span>
               <span>{item.stock}</span>
-              <span>{item.category}</span>
-              <span>{item.subCategory}</span>
+              <span>{item.category.name}</span>
+              <span>{item.subCategoryName}</span>
               <span>{item.sizes.join(", ")}</span>
               <FaTrash
                 className="cursor-pointer text-red-500 hover:text-red-700 transition duration-200"
