@@ -31,7 +31,7 @@ describe("useItemForm", () => {
             result.current.setValue("name", "Test Item")
             result.current.setValue("description", "Test Description")
             result.current.setValue("category", "cat1")
-            result.current.setValue("subCategory", "subcat1")
+            result.current.setValue("subCategoryId", "subcat1")
             result.current.setValue("price", 100)
             result.current.setValue("stock", 50)
             result.current.setValue("selectedSizes", ["M", "L"])
