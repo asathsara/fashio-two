@@ -64,6 +64,9 @@ const ItemInsertPage = () => {
               onCategoryChange={(val) => setValue("category", val, { shouldValidate: true })}
               onSubCategoryChange={(val) => setValue("subCategory", val, { shouldValidate: true })}
             />
+            {errors.category && <FieldError>{errors.category.message}</FieldError>}
+            {errors.subCategory && <FieldError>{errors.subCategory.message}</FieldError>}
+
           </FieldSet>
 
           <FieldSeparator />
@@ -74,10 +77,12 @@ const ItemInsertPage = () => {
               <Field>
                 <FieldLabel>Stock</FieldLabel>
                 <Input type="number" {...register("stock", { valueAsNumber: true })} />
+                <FieldError>{errors.stock?.message}</FieldError>
               </Field>
               <Field>
                 <FieldLabel>Price</FieldLabel>
                 <Input type="number" {...register("price", { valueAsNumber: true })} />
+                <FieldError>{errors.price?.message}</FieldError>
               </Field>
             </FieldGroup>
           </FieldSet>
@@ -85,6 +90,7 @@ const ItemInsertPage = () => {
           <FieldSet>
             <FieldLegend>Sizes</FieldLegend>
             <SizeSelector selectedSizes={watchedSizes} onSizeToggle={handleSizeToggle} />
+            {errors.selectedSizes && <FieldError>{errors.selectedSizes.message}</FieldError>}
           </FieldSet>
 
           <Button type="submit" disabled={insertMutation.isPending} className="w-full">
