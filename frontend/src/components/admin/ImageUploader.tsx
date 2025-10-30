@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { useRef, useState} from "react";
 import { FaCloudUploadAlt } from "react-icons/fa";
+import { Button } from "../ui/button";
 
 type ImageUploaderProps = {
   onUpload: (file: File) => void;
@@ -55,16 +56,15 @@ const ImageUploader = ({ onUpload }: ImageUploaderProps) => {
         style={{ display: "none" }} // Hide the input
       />
       <FaCloudUploadAlt className="w-16 h-16" />
-      <p className="font-poppins text-xl mt-2">Drop your file here</p>
-      <p className="font-poppins text-xl">Or</p>
-      <button
-        className="bg-black text-white px-8 py-2 rounded-full font-poppins mt-6"
+      <p className="text-xl mt-2">Drop your file here</p>
+      <p className="text-xl">Or</p>
+      <Button className="px-6 mt-2"
         onClick={() => {
           handleClick();
         }}
       >
         Upload
-      </button>
+      </Button>
     </motion.div>
   );
 };

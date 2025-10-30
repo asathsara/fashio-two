@@ -1,4 +1,5 @@
 import type { Image } from "../../types/image";
+import { Button } from "../ui/button";
 
 type ImageCardProps = {
   image: Image,
@@ -17,12 +18,12 @@ const ImageCard = ({ image, onDelete }: ImageCardProps) => {
         />
       </div>
       <div className="flex flex-1 mt-4">
-        <button
+        <Button
           onClick={() => onDelete(image._id)}
-          className="bg-black text-white p-2 w-full h-full rounded-full"
+          className="w-full"
         >
           Delete
-        </button>
+        </Button>
       </div>
     </div>
   );
