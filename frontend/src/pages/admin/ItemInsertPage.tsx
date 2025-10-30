@@ -1,35 +1,40 @@
-import React from "react";
-import { useForm, Controller } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+"use client"
 
-import { itemSchema } from "@/schemas/itemSchema";
-import { useInsertItem } from "@/hooks/useItems";
-import { useCategories } from "@/hooks/useCategories";
+import React from "react"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { z } from "zod"
 
-import { Button } from "@/components/ui/button";
+import { itemSchema } from "@/schemas/itemSchema"
+import { useInsertItem } from "@/hooks/useItems"
+import { useCategories } from "@/hooks/useCategories"
+
+import { toast } from "sonner"
 import {
   Field,
+  FieldSet,
+  FieldGroup,
   FieldLabel,
   FieldError,
-  FieldContent,
-} from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+  FieldLegend,
+  FieldDescription,
+  FieldSeparator,
+} from "@/components/ui/field"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import CategorySelector from "@/components/admin/CategorySelector"
+import SizeSelector from "@/components/admin/SizeSelector"
+import ImageUploaderGroup from "@/components/admin/ImageUploaderGroup"
 
-import CategorySelector from "@/components/admin/CategorySelector";
-import SizeSelector from "@/components/admin/SizeSelector";
-import ImageUploaderGroup from "@/components/admin/ImageUploaderGroup";
-import { toast } from "sonner";
-
-type ItemForm = z.infer<typeof itemSchema>;
+type ItemForm = z.infer<typeof itemSchema>
 
 const ItemInsertPage: React.FC = () => {
-  const { data: categories = [] } = useCategories();
-  const insertMutation = useInsertItem();
+  const { data: categories = [] } = useCategories()
+  const insertMutation = useInsertItem()
 
   const {
-    control,
+    register,
     handleSubmit,
     watch,
     setValue,
@@ -47,167 +52,147 @@ const ItemInsertPage: React.FC = () => {
       selectedSizes: [],
       images: [],
     },
-  });
+  })
 
-  const watchedSizes = watch("selectedSizes");
-  const watchedImages = watch("images");
+  const watchedSizes: string[] = watch("selectedSizes")
+  const watchedImages = watch("images")
 
+  // Handlers
   const onSubmit = async (data: ItemForm) => {
-    const formData = new FormData();
-    data.images.forEach((file) => formData.append("images", file));
-    formData.append("name", data.name);
-    formData.append("description", data.description);
-    formData.append("category", data.category);
-    formData.append("subCategory", data.subCategory);
-    formData.append("price", data.price.toString());
-    formData.append("stock", data.stock.toString());
-    formData.append("selectedSizes", JSON.stringify(data.selectedSizes));
+    const formData = new FormData()
+    data.images.forEach((file) => formData.append("images", file))
+    formData.append("name", data.name)
+    formData.append("description", data.description)
+    formData.append("category", data.category)
+    formData.append("subCategory", data.subCategory)
+    formData.append("price", data.price.toString())
+    formData.append("stock", data.stock.toString())
+    formData.append("selectedSizes", JSON.stringify(data.selectedSizes))
 
-    insertMutation.mutate(formData);
+    insertMutation.mutate(formData)
+    toast.success("Item added successfully!")
+    reset()
+  }
 
-    toast.success("Item added successfully!");
-    reset();
-  };
-
-  const handleImageChange = (file: File | null) => {
-    if (!file) return;
-    setValue("images", [...(watchedImages || []), file]);
-  };
+  const handleImageChange = (_key: unknown, file: File | null) => {
+    if (!file) return
+    setValue("images", [...(watchedImages || []), file])
+  }
 
   const handleSizeToggle = (size: string) => {
     const updated = (watchedSizes || []).includes(size)
       ? watchedSizes.filter((s) => s !== size)
-      : [...(watchedSizes || []), size];
-    setValue("selectedSizes", updated);
-  };
+      : [...(watchedSizes || []), size]
+    setValue("selectedSizes", updated)
+  }
 
+  // 🧠 UI
   return (
-    <>
+    <div className="max-w-5xl">
       <h1 className="font-poppins text-3xl font-semibold">Item Insert</h1>
 
-      <div className="flex flex-wrap mt-8">
-        {/* Image Uploader */}
-        <div className="flex-1 mr-4">
-          <ImageUploaderGroup onImageChange={handleImageChange} />
-        </div>
+      <form onSubmit={handleSubmit(onSubmit)} className="mt-8">
+        <div className="flex flex-col gap-6">
+          <FieldGroup>
+            {/* Image Upload */}
+            <FieldSet>
+              <FieldLegend>Images</FieldLegend>
+              <FieldDescription>
+                Upload high-quality product images (PNG, JPG).
+              </FieldDescription>
+              <ImageUploaderGroup onImageChange={handleImageChange} />
+              {errors.images && (
+                <FieldError>{errors.images.message}</FieldError>
+              )}
+            </FieldSet>
 
-        <div className="flex-1 ml-0 md:ml-8">
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            {/* Name */}
-            <Controller
-              name="name"
-              control={control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
+
+            {/* Basic Details */}
+            <FieldSet>
+              <FieldLegend>Item Details</FieldLegend>
+              <FieldGroup>
+                <Field>
                   <FieldLabel htmlFor="name">Item Name</FieldLabel>
-
-                  <Input id="name" {...field} placeholder="Enter item name" />
-
-                  <FieldError>{fieldState.error?.message}</FieldError>
+                  <Input id="name" placeholder="Enter item name" {...register("name")} />
+                  <FieldError>{errors.name?.message}</FieldError>
                 </Field>
-              )}
-            />
 
-            {/* Description */}
-            <Controller
-              name="description"
-              control={control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
+                <Field>
                   <FieldLabel htmlFor="description">Description</FieldLabel>
-                  <FieldContent>
-                    <Textarea
-                      id="description"
-                      {...field}
-                      placeholder="Enter item description"
-                    />
-                  </FieldContent>
-                  <FieldError>{fieldState.error?.message}</FieldError>
+                  <Textarea
+                    id="description"
+                    placeholder="Enter item description"
+                    {...register("description")}
+                  />
+                  <FieldError>{errors.description?.message}</FieldError>
                 </Field>
-              )}
-            />
 
-            {/* Category + SubCategory */}
-            <div>
-              <FieldLabel className="block mb-1">Category</FieldLabel>
-              <CategorySelector
-                categories={categories}
-                category={watch("category")}
-                subCategory={watch("subCategory")}
-                onCategoryChange={(e) =>
-                  setValue("category", e.target.value, { shouldValidate: true })
-                }
-                onSubCategoryChange={(e) =>
-                  setValue("subCategory", e.target.value, {
-                    shouldValidate: true,
-                  })
-                }
-              />
-              {errors.category && (
-                <p className="text-red-500 text-sm">
-                  {errors.category.message}
-                </p>
-              )}
-              {errors.subCategory && (
-                <p className="text-red-500 text-sm">
-                  {errors.subCategory.message}
-                </p>
-              )}
-            </div>
+                <Field>
+                  <FieldLabel>Category</FieldLabel>
+                  <CategorySelector
+                    categories={categories}
+                    category={watch("category") ? categories.find((cat) => cat._id === watch("category")) || null : null}
+                    subCategory={watch("subCategory") || null}
+                    onCategoryChange={(value) => setValue("category", value, { shouldValidate: true })}
+                    onSubCategoryChange={(value) => setValue("subCategory", value, { shouldValidate: true })}
+                  />
 
-            {/* Stock */}
-            <Controller
-              name="stock"
-              control={control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
+                  {errors.category && <FieldError>{errors.category.message}</FieldError>}
+                  {errors.subCategory && (
+                    <FieldError>{errors.subCategory.message}</FieldError>
+                  )}
+                </Field>
+              </FieldGroup>
+            </FieldSet>
+
+            <FieldSeparator />
+
+            {/* Stock & Price */}
+            <FieldSet>
+              <FieldLegend>Inventory</FieldLegend>
+              <FieldGroup className="grid grid-cols-2 gap-4">
+                <Field>
                   <FieldLabel htmlFor="stock">Stock</FieldLabel>
-                  <FieldContent>
-                    <Input id="stock" {...field} type="number" />
-                  </FieldContent>
-                  <FieldError>{fieldState.error?.message}</FieldError>
+                  <Input id="stock" type="number" {...register("stock", { valueAsNumber: true })} />
+                  <FieldError>{errors.stock?.message}</FieldError>
                 </Field>
-              )}
-            />
 
-            {/* Price */}
-            <Controller
-              name="price"
-              control={control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
+                <Field>
                   <FieldLabel htmlFor="price">Price</FieldLabel>
-                  <FieldContent>
-                    <Input id="price" {...field} type="number" step="0.01" />
-                  </FieldContent>
-                  <FieldError>{fieldState.error?.message}</FieldError>
+                  <Input
+                    id="price"
+                    type="number"
+                    step="0.01"
+                    {...register("price", { valueAsNumber: true })}
+                  />
+                  <FieldError>{errors.price?.message}</FieldError>
                 </Field>
-              )}
-            />
+              </FieldGroup>
+            </FieldSet>
+
+            <FieldSeparator />
 
             {/* Sizes */}
-            <div>
-              <FieldLabel className="block mb-1">Sizes</FieldLabel>
-              <SizeSelector
-                selectedSizes={watchedSizes}
-                onSizeToggle={handleSizeToggle}
-              />
+            <FieldSet>
+              <FieldLegend>Sizes</FieldLegend>
+              <SizeSelector selectedSizes={watchedSizes} onSizeToggle={handleSizeToggle} />
               {errors.selectedSizes && (
-                <p className="text-red-500 text-sm">
-                  {errors.selectedSizes.message}
-                </p>
+                <FieldError>{errors.selectedSizes.message}</FieldError>
               )}
-            </div>
+            </FieldSet>
 
             {/* Submit */}
-            <Button type="submit" className="w-full mt-4" disabled={insertMutation.isPending}>
-              {insertMutation.isPending ? "Submitting…" : "Submit"}
-            </Button>
-          </form>
-        </div>
-      </div>
-    </>
-  );
-};
+            <Field orientation="horizontal" className="mt-6">
+              <Button type="submit" disabled={insertMutation.isPending} className="w-full">
+                {insertMutation.isPending ? "Submitting…" : "Submit"}
+              </Button>
+            </Field>
 
-export default ItemInsertPage;
+          </FieldGroup>
+        </div>
+      </form>
+    </div>
+  )
+}
+
+export default ItemInsertPage
