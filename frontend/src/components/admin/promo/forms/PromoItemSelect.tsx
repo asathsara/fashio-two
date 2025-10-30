@@ -1,18 +1,20 @@
-import { Controller } from "react-hook-form";
+import { Controller, type Control, type FieldValues, type Path } from "react-hook-form";
 import { Label } from "@/components/ui/label";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
-import type { PromoSelectableItem } from "@/types/promo";
+import { usePromoData } from "@/hooks/usePromoData";
 
 
-interface Props {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  control: any;
-  items: PromoSelectableItem[];
+interface Props<T extends FieldValues> {
+  name: Path<T>; 
+  control: Control<T>;
 }
 
-export const PromoItemSelect = ({ control, items }: Props) => (
+export const PromoItemSelect = <T extends FieldValues>({ name, control }: Props<T>) => {
+  const { items } = usePromoData();
+  
+  return (
   <Controller
-    name="item"
+    name={name}
     control={control}
     render={({ field, fieldState }) => (
       <div className="space-y-2">
@@ -24,7 +26,7 @@ export const PromoItemSelect = ({ control, items }: Props) => (
           <SelectContent>
             {items.map((item) => (
               <SelectItem key={item._id} value={item._id!}>
-                {item.name} ({item.category})
+                {item.name} ({item.category.name})
               </SelectItem>
             ))}
           </SelectContent>
@@ -35,4 +37,5 @@ export const PromoItemSelect = ({ control, items }: Props) => (
       </div>
     )}
   />
-);
+  );
+};

@@ -1,4 +1,5 @@
 import type { Image } from "../../types/image";
+import { Button } from "../ui/button";
 
 type ImageCardProps = {
   image: Image,
@@ -11,18 +12,18 @@ const ImageCard = ({ image, onDelete }: ImageCardProps) => {
     >
       <div className="flex flex-6 overflow-hidden">
         <img
-          src={import.meta.env.VITE_API_UPLOAD_IMAGES_URL + image.url} // Use the base URL from env file for dynamic API URLs
-          alt="Uploaded"
+          src={import.meta.env.VITE_API_UPLOAD_IMAGES_URL + image._id} // Use the base URL from env file for dynamic API URLs
+          alt={image.filename}
           className="w-full h-full object-cover rounded-xl"
         />
       </div>
       <div className="flex flex-1 mt-4">
-        <button
+        <Button
           onClick={() => onDelete(image._id)}
-          className="bg-black text-white p-2 w-full h-full rounded-full"
+          className="w-full"
         >
           Delete
-        </button>
+        </Button>
       </div>
     </div>
   );

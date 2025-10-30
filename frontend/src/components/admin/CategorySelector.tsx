@@ -1,62 +1,84 @@
-import React from "react";
-import type { Category } from "../../types/category";
+import * as React from "react"
+import type { Category } from "../../types/category"
+import {
+  Field,
+  FieldGroup,
+  FieldLabel,
+  FieldDescription,
+} from "@/components/ui/field"
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select"
 
 type CategorySelectorProps = {
-  categories: Category[];
-  category: Category | null;
-  subCategory: string | null;
-  onCategoryChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-  onSubCategoryChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  categories: Category[]
+  category: Category | null
+  subCategoryId: string | null
+  onCategoryChange: (value: string) => void
+  onSubCategoryChange: (value: string) => void
 }
 
-const CategorySelector = ({
+const CategorySelector: React.FC<CategorySelectorProps> = ({
   categories,
   category,
-  subCategory,
+  subCategoryId,
   onCategoryChange,
   onSubCategoryChange,
-}: CategorySelectorProps) => (
+}) => {
+  return (
+    <FieldGroup className="mt-4 space-y-4">
+      {/* Category */}
+      <Field>
+        <FieldLabel>Category</FieldLabel>
+        <Select
+          value={category?._id || ""}
+          onValueChange={(value) => onCategoryChange(value)}
+        >
+          <SelectTrigger className="w-64">
+            <SelectValue placeholder="Select category" />
+          </SelectTrigger>
+          <SelectContent>
+            {categories.map((cat) => (
+              <SelectItem key={cat._id} value={cat._id}>
+                {cat.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <FieldDescription>
+          Choose a category for your fashionable masterpiece
+        </FieldDescription>
+      </Field>
 
-  <div className="flex-row mt-4 flex justify-between w-3/4 flex-wrap">
-    {/* Category Select */}
-    <div className="mr-2">
-      <p className="font-poppins text-lg mt-4">Category</p>
-      <select
-        className="w-64 border border-gray-300 outline-none rounded-md px-4 py-2 bg-white cursor-pointer"
-        value={category?._id || ""}
-        onChange={onCategoryChange}
-      >
-        <option value="" disabled>
-          Select an option
-        </option>
-        {categories.map((cat) => (
-          <option key={cat._id} value={cat._id}>
-            {cat.name}
-          </option>
-        ))}
-      </select>
-    </div>
+      {/* Sub Category */}
+      <Field>
+        <FieldLabel>Subcategory</FieldLabel>
+        <Select
+          value={subCategoryId || ""}
+          onValueChange={(value) => onSubCategoryChange(value)}
+          disabled={!category}
+        >
+          <SelectTrigger className="w-64">
+            <SelectValue placeholder="Select subcategory" />
+          </SelectTrigger>
+          <SelectContent>
+            {category?.subCategories?.map((sub) => (
+              <SelectItem key={sub._id} value={sub._id}>
+                {sub.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <FieldDescription>
+          Select a subcategory — only available after choosing a category.
+        </FieldDescription>
+      </Field>
+    </FieldGroup>
+  )
+}
 
-    {/* Subcategory Select */}
-    <div>
-      <p className="font-poppins text-lg mt-4">Sub Category</p>
-      <select
-        className="w-64 border border-gray-300 outline-none rounded-md px-4 py-2 bg-white cursor-pointer"
-        value={subCategory || ""}
-        onChange={onSubCategoryChange}
-        disabled={!category}
-      >
-        <option value="" disabled>
-          Select an option
-        </option>
-        {category?.subCategories?.map((subItem) => (
-          <option key={subItem.name} value={subItem.name}>
-            {subItem.name}
-          </option>
-        ))}
-      </select>
-    </div>
-  </div>
-);
-
-export default CategorySelector;
+export default CategorySelector

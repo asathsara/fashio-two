@@ -10,8 +10,8 @@ const ItemCard = ({ item }: ItemCardProps) => {
       <img
         className="rounded-t-md md:h-72 h-64 w-full object-cover"
         src={
-          item.urls && item.urls.length > 0
-            ? import.meta.env.VITE_API_UPLOAD_IMAGES_URL + item.urls[0]
+          item.images && item.images.length > 0
+            ? `${import.meta.env.VITE_API_BASE_URL}/items/${item._id}/image/0`
             : ""
         }
         alt={item.name}

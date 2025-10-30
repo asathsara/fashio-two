@@ -1,50 +1,28 @@
-const express = require("express");
-const multer = require("multer");
-const fs = require("fs");
-const Image = require("../models/image");
+import { Router } from "express";
+import multer from "multer";
+import {
+  getAllImages,
+  uploadImage,
+  getImageById,
+  deleteImage
+} from "../controllers/imageController.js";
 
-const router = express.Router();
+const router = Router();
 
-// Configure Multer
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, "./uploads/slider/"),
-  filename: (req, file, cb) => cb(null, Date.now() + "-" + file.originalname),
-});
+// Use memory storage to store files in RAM before saving to MongoDB
+const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
-// Fetch all images
-router.get("/", async (req, res) => {
-  try {
-    const images = await Image.find();
-    res.json(images);
-  } catch (error) {
-    res.status(500).json({ error: "Error fetching images" });
-  }
-});
+// Fetch all images (metadata only)
+router.get("/", getAllImages);
 
 // Upload an image
-router.post("/uploads", upload.single("image"), async (req, res) => {
-  try {
-    const newImage = new Image({ url: `/uploads/slider/${req.file.filename}` });
-    await newImage.save();
-    res.json(newImage);
-  } catch (error) {
-    res.status(500).json({ error: "Error uploading image" });
-  }
-});
+router.post("/uploads", upload.single("image"), uploadImage);
+
+// Serve image by ID
+router.get("/:id", getImageById);
 
 // Delete an image
-router.delete("/:id", async (req, res) => {
-  try {
-    const image = await Image.findById(req.params.id);
-    if (!image) return res.status(404).json({ error: "Image not found" });
+router.delete("/:id", deleteImage);
 
-    fs.unlinkSync(`./uploads/slider/${image.url.split("/").pop()}`);
-    await Image.findByIdAndDelete(req.params.id);
-    res.json({ message: "Image deleted" });
-  } catch (error) {
-    res.status(500).json({ error: "Error deleting image" });
-  }
-});
-
-module.exports = router;
+export default router;

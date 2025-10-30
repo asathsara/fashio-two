@@ -1,6 +1,7 @@
 import type { PromoFormData } from "@/schemas/promoSchema";
 import type { Promo,  } from "@/types/promo";
 
+// Map form data to Promo type expected by the backend
 export const mapFormToPromo = (data: PromoFormData): Omit<Promo, "_id"> => ({
   item: data.item,
   startDate: data.startDate.toISOString().split("T")[0],

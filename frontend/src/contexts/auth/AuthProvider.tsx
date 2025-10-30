@@ -1,54 +1,47 @@
-import { useState, useEffect, type ReactNode } from "react";
-import { AuthContext } from "./AuthContext";
-import type { User } from "../../types/auth";
+import { type ReactNode } from "react";
+import { AuthContext, type AuthContextType } from "./AuthContext";
+import { useCurrentUser, useForgotPassword, useGoogleLogin, useLogin, useLogout, useRegister, useResendVerification, useResetPassword, useVerifyEmail } from "@/hooks/useAuthQueries.ts";
 
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+interface AuthProviderProps {
+  children: ReactNode;
+}
 
-    useEffect(() => {
-      
-    login('hello@example.com')
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      try {
-        setUser(JSON.parse(storedUser));
-      } catch (error) {
-        console.error("Failed to parse user from localStorage", error);
-        localStorage.removeItem("user");
-      }
-    }
-    setIsLoading(false);
-  }, []);
+export const AuthProvider = ({ children }: AuthProviderProps) => {
+  const { data: user, isLoading: loading } = useCurrentUser();
+  const isAuthenticated = !!user;
 
-  const login = async (email: string) => {
-    // Replace with real API later
-    const mockUser: User = {
-      id: "1",
-      email,
-      name: "Admin User",
-      role: "admin",
-    };
+  // Mutations
+  const login = useLogin();
+  const loginWithGoogle = useGoogleLogin();
+  const logout = useLogout();
+  const register = useRegister();
+  const forgotPassword = useForgotPassword();
+  const resetPassword = useResetPassword();
+  const verifyEmail = useVerifyEmail();
+  const resendVerificationEmail = useResendVerification();
 
-      setUser(mockUser);
-    localStorage.setItem("user", JSON.stringify(mockUser));
-  };
+  const value: AuthContextType = {
+    user: user || null,
+    isAuthenticated,
+    loading,
 
-  const logout = () => {
-    setUser(null);
-    localStorage.removeItem("user");
+    // Each of these wraps the mutateAsync call to match AuthContextType
+    login: async (email, password) => login.mutateAsync({ email, password }),
+    loginWithGoogle: async () =>
+      loginWithGoogle.mutateAsync(),
+    register: async (name, email, password) =>
+      register.mutateAsync({ name, email, password }),
+    logout: async () => logout.mutateAsync(),
+    forgotPassword: async (email) => forgotPassword.mutateAsync(email),
+    resetPassword: async (token, newPassword) =>
+      resetPassword.mutateAsync({ token, newPassword }),
+    verifyEmail: async (token) => verifyEmail.mutateAsync(token),
+    resendVerificationEmail: async () => resendVerificationEmail.mutateAsync(),
   };
 
   return (
     <AuthContext.Provider
-      value={{
-        user,
-        isAuthenticated: !!user,
-        isLoading,
-        login,
-        logout,
-      }}
-    >
+      value={value}>
       {children}
     </AuthContext.Provider>
   );

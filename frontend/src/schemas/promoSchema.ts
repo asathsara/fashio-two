@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const promoSchema = z.object({
-  item: z.string().nonempty("Please select an item"),
+  item: z.string().nonempty("Please select an item"), // Item ID as string
   startDate: z.date(),
   endDate: z.date(),
   discount: z

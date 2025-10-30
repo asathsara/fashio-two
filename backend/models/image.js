@@ -1,7 +1,10 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
-const imageSchema = new mongoose.Schema({
-  url: String,
+export const imageSchema = new mongoose.Schema({
+  filename: { type: String, required: true },
+  data: { type: Buffer, required: true },
+  contentType: { type: String, required: true },
+  createdAt: { type: Date, default: Date.now },
 });
 
-module.exports = mongoose.model("Image", imageSchema);
+export default mongoose.model("Image", imageSchema);

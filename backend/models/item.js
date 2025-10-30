@@ -1,14 +1,17 @@
-const mongoose = require("mongoose");
+import { Schema, model } from "mongoose";
+import { imageSchema } from "./image.js";
 
-const ItemSchema = new mongoose.Schema({
-  urls: { type: [String], required: true },
+const ItemSchema = new Schema({
+  images: { type: [imageSchema], required: true }, // Array of image objects
   name: { type: String, required: true },
   price: { type: Number, required: true },
   stock: { type: Number, required: true },
-  category: { type: String, required: true },
-  subCategory: { type: String, required: true },
-  sizes: {type:[String] , required:true},
+  category: { type: Schema.Types.ObjectId, ref: 'Category', required: true }, // Reference to Category
+  subCategoryId: { type: Schema.Types.ObjectId, required: true }, // Store subcategory _id
+  subCategoryName: { type: String, required: true }, // Store name for quick access
+  sizes: { type: [String], required: true },
   description: { type: String },
+  createdAt: { type: Date, default: Date.now },
 });
 
-module.exports = mongoose.model("Item", ItemSchema);
+export default model("Item", ItemSchema);

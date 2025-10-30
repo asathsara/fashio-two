@@ -25,4 +25,16 @@ const API_ENDPOINTS = {
 
 };
 
+export const AUTH_ENDPOINTS = {
+  LOGIN: '/auth/login',
+  REGISTER: '/auth/register',
+  GOOGLE_LOGIN: '/auth/google',
+  LOGOUT: '/auth/logout',
+  FORGOT_PASSWORD: '/auth/forgot-password',
+  RESET_PASSWORD: '/auth/reset-password',
+  VERIFY_EMAIL: '/auth/verify-email',
+  RESEND_VERIFICATION: '/auth/resend-verification',
+  ME: '/auth/me',
+};
+
 export default API_ENDPOINTS;
