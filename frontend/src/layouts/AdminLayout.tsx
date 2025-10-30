@@ -1,21 +1,19 @@
-import { Outlet } from 'react-router-dom';
-import Navbar from '../components/admin/Navbar';
-import NavigationRail from '../components/admin/NavigationRail';
-import { useState } from 'react';
-import NavigationDrawer from '../components/common/NavigationDrawer';
-import { adminNavRoutes } from '../config/routes';
+import { Outlet } from 'react-router-dom'
+import Navbar from '../components/admin/Navbar'
+import NavigationRail from '../components/admin/NavigationRail'
+import { useState } from 'react'
+import NavigationDrawer from '../components/common/NavigationDrawer'
+import { adminNavRoutes } from '../config/routes'
 
 const AdminLayout = () => {
-    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+    const [isDrawerOpen, setIsDrawerOpen] = useState(false)
 
-    const toggleDrawer = () => {
-        setIsDrawerOpen(!isDrawerOpen);
-    };
+    const toggleDrawer = () => setIsDrawerOpen(!isDrawerOpen)
 
     return (
-        <div className="flex h-screen bg-gray-50">
+        <div className="flex h-screen">
             {/* Desktop Navigation Rail */}
-            <div className="hidden md:block">
+            <div className="hidden md:block h-full">
                 <NavigationRail routes={adminNavRoutes} />
             </div>
 
@@ -26,15 +24,17 @@ const AdminLayout = () => {
                 closeNav={() => setIsDrawerOpen(false)}
             />
 
-            {/* Main Content Area */}
-            <div className="flex flex-col flex-1 overflow-hidden">
+            {/* Main Content */}
+            <div className="flex flex-col flex-1">
                 <Navbar openNav={toggleDrawer} />
-                <main className="flex-1 overflow-y-auto pt-20 p-6">
+
+                {/* Only this scrolls */}
+                <main className="flex-1 overflow-y-auto p-6 mt-20">
                     <Outlet />
                 </main>
             </div>
         </div>
-    );
-};
+    )
+}
 
-export default AdminLayout;
+export default AdminLayout

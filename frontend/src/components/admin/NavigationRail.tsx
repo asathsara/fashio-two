@@ -10,7 +10,7 @@ const NavigationRail = ({ routes }: RailProps) => {
     <div
       className={`pt-20 hidden md:flex min-w-44 h-screen md:flex-col items-start pb-4 mx-4`}
     >
-      <ul className="list-none flex flex-col gap-2 w-full mt-4 font-poppins">
+      <ul className="list-none flex flex-col gap-2 w-full mt-4">
         {routes.map((route) => (
           <NavLink
             key={route.path}

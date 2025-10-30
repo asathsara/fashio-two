@@ -26,7 +26,7 @@ export const PromoItemSelect = <T extends FieldValues>({ name, control }: Props<
           <SelectContent>
             {items.map((item) => (
               <SelectItem key={item._id} value={item._id!}>
-                {item.name} ({item.category})
+                {item.name} ({item.category.name})
               </SelectItem>
             ))}
           </SelectContent>

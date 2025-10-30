@@ -3,6 +3,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { User, Mail, Shield, Calendar, Edit2, Save, X } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 interface ProfileHeaderProps {
     user: {
@@ -35,6 +36,8 @@ export const ProfileHeader = ({
             .slice(0, 2);
     };
 
+    const navigate = useNavigate()
+
     return (
         <Card className="mb-8 shadow-lg border-0">
             <CardContent className="pt-6">
@@ -52,7 +55,14 @@ export const ProfileHeader = ({
                             <h2 className="text-3xl font-bold text-gray-900">{user.name}</h2>
                             <Badge
                                 variant={user.role === 'admin' ? 'default' : 'secondary'}
-                                className="w-fit mx-auto md:mx-0"
+                                className={`w-fit mx-auto md:mx-0 ${user.role === 'admin' ? 'cursor-pointer' : ''}`}
+                                onClick={
+                                    user.role === 'admin'
+                                        ? () => {
+                                              navigate('/admin')
+                                          }
+                                        : undefined
+                                }
                             >
                                 {user.role === 'admin' ? (
                                     <>
