@@ -32,7 +32,7 @@ export const deleteCategory = async (req, res) => {
 
 // Delete a subcategory
 export const deleteSubCategory = async (req, res) => {
-    const { id, subItemName } = req.params; // Correct destructuring
+    const { id, subItemName } = req.params;
 
     // Find the category
     const category = await Category.findById(id);
@@ -40,10 +40,12 @@ export const deleteSubCategory = async (req, res) => {
         return res.status(404).send({ error: "Category not found" });
     }
 
-    // Remove the sub-item
+    // Remove the sub-item by _id (if subItemName is actually the _id) or by name
     const initialLength = category.subCategories.length;
+
+    // Try to remove by _id first, then by name
     category.subCategories = category.subCategories.filter(
-        (subItem) => subItem.name !== subItemName
+        (subItem) => subItem._id.toString() !== subItemName && subItem.name !== subItemName
     );
 
     // Check if a sub-item was actually deleted

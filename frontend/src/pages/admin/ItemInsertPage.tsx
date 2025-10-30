@@ -60,12 +60,12 @@ const ItemInsertPage = () => {
             <CategorySelector
               categories={categories}
               category={watch("category") ? categories.find((c) => c._id === watch("category")) || null : null}
-              subCategory={watch("subCategory") || null}
+              subCategoryId={watch("subCategoryId") || null}
               onCategoryChange={(val) => setValue("category", val, { shouldValidate: true })}
-              onSubCategoryChange={(val) => setValue("subCategory", val, { shouldValidate: true })}
+              onSubCategoryChange={(val) => setValue("subCategoryId", val, { shouldValidate: true })}
             />
             {errors.category && <FieldError>{errors.category.message}</FieldError>}
-            {errors.subCategory && <FieldError>{errors.subCategory.message}</FieldError>}
+            {errors.subCategoryId && <FieldError>{errors.subCategoryId.message}</FieldError>}
 
           </FieldSet>
 

@@ -1,8 +1,12 @@
 import { Schema, model } from "mongoose";
 
+const subCategorySchema = new Schema({
+  name: { type: String, required: true }
+}, { _id: true }); // Explicitly enable _id for subcategories
+
 export const categorySchema = new Schema({
-  name: String,
-  subCategories: [{ name: String }],
+  name: { type: String, required: true },
+  subCategories: [subCategorySchema],
 });
 
 export default model('Category', categorySchema);

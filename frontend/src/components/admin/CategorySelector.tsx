@@ -17,7 +17,7 @@ import {
 type CategorySelectorProps = {
   categories: Category[]
   category: Category | null
-  subCategory: string | null
+  subCategoryId: string | null
   onCategoryChange: (value: string) => void
   onSubCategoryChange: (value: string) => void
 }
@@ -25,7 +25,7 @@ type CategorySelectorProps = {
 const CategorySelector: React.FC<CategorySelectorProps> = ({
   categories,
   category,
-  subCategory,
+  subCategoryId,
   onCategoryChange,
   onSubCategoryChange,
 }) => {
@@ -58,7 +58,7 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({
       <Field>
         <FieldLabel>Subcategory</FieldLabel>
         <Select
-          value={subCategory || ""}
+          value={subCategoryId || ""}
           onValueChange={(value) => onSubCategoryChange(value)}
           disabled={!category}
         >
@@ -67,7 +67,7 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({
           </SelectTrigger>
           <SelectContent>
             {category?.subCategories?.map((sub) => (
-              <SelectItem key={sub.name} value={sub.name}>
+              <SelectItem key={sub._id} value={sub._id}>
                 {sub.name}
               </SelectItem>
             ))}

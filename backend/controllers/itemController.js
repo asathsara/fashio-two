@@ -17,11 +17,9 @@ export const addItem = async (req, res) => {
             return res.status(404).json({ message: "Category not found" });
         }
 
-        //  validate that the subcategory exists within the category
-        const subCategoryExists = category.subCategories.some(
-            sub => sub.name === req.body.subCategory
-        );
-        if (!subCategoryExists) {
+        // Validate that the subcategory exists within the category using the subcategory ID
+        const subCategory = category.subCategories.id(req.body.subCategoryId);
+        if (!subCategory) {
             return res.status(404).json({ message: "Subcategory not found in the selected category" });
         }
 
@@ -32,14 +30,15 @@ export const addItem = async (req, res) => {
             contentType: file.mimetype,
         }));
 
-        // Create a new Item instance using req.body and the image URLs
+        // Create a new Item instance
         const item = new Item({
             images: imageObjects,
             name: req.body.name,
             price: req.body.price,
             stock: req.body.stock,
-            category: req.body.category, // Now stores ObjectId
-            subCategory: req.body.subCategory,
+            category: req.body.category,
+            subCategoryId: subCategory._id,
+            subCategoryName: subCategory.name,
             sizes: req.body.sizes,
             description: req.body.description,
         });
@@ -61,7 +60,7 @@ export const getAllItems = async (req, res) => {
         // Retrieve all items from the database and populate category
         const items = await Item.find()
             .select("-images.data") // Exclude image buffer data
-            .populate('category', 'name'); // Populate category with name field
+            .populate('category', 'name subCategories'); // Populate category with name and subcategories
 
         // Respond with the list of items
         res.status(200).json(items);
