@@ -1,28 +1,21 @@
 import { motion } from "framer-motion";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import { MdClose } from "react-icons/md";
 
 type ImageUploaderSolidProps = {
   className?: string;
   onImageChange: (file: File | null) => void;
-  resetTrigger?: any; // can type this better depending on how you trigger resets
 }
 
 const ImageUploaderSolid = ({
   className = "",
   onImageChange,
-  resetTrigger,
 }: ImageUploaderSolidProps) => {
   
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-
-  // Reset when parent toggles trigger
-  useEffect(() => {
-    setUploadedImage(null);
-  }, [resetTrigger]);
 
   const handleClick = () => fileInputRef.current?.click();
 

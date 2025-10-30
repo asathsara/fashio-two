@@ -1,4 +1,3 @@
-"use client"
 import { useCategories } from "@/hooks/useCategories"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -33,9 +32,9 @@ const ItemInsertPage = () => {
   } = useItemForm()
 
   return (
-    <div className="max-w-5xl h-full">
+    <div className="max-w-5xl">
       <h1 className="text-3xl font-semibold">Item Insert</h1>
-      <form onSubmit={onSubmit} className="mt-8 space-y-6">
+      <form onSubmit={onSubmit} className="mt-8 space-y-6 min-h-144">
         <FieldGroup>
           <FieldSet>
             <FieldLegend>Images</FieldLegend>

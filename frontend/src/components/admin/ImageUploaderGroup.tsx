@@ -1,19 +1,18 @@
 import ImageUploaderSolid from "./ImageUploaderSolid";
 
 type ImageUploaderGroupProps = {
-  resetTrigger?: unknown;
+
   onImageChange: (key: "uploader1" | "uploader2" | "uploader3" | "uploader4", file: File | null) => void;
 };
 
 const UPLOAD_KEYS = ["uploader1", "uploader2", "uploader3", "uploader4"] as const;
 
 
-const ImageUploaderGroup: React.FC<ImageUploaderGroupProps> = ({ resetTrigger, onImageChange }) => {
+const ImageUploaderGroup: React.FC<ImageUploaderGroupProps> = ({  onImageChange }) => {
   return (
-    <div className="flex flex-col flex-1 mr-4">
+    <div className="flex flex-col mr-4">
       {/* First ImageUploader */}
       <ImageUploaderSolid
-        resetTrigger={resetTrigger}
         onImageChange={(file) => onImageChange("uploader1", file)}
       />
 
@@ -22,7 +21,6 @@ const ImageUploaderGroup: React.FC<ImageUploaderGroupProps> = ({ resetTrigger, o
         {UPLOAD_KEYS.slice(1).map((key, index) => (
           <div key={key} className={`flex-1 ${index > 0 ? "ml-4" : ""}`}>
             <ImageUploaderSolid
-              resetTrigger={resetTrigger}
               onImageChange={(file) => onImageChange(key, file)}
             />
           </div>

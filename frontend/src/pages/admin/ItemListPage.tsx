@@ -46,7 +46,7 @@ const ItemListPage = () => {
       ) : error ? (
         <ErrorMessage message="Failed to load items." />
       ) : (
-        <div className="w-full mt-8 overflow-x-auto">
+        <div className="w-full mt-8">
           {/* Header Row */}
           <div className="min-w-[1000px] grid grid-cols-8 gap-4 text-left font-semibold text-gray-700 px-4 py-4 bg-gray-100 rounded-md mb-2 font-poppins">
             <span>Image</span>
