@@ -34,7 +34,7 @@ const ItemInsertPage = () => {
   return (
     <div className="max-w-5xl">
       <h1 className="text-3xl font-semibold">Item Insert</h1>
-      <form onSubmit={onSubmit} className="mt-8 space-y-6 min-h-144">
+      <form onSubmit={onSubmit} className="mt-8 space-y-6">
         <FieldGroup>
           <FieldSet>
             <FieldLegend>Images</FieldLegend>
