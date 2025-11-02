@@ -12,6 +12,7 @@ import HomePage from "@/pages/client/HomePage";
 import PromoPage from "@/pages/client/PromoPage";
 import HelpPage from "@/pages/client/HelpPage";
 import ProfilePage from "@/pages/client/ProfilePage";
+import ItemDetailPage from "@/pages/client/ItemDetailPage";
 import VerifyEmailPage from "@/pages/client/auth/VerifyEmailPage";
 import ResetPasswordPage from "@/pages/client/auth/ResetPasswordPage";
 import ForgotPasswordPage from "@/pages/client/auth/ForgotPasswordPage";
@@ -37,6 +38,11 @@ export const publicRoutes: AppRoute[] = [
         label: "Promo",
         element: <PromoPage />,
         showInNav: true,
+    },
+    {
+        path: "/items/:id",
+        label: "Item Details",
+        element: <ItemDetailPage />,
     },
     {
         path: "/help",

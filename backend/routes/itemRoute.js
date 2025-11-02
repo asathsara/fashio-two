@@ -4,6 +4,7 @@ import multer, { memoryStorage } from "multer";
 import {
   addItem,
   getAllItems,
+  getItemById,
   deleteItem,
   getItemImage
 } from "../controllers/itemController.js";
@@ -28,6 +29,9 @@ router.post("/add", upload.array("images", 4), addItem);
 
 // Fetch all items
 router.get("/", getAllItems);
+
+// Get a single item by ID
+router.get("/:id", getItemById);
 
 // Delete an item
 router.delete("/:id", deleteItem);
