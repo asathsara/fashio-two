@@ -72,6 +72,25 @@ export const getAllItems = async (req, res) => {
     }
 };
 
+// Fetch a single item by ID
+export const getItemById = async (req, res) => {
+    try {
+        const item = await Item.findById(req.params.id)
+            .select("-images.data") // Exclude image buffer data
+            .populate('category', 'name subCategories'); // Populate category with name and subcategories
+
+        if (!item) {
+            return res.status(404).json({ message: "Item not found" });
+        }
+
+        // Respond with the item
+        res.status(200).json(item);
+    } catch (err) {
+        // Handle errors and respond appropriately
+        res.status(500).json({ message: "Failed to fetch item", error: err.message });
+    }
+};
+
 // Delete an item
 export const deleteItem = async (req, res) => {
     try {

@@ -1,13 +1,22 @@
 import type { Item } from "../../types/item";
+import { useNavigate } from "react-router-dom";
 
 type ItemCardProps = {
   item: Item;
 }
 
 const ItemCard = ({ item }: ItemCardProps) => {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate(`/items/${item._id}`);
+  };
+
   return (
-    <div className={`rounded-md border-1 border-x-gray-100 md:w-64 mr-10 mt-10 w-56 cursor-pointer`}>
-      <img
+    <div
+      onClick={handleClick}
+      className={`rounded-md border-1 border-x-gray-100 md:w-64 mr-10 mt-10 w-56 cursor-pointer hover:shadow-lg transition-shadow`}
+    >      <img
         className="rounded-t-md md:h-72 h-64 w-full object-cover"
         src={
           item.images && item.images.length > 0

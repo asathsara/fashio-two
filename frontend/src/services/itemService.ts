@@ -7,6 +7,11 @@ export const fetchItems = async () => {
   return response.data;
 };
 
+export const fetchItemById = async (id: string) => {
+  const response = await axiosInstance.get(API_ENDPOINTS.GET_ITEM(id));
+  return response.data;
+};
+
 export const insertItem = async (formData: FormData) => {
   const response = await axiosInstance.post(API_ENDPOINTS.ADD_ITEMS, formData, {
     headers: {
