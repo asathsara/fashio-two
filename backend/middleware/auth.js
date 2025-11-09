@@ -1,6 +1,6 @@
 import pkg from "jsonwebtoken";
 const { verify } = pkg;
-import User from '../models/user.js';
+import { User } from "../modules/auth/index.js";
 
 const protect = async (req, res, next) => {
     try {
