@@ -81,13 +81,12 @@ class ItemService {
         return image;
     }
 
-    // ==================== Delete ====================
+    // Delete
     async deleteItem(itemId) {
         const item = await Item.findByIdAndDelete(itemId);
         if (!item) {
             throw new Error('Item not found');
         }
-        return { message: 'Item deleted successfully' };
     }
 }
 

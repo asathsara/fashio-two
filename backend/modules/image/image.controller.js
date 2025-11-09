@@ -46,8 +46,9 @@ class ImageController {
     // Delete
     async deleteImage(req, res) {
         try {
-            const result = await imageService.deleteImage(req.params.id);
-            res.json(result);
+            await imageService.deleteImage(req.params.id);
+            res.status(204).send();
+            
         } catch (error) {
             console.error('Delete image error:', error);
             if (error.message === 'Image not found') {

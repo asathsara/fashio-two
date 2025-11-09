@@ -44,6 +44,7 @@ class CategoryController {
         try {
             await categoryService.deleteCategory(req.params.id);
             res.status(204).send();
+
         } catch (error) {
             console.error('Delete category error:', error);
             if (error.message === 'Category not found') {
@@ -58,6 +59,7 @@ class CategoryController {
             const { id, subItemName } = req.params;
             const result = await categoryService.deleteSubCategory(id, subItemName);
             res.send(result);
+            
         } catch (error) {
             console.error('Delete subcategory error:', error);
             if (error.message === 'Category not found' || error.message === 'Sub-item not found') {

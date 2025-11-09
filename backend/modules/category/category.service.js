@@ -1,9 +1,5 @@
 import Category from './category.model.js';
 
-/**
- * Category Service
- * Contains all business logic for category operations
- */
 class CategoryService {
     // Create
     async createCategory(name) {
@@ -45,7 +41,7 @@ class CategoryService {
         if (!category) {
             throw new Error('Category not found');
         }
-        return { message: 'Category deleted successfully' };
+        
     }
 
     async deleteSubCategory(categoryId, subItemIdentifier) {

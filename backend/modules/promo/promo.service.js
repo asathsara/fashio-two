@@ -19,7 +19,7 @@ class PromoService {
         return promo;
     }
 
-    // ==================== Read ====================
+    // Read
     async getAllPromos() {
         const promos = await Promo.find().populate("item");
         return promos;
@@ -33,13 +33,12 @@ class PromoService {
         return promo;
     }
 
-    // ==================== Delete ====================
+    // Delete
     async deletePromo(promoId) {
         const promo = await Promo.findByIdAndDelete(promoId);
         if (!promo) {
             throw new Error('Promo not found');
         }
-        return { message: 'Promo deleted successfully' };
     }
 }
 

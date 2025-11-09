@@ -63,8 +63,9 @@ class ItemController {
     // Delete
     async deleteItem(req, res) {
         try {
-            const result = await itemService.deleteItem(req.params.id);
-            res.status(200).json(result);
+            await itemService.deleteItem(req.params.id);
+            res.status(204).send();
+            
         } catch (error) {
             console.error('Delete item error:', error);
             if (error.message === 'Item not found') {

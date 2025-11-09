@@ -1,11 +1,7 @@
 import Image from './image.model.js';
 
-/**
- * Image Service
- * Contains all business logic for image operations
- */
 class ImageService {
-    // ==================== Create ====================
+    // Create
     async uploadImage(file) {
         if (!file) {
             throw new Error('No file uploaded');
@@ -25,7 +21,7 @@ class ImageService {
         };
     }
 
-    // ==================== Read ====================
+    // Read
     async getAllImages() {
         const images = await Image.find().select("-data");
         return images;
@@ -39,13 +35,12 @@ class ImageService {
         return image;
     }
 
-    // ==================== Delete ====================
+    // Delete
     async deleteImage(imageId) {
         const image = await Image.findByIdAndDelete(imageId);
         if (!image) {
             throw new Error('Image not found');
         }
-        return { message: 'Image deleted successfully' };
     }
 }
 
