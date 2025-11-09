@@ -14,7 +14,7 @@ export const uploadImage = async (formData: FormData): Promise<Image> => {
   return response.data;
 };
 
-export const deleteImage = async (id: string): Promise<{ message: string }> => {
-  const response = await axiosInstance.delete(API_ENDPOINTS.DELETE_IMAGE(id));
-  return response.data;
+export const deleteImage = async (id: string): Promise<void> => {
+
+  await axiosInstance.delete(API_ENDPOINTS.DELETE_IMAGE(id));
 };

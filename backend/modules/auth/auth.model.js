@@ -1,6 +1,7 @@
 import { Schema, model } from 'mongoose';
 import { genSalt, hash, compare } from 'bcryptjs';
 
+
 const userSchema = new Schema({
     name: {
         type: String,
@@ -47,6 +48,7 @@ const userSchema = new Schema({
     timestamps: true
 });
 
+// Middleware 
 // Hash password before saving
 userSchema.pre('save', async function (next) {
     if (!this.isModified('password')) return next();
@@ -60,6 +62,7 @@ userSchema.pre('save', async function (next) {
     }
 });
 
+// Instance Methods
 // Method to compare password
 userSchema.methods.comparePassword = async function (candidatePassword) {
     return await compare(candidatePassword, this.password);
@@ -81,7 +84,7 @@ userSchema.methods.generateResetToken = function () {
     return token;
 };
 
-// Remove password from JSON response
+// Remove sensitive data from JSON response
 userSchema.methods.toJSON = function () {
     const user = this.toObject();
     delete user.password;

@@ -3,23 +3,19 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import path from 'path';
-import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 
-import imageRoutes from "./routes/imageRoutes.js";
-import categoryRoutes from "./routes/categoryRoutes.js";
-import promoRoutes from "./routes/promoRoutes.js";
-import itemRoutes from "./routes/itemRoute.js";
-import authRoutes from './routes/authRoutes.js';
 
 import passport from './config/passport.js';
 import session from 'express-session';
+import { authRoutes } from './modules/auth/index.js';
+import { categoryRoutes } from './modules/category/index.js';
+import { itemRoutes } from './modules/item/index.js';
+import { imageRoutes } from './modules/image/index.js';
+import { promoRoutes } from './modules/promo/index.js';
 
 dotenv.config();
 
-// recreate __dirname in ESM
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 const app = express();
 
@@ -50,8 +46,6 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Serve static files
-//app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/fashio-two')
