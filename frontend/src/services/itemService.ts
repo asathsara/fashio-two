@@ -1,13 +1,14 @@
 
+import type { Item } from "@/types/item";
 import axiosInstance from "./api";
 import API_ENDPOINTS from "./endpoints";
 
-export const fetchItems = async () => {
+export const fetchItems = async (): Promise<Item[]> => {
   const response = await axiosInstance.get(API_ENDPOINTS.ITEMS);
   return response.data;
 };
 
-export const fetchItemById = async (id: string) => {
+export const fetchItemById = async (id: string): Promise<Item> => {
   const response = await axiosInstance.get(API_ENDPOINTS.GET_ITEM(id));
   return response.data;
 };
@@ -22,6 +23,6 @@ export const insertItem = async (formData: FormData) => {
 };
 
 export const deleteItem = async (id: string) => {
-  const response = await axiosInstance.delete(API_ENDPOINTS.DELETE_ITEM(id));
-  return response.data;
+
+ await axiosInstance.delete(API_ENDPOINTS.DELETE_ITEM(id));
 }

@@ -12,9 +12,9 @@ class ImageController {
         } catch (error) {
             console.error('Upload image error:', error);
             if (error.message === 'No file uploaded') {
-                return res.status(400).json({ error: error.message });
+                return res.status(400).json({ message: error.message });
             }
-            res.status(500).json({ error: 'Error uploading image' });
+            res.status(500).json({ message: 'Error uploading image' });
         }
     }
 
@@ -25,7 +25,8 @@ class ImageController {
             res.json(images);
         } catch (error) {
             console.error('Get images error:', error);
-            res.status(500).json({ error: 'Error fetching images' });
+            
+            res.status(500).json({ message: 'Error fetching images' });
         }
     }
 
@@ -36,10 +37,11 @@ class ImageController {
             res.send(image.data);
         } catch (error) {
             console.error('Get image error:', error);
+
             if (error.message === 'Image not found') {
-                return res.status(404).json({ error: error.message });
+                return res.status(404).json({ message: error.message });
             }
-            res.status(500).json({ error: 'Error fetching image' });
+            res.status(500).json({ message: 'Error fetching image' });
         }
     }
 
@@ -48,13 +50,14 @@ class ImageController {
         try {
             await imageService.deleteImage(req.params.id);
             res.status(204).send();
-            
+
         } catch (error) {
             console.error('Delete image error:', error);
+
             if (error.message === 'Image not found') {
-                return res.status(404).json({ error: error.message });
+                return res.status(404).json({ message: error.message });
             }
-            res.status(500).json({ error: 'Error deleting image' });
+            res.status(500).json({ message: 'Error deleting image' });
         }
     }
 }
