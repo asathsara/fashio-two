@@ -18,7 +18,7 @@ class CategoryController {
     async addSubCategory(req, res) {
         try {
             const newSubItem = await categoryService.addSubCategory(req.params.id, req.body.name);
-            res.status(201).send(newSubItem);
+            res.status(201).json(newSubItem);
         } catch (error) {
             console.error('Add subcategory error:', error);
             if (error.message === 'Category not found') {
@@ -32,7 +32,7 @@ class CategoryController {
     async getAllCategories(req, res) {
         try {
             const categories = await categoryService.getAllCategories();
-            res.send(categories);
+            res.json(categories);
         } catch (error) {
             console.error('Get categories error:', error);
             res.status(500).json({ message: 'Error fetching categories', error: error.message });
@@ -58,8 +58,8 @@ class CategoryController {
         try {
             const { id, subItemName } = req.params;
             const result = await categoryService.deleteSubCategory(id, subItemName);
-            res.send(result);
-            
+            res.json(result);
+
         } catch (error) {
             console.error('Delete subcategory error:', error);
             if (error.message === 'Category not found' || error.message === 'Sub-item not found') {

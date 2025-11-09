@@ -14,6 +14,12 @@ class CategoryService {
             throw new Error('Category not found');
         }
 
+        // Check for duplicate subcategory name
+        const exists = category.subCategories.some(sub => sub.name === subCategoryName);
+        if (exists) {
+            throw new Error('Subcategory with this name already exists');
+        }
+
         const newSubItem = { name: subCategoryName };
         category.subCategories.push(newSubItem);
         await category.save();
@@ -41,7 +47,7 @@ class CategoryService {
         if (!category) {
             throw new Error('Category not found');
         }
-        
+
     }
 
     async deleteSubCategory(categoryId, subItemIdentifier) {
