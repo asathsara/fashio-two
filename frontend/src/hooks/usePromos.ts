@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { fetchPromos, insertPromo, deletePromo } from '../services/promoService';
 import type { PromoWithItem } from '@/types/promo';
 import { toast } from 'sonner';
-import axios from 'axios';
+import { getErrorMessage } from '@/utils/errorHandler';
 
 export const usePromos = () => {
     return useQuery<PromoWithItem[]>({
@@ -21,13 +21,7 @@ export const useInsertPromo = () => {
             toast.success('Promo created successfully');
         },
         onError: (error: unknown) => {
-            let errorMessage = 'Failed to create promo';
-            if (axios.isAxiosError(error)) {
-                errorMessage = error.response?.data?.message || error.message;
-            } else if (error instanceof Error) {
-                errorMessage = error.message;
-            }
-            toast.error(errorMessage);
+            toast.error(getErrorMessage(error, 'Failed to create promo'));
         },
     });
 };
@@ -42,13 +36,7 @@ export const useDeletePromo = () => {
             toast.success('Promo deleted successfully');
         },
         onError: (error: unknown) => {
-            let errorMessage = 'Failed to delete promo';
-            if (axios.isAxiosError(error)) {
-                errorMessage = error.response?.data?.message || error.message;
-            } else if (error instanceof Error) {
-                errorMessage = error.message;
-            }
-            toast.error(errorMessage);
+            toast.error(getErrorMessage(error, 'Failed to delete promo'));
         },
     });
 };

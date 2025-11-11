@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { fetchItems, insertItem, deleteItem } from '../services/itemService';
 import type { Item } from '@/types/item';
 import { toast } from 'sonner';
-import axios from 'axios';
+import { getErrorMessage } from '@/utils/errorHandler';
 
 export const useItems = () => {
     return useQuery<Item[]>({
@@ -21,13 +21,7 @@ export const useInsertItem = () => {
             toast.success('Item added successfully');
         },
         onError: (error: unknown) => {
-            let errorMessage = 'Failed to add item';
-            if (axios.isAxiosError(error)) {
-                errorMessage = error.response?.data?.message || error.message;
-            } else if (error instanceof Error) {
-                errorMessage = error.message;
-            }
-            toast.error(errorMessage);
+            toast.error(getErrorMessage(error, 'Failed to add item'));
         },
     });
 };
@@ -42,13 +36,7 @@ export const useDeleteItem = () => {
             toast.success('Item deleted successfully');
         },
         onError: (error: unknown) => {
-            let errorMessage = 'Failed to delete item';
-            if (axios.isAxiosError(error)) {
-                errorMessage = error.response?.data?.message || error.message;
-            } else if (error instanceof Error) {
-                errorMessage = error.message;
-            }
-            toast.error(errorMessage);
+            toast.error(getErrorMessage(error, 'Failed to delete item'));
         },
     });
 };

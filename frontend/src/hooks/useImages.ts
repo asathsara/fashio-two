@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { fetchImages, uploadImage, deleteImage } from '../services/imageService';
 import type { Image } from '../types/image';
 import { toast } from 'sonner';
-import axios from 'axios';
+import { getErrorMessage } from '@/utils/errorHandler';
 
 export const useImages = () => {
     return useQuery<Image[]>({
@@ -21,13 +21,7 @@ export const useUploadImage = () => {
             toast.success('Image uploaded successfully');
         },
         onError: (error: unknown) => {
-            let errorMessage = 'Failed to upload image';
-            if (axios.isAxiosError(error)) {
-                errorMessage = error.response?.data?.message || error.message;
-            } else if (error instanceof Error) {
-                errorMessage = error.message;
-            }
-            toast.error(errorMessage);
+            toast.error(getErrorMessage(error, 'Failed to upload image'));
         },
     });
 };
@@ -42,13 +36,7 @@ export const useDeleteImage = () => {
             toast.success('Image deleted successfully');
         },
         onError: (error: unknown) => {
-            let errorMessage = 'Failed to delete image';
-            if (axios.isAxiosError(error)) {
-                errorMessage = error.response?.data?.message || error.message;
-            } else if (error instanceof Error) {
-                errorMessage = error.message;
-            }
-            toast.error(errorMessage);
+            toast.error(getErrorMessage(error, 'Failed to delete image'));
         },
     });
 };

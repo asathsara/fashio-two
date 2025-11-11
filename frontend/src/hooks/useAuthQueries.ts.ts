@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { authService } from '@/services/authService';
 import type { User } from '@/types/auth';
 import { toast } from 'sonner';
-import axios from 'axios';
+import { getErrorMessage } from '@/utils/errorHandler';
 
 // Fetch current user session
 export const useCurrentUser = () => {
@@ -25,13 +25,7 @@ export const useLogin = () => {
       toast.success('Logged in successfully');
     },
     onError: (error: unknown) => {
-      let errorMessage = 'Login failed';
-      if (axios.isAxiosError(error)) {
-        errorMessage = error.response?.data?.message || error.message;
-      } else if (error instanceof Error) {
-        errorMessage = error.message;
-      }
-      toast.error(errorMessage);
+      toast.error(getErrorMessage(error, 'Login failed'));
     },
   });
 };
@@ -54,13 +48,7 @@ export const useRegister = () => {
       toast.success('Registration successful! Please check your email to verify your account.');
     },
     onError: (error: unknown) => {
-      let errorMessage = 'Registration failed';
-      if (axios.isAxiosError(error)) {
-        errorMessage = error.response?.data?.message || error.message;
-      } else if (error instanceof Error) {
-        errorMessage = error.message;
-      }
-      toast.error(errorMessage);
+      toast.error(getErrorMessage(error, 'Registration failed'));
     },
   });
 };
@@ -75,13 +63,7 @@ export const useLogout = () => {
       toast.success('Logged out successfully');
     },
     onError: (error: unknown) => {
-      let errorMessage = 'Logout failed';
-      if (axios.isAxiosError(error)) {
-        errorMessage = error.response?.data?.message || error.message;
-      } else if (error instanceof Error) {
-        errorMessage = error.message;
-      }
-      toast.error(errorMessage);
+      toast.error(getErrorMessage(error, 'Logout failed'));
     },
   });
 };
@@ -94,13 +76,7 @@ export const useForgotPassword = () => {
       toast.success('Password reset email sent! Please check your inbox.');
     },
     onError: (error: unknown) => {
-      let errorMessage = 'Failed to send reset email';
-      if (axios.isAxiosError(error)) {
-        errorMessage = error.response?.data?.message || error.message;
-      } else if (error instanceof Error) {
-        errorMessage = error.message;
-      }
-      toast.error(errorMessage);
+      toast.error(getErrorMessage(error, 'Failed to send reset email'));
     },
   });
 };
@@ -114,13 +90,7 @@ export const useResetPassword = () => {
       toast.success('Password reset successfully! You can now log in with your new password.');
     },
     onError: (error: unknown) => {
-      let errorMessage = 'Failed to reset password';
-      if (axios.isAxiosError(error)) {
-        errorMessage = error.response?.data?.message || error.message;
-      } else if (error instanceof Error) {
-        errorMessage = error.message;
-      }
-      toast.error(errorMessage);
+      toast.error(getErrorMessage(error, 'Failed to reset password'));
     },
   });
 };
@@ -133,13 +103,7 @@ export const useVerifyEmail = () => {
       toast.success('Email verified successfully!');
     },
     onError: (error: unknown) => {
-      let errorMessage = 'Email verification failed';
-      if (axios.isAxiosError(error)) {
-        errorMessage = error.response?.data?.message || error.message;
-      } else if (error instanceof Error) {
-        errorMessage = error.message;
-      }
-      toast.error(errorMessage);
+      toast.error(getErrorMessage(error, 'Email verification failed'));
     },
   });
 };
@@ -152,13 +116,7 @@ export const useResendVerification = () => {
       toast.success('Verification email sent! Please check your inbox.');
     },
     onError: (error: unknown) => {
-      let errorMessage = 'Failed to send verification email';
-      if (axios.isAxiosError(error)) {
-        errorMessage = error.response?.data?.message || error.message;
-      } else if (error instanceof Error) {
-        errorMessage = error.message;
-      }
-      toast.error(errorMessage);
+      toast.error(getErrorMessage(error, 'Failed to send verification email'));
     },
   });
 };
