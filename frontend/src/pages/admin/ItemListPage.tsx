@@ -6,6 +6,7 @@ import { Spinner } from "@/components/common/Spinner";
 import { ErrorMessage } from "@/components/common/ErrorMessage";
 import { ConfirmDialog } from "@/components/common/ConfirmDialog";
 import { toast } from "sonner";
+import axios from "axios";
 
 
 const ItemListPage = () => {
@@ -30,8 +31,14 @@ const ItemListPage = () => {
         setIsDeleteDialogOpen(false);
         setItemToDelete(null);
       },
-      onError: (error) => {
-        toast.error(`Failed to delete item: ${error.message || "Unknown error"}`);
+      onError: (error: unknown) => {
+        let errorMessage = 'Failed to delete item';
+            if (axios.isAxiosError(error)) {
+                errorMessage = error.response?.data?.message || error.message;
+            } else if (error instanceof Error) {
+                errorMessage = error.message;
+            }
+            toast.error(errorMessage);
       }
     });
   };
