@@ -1,6 +1,8 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { fetchCategories, insertCategory, deleteCategory, insertSubCategory, deleteSubCategory } from '../services/categoryService';
 import type { Category } from '@/types/category';
+import { toast } from 'sonner';
+import { getErrorMessage } from '@/utils/errorHandler';
 
 export const useCategories = () => {
     return useQuery<Category[]>({
@@ -16,6 +18,10 @@ export const useInsertCategory = () => {
         mutationFn: (name: string) => insertCategory(name),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['categories'] });
+            toast.success('Category created successfully');
+        },
+        onError: (error: unknown) => {
+            toast.error(getErrorMessage(error, 'Failed to create category'));
         },
     });
 };
@@ -27,6 +33,10 @@ export const useDeleteCategory = () => {
         mutationFn: (id: string) => deleteCategory(id),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['categories'] });
+            toast.success('Category deleted successfully');
+        },
+        onError: (error: unknown) => {
+            toast.error(getErrorMessage(error, 'Failed to delete category'));
         },
     });
 };
@@ -38,6 +48,10 @@ export const useInsertSubCategory = () => {
         mutationFn: ({ id, name }: { id: string; name: string }) => insertSubCategory(id, name),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['categories'] });
+            toast.success('Subcategory created successfully');
+        },
+        onError: (error: unknown) => {
+            toast.error(getErrorMessage(error, 'Failed to create subcategory'));
         },
     });
 };
@@ -50,6 +64,10 @@ export const useDeleteSubCategory = () => {
             deleteSubCategory(categoryId, subItemName),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['categories'] });
+            toast.success('Subcategory deleted successfully');
+        },
+        onError: (error: unknown) => {
+            toast.error(getErrorMessage(error, 'Failed to delete subcategory'));
         },
     });
 };

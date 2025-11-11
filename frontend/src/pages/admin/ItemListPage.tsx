@@ -6,6 +6,7 @@ import { Spinner } from "@/components/common/Spinner";
 import { ErrorMessage } from "@/components/common/ErrorMessage";
 import { ConfirmDialog } from "@/components/common/ConfirmDialog";
 import { toast } from "sonner";
+import { getErrorMessage } from "@/utils/errorHandler";
 
 
 const ItemListPage = () => {
@@ -30,8 +31,8 @@ const ItemListPage = () => {
         setIsDeleteDialogOpen(false);
         setItemToDelete(null);
       },
-      onError: (error) => {
-        toast.error(`Failed to delete item: ${error.message || "Unknown error"}`);
+      onError: (error: unknown) => {
+        toast.error(getErrorMessage(error, 'Failed to delete item'));
       }
     });
   };

@@ -2,6 +2,8 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { authService } from '@/services/authService';
 import type { User } from '@/types/auth';
+import { toast } from 'sonner';
+import { getErrorMessage } from '@/utils/errorHandler';
 
 // Fetch current user session
 export const useCurrentUser = () => {
@@ -20,6 +22,10 @@ export const useLogin = () => {
       authService.login(email, password),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['currentUser'] });
+      toast.success('Logged in successfully');
+    },
+    onError: (error: unknown) => {
+      toast.error(getErrorMessage(error, 'Login failed'));
     },
   });
 };
@@ -38,6 +44,12 @@ export const useRegister = () => {
   return useMutation({
     mutationFn: ({ name, email, password }: { name: string; email: string; password: string }) =>
       authService.register(name, email, password),
+    onSuccess: () => {
+      toast.success('Registration successful! Please check your email to verify your account.');
+    },
+    onError: (error: unknown) => {
+      toast.error(getErrorMessage(error, 'Registration failed'));
+    },
   });
 };
 
@@ -48,6 +60,10 @@ export const useLogout = () => {
     mutationFn: authService.logout,
     onSuccess: () => {
       queryClient.clear(); // clear all cached data
+      toast.success('Logged out successfully');
+    },
+    onError: (error: unknown) => {
+      toast.error(getErrorMessage(error, 'Logout failed'));
     },
   });
 };
@@ -56,6 +72,12 @@ export const useLogout = () => {
 export const useForgotPassword = () => {
   return useMutation({
     mutationFn: (email: string) => authService.forgotPassword(email),
+    onSuccess: () => {
+      toast.success('Password reset email sent! Please check your inbox.');
+    },
+    onError: (error: unknown) => {
+      toast.error(getErrorMessage(error, 'Failed to send reset email'));
+    },
   });
 };
 
@@ -64,6 +86,12 @@ export const useResetPassword = () => {
   return useMutation({
     mutationFn: ({ token, newPassword }: { token: string; newPassword: string }) =>
       authService.resetPassword(token, newPassword),
+    onSuccess: () => {
+      toast.success('Password reset successfully! You can now log in with your new password.');
+    },
+    onError: (error: unknown) => {
+      toast.error(getErrorMessage(error, 'Failed to reset password'));
+    },
   });
 };
 
@@ -71,6 +99,12 @@ export const useResetPassword = () => {
 export const useVerifyEmail = () => {
   return useMutation({
     mutationFn: (token: string) => authService.verifyEmail(token),
+    onSuccess: () => {
+      toast.success('Email verified successfully!');
+    },
+    onError: (error: unknown) => {
+      toast.error(getErrorMessage(error, 'Email verification failed'));
+    },
   });
 };
 
@@ -78,5 +112,11 @@ export const useVerifyEmail = () => {
 export const useResendVerification = () => {
   return useMutation({
     mutationFn: authService.resendVerificationEmail,
+    onSuccess: () => {
+      toast.success('Verification email sent! Please check your inbox.');
+    },
+    onError: (error: unknown) => {
+      toast.error(getErrorMessage(error, 'Failed to send verification email'));
+    },
   });
 };
