@@ -11,7 +11,7 @@ import type { PromoFormProps } from "@/types/promo";
 import { mapFormToPromo } from "@/utils/mappers/promoMapper";
 import { usePromoData } from "@/hooks/usePromoData";
 
-export const PromoForm = ({ onSubmit, onSuccess, onError }: PromoFormProps) => {
+export const PromoForm = ({ onSubmit }: PromoFormProps) => {
   const { isLoading } = usePromoData();
   const {
     control,
@@ -31,16 +31,13 @@ export const PromoForm = ({ onSubmit, onSuccess, onError }: PromoFormProps) => {
 
   // Handle form submission to create a new promo
   const onFormSubmit  = handleSubmit(async (data: PromoFormData) => {
-    try {
-      
+
       // Map form data to promo request payload
       const payload = mapFormToPromo(data);
       await onSubmit(payload);
       reset();
-      onSuccess();
-    } catch {
-      onError("Failed to create promotion");
-    }
+
+
   });
 
   return (

@@ -15,8 +15,6 @@ export type PromoSelectableItem = Pick<Item, "_id" | "name" | "category">;
 
 export interface PromoFormProps {
   onSubmit: (promo: Omit<Promo, "_id">) => Promise<void>;
-  onSuccess: () => void;
-  onError: (message: string) => void;
 }
 
 export interface PromoWithItem extends Omit<Promo, 'item'> {
