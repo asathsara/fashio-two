@@ -43,7 +43,7 @@ const ItemListPage = () => {
     <>
       <h1 className="font-poppins text-3xl font-semibold mb-6">Items List</h1>
       {isLoading ? (
-        <Spinner />
+        <Spinner fullHeight />
       ) : error ? (
         <ErrorMessage message="Failed to load items." />
       ) : (

@@ -39,7 +39,7 @@ export const PromoList = () => {
         </CardHeader>
         <CardContent className="space-y-4">
           {isLoading ? (
-            <Spinner label="Loading Promos..." />
+            <Spinner  label="Loading Promos..." />
           ) : promos.length === 0 ? (
             <p className="text-center text-muted-foreground py-6">No promotions yet</p>
           ) : (

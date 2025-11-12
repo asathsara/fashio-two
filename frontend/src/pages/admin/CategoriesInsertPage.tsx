@@ -16,7 +16,7 @@ const CategoriesInsertPage = () => {
 
   const inputRef = useRef<HTMLInputElement | null>(null);
 
-  
+
   const handleAddCategory = () => {
     const name = inputRef.current?.value;
     if (!name) {
@@ -44,7 +44,7 @@ const CategoriesInsertPage = () => {
   };
 
   if (isLoading) {
-    return <Spinner />;
+    return <Spinner fullHeight />;
   }
 
   if (error) {
