@@ -1,19 +1,14 @@
 import { PromoForm } from "../../components/admin/promo/forms/PromoForm";
 import { PromoList } from "../../components/admin/promo/PromoList";
 import type { Promo } from "../../types/promo";
-import { useDeletePromo, useInsertPromo } from "@/hooks/usePromos";
+import { useInsertPromo } from "@/hooks/usePromos";
 import { PromoProvider } from "@/contexts/PromoProvider";
 
 const PromoAddPage = () => {
   const insertMutation = useInsertPromo();
-  const deleteMutation = useDeletePromo();
 
   const handleCreatePromo = async (promo: Promo) => {
     insertMutation.mutate(promo);
-  };
-
-  const handleDeletePromo = async (id: string) => {
-    deleteMutation.mutate(id);
   };
 
   return (
@@ -27,10 +22,8 @@ const PromoAddPage = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <PromoForm
-            onSubmit={handleCreatePromo}
-          />
-          <PromoList onDelete={handleDeletePromo} />
+          <PromoForm onSubmit={handleCreatePromo} />
+          <PromoList />
         </div>
       </div>
     </PromoProvider>
