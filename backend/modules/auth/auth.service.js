@@ -153,7 +153,8 @@ class AuthService {
             email: user.email,
             role: user.role,
             emailVerified: user.emailVerified,
-            avatar: user.avatar
+            avatar: user.avatar,
+            addresses: user.addresses
         };
     }
 
