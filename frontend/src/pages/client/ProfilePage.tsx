@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, type Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useAuth } from '@/hooks/UseAuth';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -19,14 +19,19 @@ const ProfilePage = () => {
 
   // React Hook Form with Zod validation
   const form = useForm<ProfileFormData>({
-    resolver: zodResolver(profileFormSchema),
+    resolver: zodResolver(profileFormSchema) as Resolver<ProfileFormData>,
     defaultValues: {
       name: user?.name || '',
       email: user?.email || '',
-      phone: '',
-      address: '',
-      city: '',
-      country: '',
+      address: {
+        phone: '',
+        country: '',
+        city: '',
+        postalCode: '',
+        addressLine1: '',
+        addressLine2: '',
+        isDefault: false,
+      }
     },
   });
 

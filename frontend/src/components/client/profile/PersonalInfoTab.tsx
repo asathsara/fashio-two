@@ -22,8 +22,10 @@ export const PersonalInfoTab = ({ form, isEditing }: PersonalInfoTabProps) => {
                 <CardTitle>Personal Information</CardTitle>
                 <CardDescription>Update your personal details and contact information</CardDescription>
             </CardHeader>
+
             <CardContent className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
                     {/* Full Name */}
                     <div className="space-y-2">
                         <Label className="text-xs font-semibold text-gray-700 uppercase tracking-wide">
@@ -49,8 +51,8 @@ export const PersonalInfoTab = ({ form, isEditing }: PersonalInfoTabProps) => {
                             {...register('email')}
                             disabled={!isEditing}
                             className="h-11"
-                            placeholder="you@example.com"
                             type="email"
+                            placeholder="you@example.com"
                         />
                         {errors.email && (
                             <p className="text-xs text-red-600">{errors.email.message}</p>
@@ -64,27 +66,43 @@ export const PersonalInfoTab = ({ form, isEditing }: PersonalInfoTabProps) => {
                             Phone Number
                         </Label>
                         <Input
-                            {...register('phone')}
+                            {...register('address.phone')}
                             disabled={!isEditing}
                             className="h-11"
-                            placeholder="+1 (555) 000-0000"
+                            placeholder="+94 77 123 4567"
                         />
-                        {errors.phone && (
-                            <p className="text-xs text-red-600">{errors.phone.message}</p>
+                        {errors.address?.phone && (
+                            <p className="text-xs text-red-600">{errors.address.phone.message}</p>
                         )}
                     </div>
 
-                    {/* Address */}
+                    {/* Address Line 1 */}
                     <div className="space-y-2">
                         <Label className="text-xs font-semibold text-gray-700 uppercase tracking-wide">
                             <MapPin className="w-3 h-3 inline mr-1" />
-                            Address
+                            Address Line 1
                         </Label>
                         <Input
-                            {...register('address')}
+                            {...register('address.addressLine1')}
                             disabled={!isEditing}
                             className="h-11"
-                            placeholder="Street address"
+                            placeholder="Street address, house number"
+                        />
+                        {errors.address?.addressLine1 && (
+                            <p className="text-xs text-red-600">{errors.address.addressLine1.message}</p>
+                        )}
+                    </div>
+
+                    {/* Address Line 2 */}
+                    <div className="space-y-2">
+                        <Label className="text-xs font-semibold text-gray-700 uppercase tracking-wide">
+                            Address Line 2 (Optional)
+                        </Label>
+                        <Input
+                            {...register('address.addressLine2')}
+                            disabled={!isEditing}
+                            className="h-11"
+                            placeholder="Apartment, floor, landmark"
                         />
                     </div>
 
@@ -94,11 +112,30 @@ export const PersonalInfoTab = ({ form, isEditing }: PersonalInfoTabProps) => {
                             City
                         </Label>
                         <Input
-                            {...register('city')}
+                            {...register('address.city')}
                             disabled={!isEditing}
                             className="h-11"
                             placeholder="City"
                         />
+                        {errors.address?.city && (
+                            <p className="text-xs text-red-600">{errors.address.city.message}</p>
+                        )}
+                    </div>
+
+                    {/* Postal Code */}
+                    <div className="space-y-2">
+                        <Label className="text-xs font-semibold text-gray-700 uppercase tracking-wide">
+                            Postal Code
+                        </Label>
+                        <Input
+                            {...register('address.postalCode')}
+                            disabled={!isEditing}
+                            className="h-11"
+                            placeholder="Postal / ZIP code"
+                        />
+                        {errors.address?.postalCode && (
+                            <p className="text-xs text-red-600">{errors.address.postalCode.message}</p>
+                        )}
                     </div>
 
                     {/* Country */}
@@ -107,11 +144,14 @@ export const PersonalInfoTab = ({ form, isEditing }: PersonalInfoTabProps) => {
                             Country
                         </Label>
                         <Input
-                            {...register('country')}
+                            {...register('address.country')}
                             disabled={!isEditing}
                             className="h-11"
                             placeholder="Country"
                         />
+                        {errors.address?.country && (
+                            <p className="text-xs text-red-600">{errors.address.country.message}</p>
+                        )}
                     </div>
                 </div>
             </CardContent>
