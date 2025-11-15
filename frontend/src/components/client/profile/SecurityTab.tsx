@@ -8,7 +8,7 @@ import { Separator } from '@/components/ui/separator';
 import { passwordChangeSchema, type PasswordChangeData } from '@/schemas/profileSchema';
 import { useState } from 'react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { useChangePassword } from '@/hooks/useAuthQueries.ts';
+import { useChangePassword } from '@/hooks/useAuthQueries';
 
 interface SecurityTabProps {
     onLogout: () => void;
