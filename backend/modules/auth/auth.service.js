@@ -167,6 +167,76 @@ class AuthService {
         await user.save();
         return user;
     }
+
+    // Update Profile
+    async updateUserProfile(userId, updateData) {
+        const user = await User.findById(userId);
+        if (!user) {
+            throw new Error('User not found');
+        }
+
+        // Update allowed fields
+        if (updateData.name) user.name = updateData.name;
+        if (updateData.email) {
+            // Check if email is already taken by another user
+            const emailExists = await User.findOne({
+                email: updateData.email,
+                _id: { $ne: userId }
+            });
+            if (emailExists) {
+                throw new Error('Email already in use');
+            }
+            user.email = updateData.email;
+        }
+
+        // Update address if provided
+        if (updateData.address) {
+            // If user has no addresses, create new array
+            if (!user.addresses || user.addresses.length === 0) {
+                user.addresses = [updateData.address];
+            } else {
+                // Update the first address or add new one
+                user.addresses[0] = updateData.address;
+            }
+        }
+
+        await user.save();
+
+        return {
+            id: user._id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+            emailVerified: user.emailVerified,
+            avatar: user.avatar,
+            addresses: user.addresses
+        };
+    }
+
+    // Change Password
+    async changeUserPassword(userId, currentPassword, newPassword) {
+        const user = await User.findById(userId);
+        if (!user) {
+            throw new Error('User not found');
+        }
+
+        // Check if user uses Google sign-in
+        if (user.googleId && !user.password) {
+            throw new Error('Cannot change password for Google sign-in accounts');
+        }
+
+        // Verify current password
+        const isMatch = await user.comparePassword(currentPassword);
+        if (!isMatch) {
+            throw new Error('Current password is incorrect');
+        }
+
+        // Update password
+        user.password = newPassword;
+        await user.save();
+
+        return { message: 'Password changed successfully!' };
+    }
 }
 
 export default AuthService;

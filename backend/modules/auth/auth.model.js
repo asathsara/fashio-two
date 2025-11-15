@@ -2,7 +2,6 @@ import { Schema, model } from 'mongoose';
 import { genSalt, hash, compare } from 'bcryptjs';
 
 const addressSchema = new Schema({
-    fullName: { type: String, required: true },
     phone: { type: String, required: true },
     country: { type: String, required: true },
     city: { type: String, required: true },
