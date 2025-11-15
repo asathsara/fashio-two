@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm, type Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useAuth } from '@/hooks/UseAuth';
+import { useUpdateProfile } from '@/hooks/useAuthQueries.ts';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { ProfileHeader } from '@/components/client/profile/ProfileHeader';
@@ -13,9 +14,10 @@ import { profileFormSchema, type ProfileFormData } from '@/schemas/profileSchema
 const ProfilePage = () => {
   const { user, logout } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState('');
   const [error, setError] = useState('');
+
+  const updateProfileMutation = useUpdateProfile();
 
   // React Hook Form with Zod validation
   const form = useForm<ProfileFormData>({
@@ -23,7 +25,7 @@ const ProfilePage = () => {
     defaultValues: {
       name: user?.name || '',
       email: user?.email || '',
-      address: {
+      address: user?.addresses?.[0] || {
         phone: '',
         country: '',
         city: '',
@@ -34,6 +36,25 @@ const ProfilePage = () => {
       }
     },
   });
+
+  // Update form when user data changes
+  useEffect(() => {
+    if (user) {
+      form.reset({
+        name: user.name || '',
+        email: user.email || '',
+        address: user.addresses?.[0] || {
+          phone: '',
+          country: '',
+          city: '',
+          postalCode: '',
+          addressLine1: '',
+          addressLine2: '',
+          isDefault: false,
+        }
+      });
+    }
+  }, [user, form]);
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -55,23 +76,18 @@ const ProfilePage = () => {
       return;
     }
 
-    setLoading(true);
     setError('');
     setSuccess('');
 
     try {
       const formData = form.getValues();
 
-      // TODO: Implement API call to update user profile
-      console.log('Profile data:', formData);
-      await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulated API call
+      await updateProfileMutation.mutateAsync(formData);
 
       setSuccess('Profile updated successfully!');
       setIsEditing(false);
     } catch {
       setError('Failed to update profile. Please try again.');
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -86,6 +102,8 @@ const ProfilePage = () => {
       </div>
     );
   }
+
+  const loading = updateProfileMutation.isPending;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white py-12">

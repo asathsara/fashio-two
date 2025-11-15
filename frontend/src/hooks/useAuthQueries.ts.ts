@@ -1,7 +1,7 @@
 // src/hooks/useAuth.ts
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { authService } from '@/services/authService';
-import type { User } from '@/types/auth';
+import type { User, Address } from '@/types/auth';
 import { toast } from 'sonner';
 import { getErrorMessage } from '@/utils/errorHandler';
 
@@ -117,6 +117,38 @@ export const useResendVerification = () => {
     },
     onError: (error: unknown) => {
       toast.error(getErrorMessage(error, 'Failed to send verification email'));
+    },
+  });
+};
+
+// Update Profile
+export const useUpdateProfile = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (profileData: { name?: string; email?: string; address?: Address }) =>
+      authService.updateProfile(profileData),
+    onSuccess: (data) => {
+      toast.success('Profile updated successfully!');
+      // Update the current user in cache
+      queryClient.setQueryData(['currentUser'], data.user);
+      queryClient.invalidateQueries({ queryKey: ['currentUser'] });
+    },
+    onError: (error: unknown) => {
+      toast.error(getErrorMessage(error, 'Failed to update profile'));
+    },
+  });
+};
+
+// Change Password
+export const useChangePassword = () => {
+  return useMutation({
+    mutationFn: ({ currentPassword, newPassword }: { currentPassword: string; newPassword: string }) =>
+      authService.changePassword(currentPassword, newPassword),
+    onSuccess: () => {
+      toast.success('Password changed successfully!');
+    },
+    onError: (error: unknown) => {
+      toast.error(getErrorMessage(error, 'Failed to change password'));
     },
   });
 };

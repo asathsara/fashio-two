@@ -1,4 +1,5 @@
 import api from './api';
+import type { Address } from '@/types/auth';
 
 export const authService = {
     login: async (email: string, password: string) => {
@@ -43,6 +44,19 @@ export const authService = {
 
     getCurrentUser: async () => {
         const response = await api.get('/auth/me');
+        return response.data;
+    },
+
+    updateProfile: async (profileData: { name?: string; email?: string; address?: Address }) => {
+        const response = await api.put('/auth/profile', profileData);
+        return response.data;
+    },
+
+    changePassword: async (currentPassword: string, newPassword: string) => {
+        const response = await api.put('/auth/change-password', {
+            currentPassword,
+            newPassword
+        });
         return response.data;
     },
 };
