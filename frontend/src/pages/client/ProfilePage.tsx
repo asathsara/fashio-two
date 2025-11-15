@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useForm, type Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useAuth } from '@/hooks/UseAuth';
-import { useUpdateProfile } from '@/hooks/useAuthQueries.ts';
+import { useUpdateProfile } from '@/hooks/useAuthQueries';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { ProfileHeader } from '@/components/client/profile/ProfileHeader';
