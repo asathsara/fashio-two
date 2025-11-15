@@ -178,17 +178,6 @@ class AuthService {
 
         // Update allowed fields
         if (updateData.name) user.name = updateData.name;
-        if (updateData.email) {
-            // Check if email is already taken by another user
-            const emailExists = await User.findOne({
-                email: updateData.email,
-                _id: { $ne: userId }
-            });
-            if (emailExists) {
-                throw new Error('Email already in use');
-            }
-            user.email = updateData.email;
-        }
 
         // Update address if provided
         if (updateData.address) {
