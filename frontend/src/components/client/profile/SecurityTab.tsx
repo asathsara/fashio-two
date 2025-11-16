@@ -8,15 +8,17 @@ import { Separator } from '@/components/ui/separator';
 import { passwordChangeSchema, type PasswordChangeData } from '@/schemas/profileSchema';
 import { useState } from 'react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { useChangePassword } from '@/hooks/useAuthQueries';
 
 interface SecurityTabProps {
     onLogout: () => void;
 }
 
 export const SecurityTab = ({ onLogout }: SecurityTabProps) => {
-    const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState('');
     const [error, setError] = useState('');
+
+    const changePasswordMutation = useChangePassword();
 
     const {
         register,
@@ -28,21 +30,19 @@ export const SecurityTab = ({ onLogout }: SecurityTabProps) => {
     });
 
     const onSubmit = async (data: PasswordChangeData) => {
-        setLoading(true);
         setError('');
         setSuccess('');
 
         try {
-            // TODO: Implement password change API call
-            console.log('Password change data:', data);
-            await new Promise((resolve) => setTimeout(resolve, 1000));
+            await changePasswordMutation.mutateAsync({
+                currentPassword: data.currentPassword,
+                newPassword: data.newPassword,
+            });
 
             setSuccess('Password updated successfully!');
             reset();
         } catch {
             setError('Failed to update password. Please try again.');
-        } finally {
-            setLoading(false);
         }
     };
 
@@ -116,10 +116,10 @@ export const SecurityTab = ({ onLogout }: SecurityTabProps) => {
 
                         <Button
                             type="submit"
-                            disabled={loading}
+                            disabled={changePasswordMutation.isPending}
                             className="bg-gray-900 hover:bg-gray-800"
                         >
-                            {loading ? 'Updating...' : 'Update Password'}
+                            {changePasswordMutation.isPending ? 'Updating...' : 'Update Password'}
                         </Button>
                     </div>
                 </form>

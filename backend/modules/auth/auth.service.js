@@ -153,7 +153,8 @@ class AuthService {
             email: user.email,
             role: user.role,
             emailVerified: user.emailVerified,
-            avatar: user.avatar
+            avatar: user.avatar,
+            addresses: user.addresses
         };
     }
 
@@ -166,6 +167,54 @@ class AuthService {
         user.lastLogin = Date.now();
         await user.save();
         return user;
+    }
+
+    // Update Profile
+    async updateUserProfile(userId, updateData) {
+        const user = await User.findById(userId);
+        if (!user) {
+            throw new Error('User not found');
+        }
+
+        if (updateData.name) user.name = updateData.name;
+        if (updateData.address)  user.addresses = [updateData.address];
+
+        await user.save();
+
+        return {
+            id: user._id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+            emailVerified: user.emailVerified,
+            avatar: user.avatar,
+            addresses: user.addresses
+        };
+    }
+
+    // Change Password
+    async changeUserPassword(userId, currentPassword, newPassword) {
+        const user = await User.findById(userId);
+        if (!user) {
+            throw new Error('User not found');
+        }
+
+        // Check if user uses Google sign-in
+        if (user.googleId && !user.password) {
+            throw new Error('Cannot change password for Google sign-in accounts');
+        }
+
+        // Verify current password
+        const isMatch = await user.comparePassword(currentPassword);
+        if (!isMatch) {
+            throw new Error('Current password is incorrect');
+        }
+
+        // Update password
+        user.password = newPassword;
+        await user.save();
+
+        return { message: 'Password changed successfully!' };
     }
 }
 
