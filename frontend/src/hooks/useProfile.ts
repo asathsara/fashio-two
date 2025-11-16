@@ -30,8 +30,7 @@ export const useProfile = () => {
           city: "",
           postalCode: "",
           addressLine1: "",
-          addressLine2: "",
-          isDefault: false,
+          addressLine2: ""
         },
     },
   });
@@ -50,7 +49,6 @@ export const useProfile = () => {
             postalCode: "",
             addressLine1: "",
             addressLine2: "",
-            isDefault: false,
           },
       });
     }

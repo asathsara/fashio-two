@@ -12,7 +12,6 @@ export const addressSchema = z.object({
     postalCode: z.string().min(1, 'Postal code is required'),
     addressLine1: z.string().min(1, 'Address line 1 is required'),
     addressLine2: z.string().optional(),
-    isDefault: z.boolean().default(false),
 });
 
 

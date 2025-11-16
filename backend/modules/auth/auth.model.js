@@ -8,9 +8,7 @@ const addressSchema = new Schema({
     postalCode: { type: String, required: true },
 
     addressLine1: { type: String, required: true },
-    addressLine2: { type: String },
-
-    isDefault: { type: Boolean, default: false }
+    addressLine2: { type: String }
 }, { _id: false });
 
 

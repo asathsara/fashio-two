@@ -176,19 +176,8 @@ class AuthService {
             throw new Error('User not found');
         }
 
-        // Update allowed fields
         if (updateData.name) user.name = updateData.name;
-
-        // Update address if provided
-        if (updateData.address) {
-            // If user has no addresses, create new array
-            if (!user.addresses || user.addresses.length === 0) {
-                user.addresses = [updateData.address];
-            } else {
-                // Update the first address or add new one
-                user.addresses[0] = updateData.address;
-            }
-        }
+        if (updateData.address)  user.addresses = [updateData.address];
 
         await user.save();
 

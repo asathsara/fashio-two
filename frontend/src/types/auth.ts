@@ -6,7 +6,6 @@ export interface Address {
     postalCode: string;
     addressLine1: string;
     addressLine2?: string;
-    isDefault: boolean;
 }
 
 export interface User {
