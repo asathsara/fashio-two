@@ -23,7 +23,7 @@ const ItemDetailPage = () => {
 
     if (isLoading) {
         return (
-            <Spinner />
+            <Spinner fullHeight />
 
         );
     }

@@ -161,6 +161,57 @@ class AuthController {
         res.status(200).json({ message: 'Logged out successfully' });
     }
 
+    // Update Profile
+    async updateProfile(req, res) {
+        try {
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                return res.status(400).json({ errors: errors.array() });
+            }
+
+            const { name, email, address } = req.body;
+            const updatedUser = await authService.updateUserProfile(req.user._id, {
+                name,
+                email,
+                address
+            });
+
+            res.json({
+                message: 'Profile updated successfully',
+                user: updatedUser
+            });
+        } catch (error) {
+            console.error('Update profile error:', error);
+            if (error.message === 'Email already in use' || error.message === 'User not found') {
+                return res.status(error.message === 'User not found' ? 404 : 400).json({ message: error.message });
+            }
+            res.status(500).json({ message: 'Server error updating profile' });
+        }
+    }
+
+    // Change Password
+    async changePassword(req, res) {
+        try {
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                return res.status(400).json({ errors: errors.array() });
+            }
+
+            const { currentPassword, newPassword } = req.body;
+            await authService.changeUserPassword(req.user._id, currentPassword, newPassword);
+
+            res.json({ message: 'Password changed successfully!' });
+        } catch (error) {
+            console.error('Change password error:', error);
+            if (error.message === 'Current password is incorrect' ||
+                error.message === 'Cannot change password for Google sign-in accounts' ||
+                error.message === 'User not found') {
+                return res.status(error.message === 'User not found' ? 404 : 400).json({ message: error.message });
+            }
+            res.status(500).json({ message: 'Server error changing password' });
+        }
+    }
+
     // Helper Methods
     generateToken(id) {
         return sign({ id }, process.env.JWT_SECRET, { expiresIn: '30d' });

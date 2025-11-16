@@ -36,6 +36,8 @@ export const AUTH_ENDPOINTS = {
   VERIFY_EMAIL: '/auth/verify-email',
   RESEND_VERIFICATION: '/auth/resend-verification',
   ME: '/auth/me',
+  UPDATE_PROFILE: '/auth/profile',
+  CHANGE_PASSWORD: '/auth/change-password',
 };
 
 export default API_ENDPOINTS;

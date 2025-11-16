@@ -55,7 +55,7 @@ const PromoPage = () => {
 
       {/* Content */}
       {isLoading ? (
-        <Spinner label="Loading promotions..."  />
+        <Spinner fullHeight label="Loading promotions..." />
       ) : error ? (
         <ErrorMessage message={error.message} />
       ) :
@@ -214,7 +214,7 @@ const PromoPage = () => {
         </div>
       }
     </div>
-      
+
   );
 };
 

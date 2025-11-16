@@ -7,6 +7,7 @@ type SpinnerProps = {
   className?: string;
   label?: string;
   variant?: "bars" | "dots";
+  fullHeight?: boolean;
 };
 
 export const Spinner: React.FC<SpinnerProps> = ({
@@ -15,6 +16,7 @@ export const Spinner: React.FC<SpinnerProps> = ({
   className,
   label = "Loading...",
   variant = "bars",
+  fullHeight = false,
 }) => {
 
 
@@ -37,7 +39,7 @@ export const Spinner: React.FC<SpinnerProps> = ({
     const { height, width, gap } = barSizeMap[size];
 
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className={cn("flex items-center justify-center", fullHeight && "min-h-screen")}>
         <div className="flex flex-col items-center justify-center gap-3" role="status">
           <div className={cn("flex items-end justify-center", gap, className)}>
             {[0, 1, 2].map((index) => (
@@ -78,7 +80,7 @@ export const Spinner: React.FC<SpinnerProps> = ({
   // Dots variant
   if (variant === "dots") {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className={cn("flex items-center justify-center", fullHeight && "min-h-screen")}>
         <div className="flex flex-col items-center justify-center gap-3" role="status">
           <div className={cn("flex items-center gap-2", className)}>
             <div
