@@ -60,12 +60,29 @@ class ItemController {
         }
     }
 
+    // Update
+    async updateItem(req, res) {
+        try {
+            const item = await itemService.updateItem(req.params.id, req.files, req.body);
+            res.status(200).json(item);
+        } catch (error) {
+            console.error('Update item error:', error);
+            if (error.message === 'Item not found') {
+                return res.status(404).json({ message: error.message });
+            }
+            if (error.message === 'Category not found' || error.message === 'Subcategory not found in the selected category') {
+                return res.status(404).json({ message: error.message });
+            }
+            res.status(500).json({ message: 'Failed to update item', error: error.message });
+        }
+    }
+
     // Delete
     async deleteItem(req, res) {
         try {
             await itemService.deleteItem(req.params.id);
             res.status(204).send();
-            
+
         } catch (error) {
             console.error('Delete item error:', error);
             if (error.message === 'Item not found') {

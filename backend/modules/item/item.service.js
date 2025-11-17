@@ -1,12 +1,9 @@
 import Item from './item.model.js';
 import Category from '../category/category.model.js';
 
-/**
- * Item Service
- * Contains all business logic for item operations
- */
+
 class ItemService {
-    // ==================== Create ====================
+   
     async createItem(files, itemData) {
         if (!files || files.length === 0) {
             throw new Error('At least one image is required');
@@ -48,7 +45,7 @@ class ItemService {
         return item;
     }
 
-    // ==================== Read ====================
+    // Read
     async getAllItems() {
         const items = await Item.find()
             .select("-images.data")
@@ -79,6 +76,53 @@ class ItemService {
         }
 
         return image;
+    }
+
+    // Update
+    async updateItem(itemId, files, itemData) {
+        const item = await Item.findById(itemId);
+        if (!item) {
+            throw new Error('Item not found');
+        }
+
+        // Validate category if provided
+        if (itemData.category) {
+            const category = await Category.findById(itemData.category);
+            if (!category) {
+                throw new Error('Category not found');
+            }
+
+            // Validate subcategory if provided
+            if (itemData.subCategoryId) {
+                const subCategory = category.subCategories.id(itemData.subCategoryId);
+                if (!subCategory) {
+                    throw new Error('Subcategory not found in the selected category');
+                }
+                item.subCategoryId = subCategory._id;
+                item.subCategoryName = subCategory.name;
+            }
+            item.category = itemData.category;
+        }
+
+        // Update images if new ones are provided
+        if (files && files.length > 0) {
+            const imageObjects = files.map(file => ({
+                filename: file.originalname,
+                data: file.buffer,
+                contentType: file.mimetype,
+            }));
+            item.images = imageObjects;
+        }
+
+        // Update other fields
+        if (itemData.name) item.name = itemData.name;
+        if (itemData.price) item.price = itemData.price;
+        if (itemData.stock !== undefined) item.stock = itemData.stock;
+        if (itemData.sizes) item.sizes = itemData.sizes;
+        if (itemData.description !== undefined) item.description = itemData.description;
+
+        await item.save();
+        return item;
     }
 
     // Delete
