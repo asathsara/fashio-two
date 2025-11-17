@@ -16,9 +16,26 @@ import CategorySelector from "@/components/admin/CategorySelector"
 import SizeSelector from "@/components/admin/SizeSelector"
 import ImageUploaderGroup from "@/components/admin/ImageUploaderGroup"
 import { useItemForm } from "@/hooks/admin/useItemForm"
+import { useParams, useNavigate } from "react-router-dom"
+import { useQuery } from "@tanstack/react-query"
+import { fetchItemById } from "@/services/itemService"
+import { Spinner } from "@/components/common/Spinner"
+import { useEffect } from "react"
 
 const ItemInsertPage = () => {
+  const { id } = useParams<{ id: string }>()
+  const navigate = useNavigate()
+  const isEditMode = Boolean(id)
+
   const { data: categories = [] } = useCategories()
+
+  // Fetch item data if in edit mode
+  const { data: item, isLoading } = useQuery({
+    queryKey: ['item', id],
+    queryFn: () => fetchItemById(id!),
+    enabled: isEditMode,
+  })
+
   const {
     register,
     errors,
@@ -29,16 +46,36 @@ const ItemInsertPage = () => {
     setValue,
     watch,
     insertMutation,
-  } = useItemForm()
+    updateMutation,
+  } = useItemForm({ item, isEditMode })
+
+  const mutation = isEditMode ? updateMutation : insertMutation
+
+  // Navigate back after successful update
+  useEffect(() => {
+    if (isEditMode && updateMutation.isSuccess) {
+      navigate('/admin/items')
+    }
+  }, [isEditMode, updateMutation.isSuccess, navigate])
+
+  if (isEditMode && isLoading) {
+    return <Spinner fullHeight />
+  }
 
   return (
     <div className="max-w-5xl">
-      <h1 className="text-3xl font-semibold">Item Insert</h1>
+      <h1 className="text-3xl font-semibold">
+        {isEditMode ? "Edit Item" : "Add New Item"}
+      </h1>
       <form onSubmit={onSubmit} className="mt-8 space-y-6">
         <FieldGroup>
           <FieldSet>
             <FieldLegend>Images</FieldLegend>
-            <FieldDescription>Upload product images.</FieldDescription>
+            <FieldDescription>
+              {isEditMode
+                ? "Upload new images to replace existing ones (optional)."
+                : "Upload product images."}
+            </FieldDescription>
             <ImageUploaderGroup onImageChange={handleImageChange} />
             {errors.images && <FieldError>{errors.images.message}</FieldError>}
           </FieldSet>
@@ -93,8 +130,10 @@ const ItemInsertPage = () => {
             {errors.selectedSizes && <FieldError>{errors.selectedSizes.message}</FieldError>}
           </FieldSet>
 
-          <Button type="submit" disabled={insertMutation.isPending} className="w-full">
-            {insertMutation.isPending ? "Submitting…" : "Submit"}
+          <Button type="submit" disabled={mutation.isPending} className="w-full">
+            {mutation.isPending
+              ? (isEditMode ? "Updating…" : "Submitting…")
+              : (isEditMode ? "Update Item" : "Add Item")}
           </Button>
         </FieldGroup>
       </form>

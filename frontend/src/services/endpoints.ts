@@ -18,6 +18,7 @@ const API_ENDPOINTS = {
   ITEMS: '/items',
   ADD_ITEMS: '/items/add',
   GET_ITEM: (id: Id) => `/items/${id}`,
+  UPDATE_ITEM: (id: Id) => `/items/${id}`,
   DELETE_ITEM: (id: Id) => `/items/${id}`,
 
   PROMOS: '/promos',

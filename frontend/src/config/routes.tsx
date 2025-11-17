@@ -20,7 +20,7 @@ import LoginPage from "@/pages/client/LoginPage";
 
 export type AppRoute = {
     path: string;
-    label: string;
+    label?: string;
     element: ReactElement;
     showInNav?: boolean;
     protected?: boolean;
@@ -94,6 +94,12 @@ export const adminRoutes: AppRoute[] = [
         requiredRole: "admin",
     },
     {
+        path: "/admin/items/insert/:id",
+        element: <ItemInsertPage />,
+        protected: true,
+        requiredRole: "admin",
+    },
+    {
         path: "/admin/items/list",
         label: "Items List",
         element: <ItemListPage />,
@@ -117,5 +123,5 @@ export const adminRoutes: AppRoute[] = [
 ];
 
 export const publicNavRoutes = publicRoutes.filter((r) => r.showInNav);
-export const adminNavRoutes = adminRoutes;
+export const adminNavRoutes = adminRoutes.filter(r => r.label);
 export const DEFAULT_ADMIN_ROUTE = "/admin/image-slider";

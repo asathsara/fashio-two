@@ -22,7 +22,16 @@ export const insertItem = async (formData: FormData) => {
   return response.data;
 };
 
+export const updateItem = async (id: string, formData: FormData) => {
+  const response = await axiosInstance.put(API_ENDPOINTS.UPDATE_ITEM(id), formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  return response.data;
+};
+
 export const deleteItem = async (id: string) => {
 
- await axiosInstance.delete(API_ENDPOINTS.DELETE_ITEM(id));
+  await axiosInstance.delete(API_ENDPOINTS.DELETE_ITEM(id));
 }
