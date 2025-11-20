@@ -19,7 +19,7 @@ export function useItemForm({ item, isEditMode = false }: UseItemFormProps = {})
     const insertMutation = useInsertItem()
     const updateMutation = useUpdateItem()
 
-    
+
 
     const form = useForm<ItemForm>({
         resolver: zodResolver(itemSchema),
@@ -27,7 +27,7 @@ export function useItemForm({ item, isEditMode = false }: UseItemFormProps = {})
             name: "",
             description: "",
             category: "",
-            subCategoryId: "",
+            subCategory: "",
             price: undefined,
             stock: undefined,
             selectedSizes: [],
@@ -39,20 +39,22 @@ export function useItemForm({ item, isEditMode = false }: UseItemFormProps = {})
 
     // Populate form when in edit mode
     useEffect(() => {
-        if (isEditMode && item) {
+        setTimeout(() => {
+            if (isEditMode && item) {
+                reset({
+                    name: item.name,
+                    description: item.description || "",
+                    price: item.price,
+                    stock: item.stock,
+                    selectedSizes: item.sizes || [],
+                    category: item.category._id,
+                    subCategory: item.subCategory._id,
+                    images: []
+                })
+            }
+        }, 500);
+    }, [isEditMode, item, reset])
 
-            console.log("Populating form with item:", item)
-            setValue("name", item.name)
-            setValue("description", item.description || "")
-            setValue("price", item.price)
-            setValue("stock", item.stock)
-            setValue("selectedSizes", item.sizes || [])
-
-            setValue("category", item.category._id)
-            setValue("subCategoryId", item.subCategoryId)
-            
-        }
-    }, [isEditMode, item, setValue])
 
     const watchedSizes = watch("selectedSizes")
     const watchedImages = watch("images")
@@ -62,7 +64,7 @@ export function useItemForm({ item, isEditMode = false }: UseItemFormProps = {})
         setValue("images", [...(watchedImages || []), file])
     }
 
-   
+
 
     const handleSizeToggle = (size: string) => {
         const updated = (watchedSizes || []).includes(size)
@@ -82,7 +84,7 @@ export function useItemForm({ item, isEditMode = false }: UseItemFormProps = {})
         formData.append("name", data.name)
         formData.append("description", data.description)
         formData.append("category", data.category)
-        formData.append("subCategoryId", data.subCategoryId)
+        formData.append("subCategory", data.subCategory)
         formData.append("price", data.price.toString())
         formData.append("stock", data.stock.toString())
         formData.append("sizes", JSON.stringify(data.selectedSizes))

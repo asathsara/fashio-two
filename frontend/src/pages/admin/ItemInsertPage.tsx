@@ -17,10 +17,9 @@ import SizeSelector from "@/components/admin/SizeSelector"
 import ImageUploaderGroup from "@/components/admin/ImageUploaderGroup"
 import { useItemForm } from "@/hooks/admin/useItemForm"
 import { useParams, useNavigate } from "react-router-dom"
-import { useQuery } from "@tanstack/react-query"
-import { fetchItemById } from "@/services/itemService"
 import { Spinner } from "@/components/common/Spinner"
 import { useEffect } from "react"
+import { useGetItem } from "@/hooks/useItems"
 
 const ItemInsertPage = () => {
   const { id } = useParams<{ id: string }>()
@@ -30,11 +29,7 @@ const ItemInsertPage = () => {
   const { data: categories = [] } = useCategories()
 
   // Fetch item data if in edit mode
-  const { data: item, isLoading } = useQuery({
-    queryKey: ['item', id],
-    queryFn: () => fetchItemById(id!),
-    enabled: isEditMode,
-  })
+  const { data: item, isLoading } = useGetItem(id || "" , isEditMode)
 
   const {
     register,
@@ -96,13 +91,13 @@ const ItemInsertPage = () => {
 
             <CategorySelector
               categories={categories}
-              category={watch("category") ? categories.find((c) => c._id === watch("category")) || null : null}
-              subCategoryId={watch("subCategoryId") || null}
+              categoryId={watch("category")}
+              subCategory={watch("subCategory")}
               onCategoryChange={(val) => setValue("category", val, { shouldValidate: true })}
-              onSubCategoryChange={(val) => setValue("subCategoryId", val, { shouldValidate: true })}
+              onSubCategoryChange={(val) => setValue("subCategory", val, { shouldValidate: true })}
             />
             {errors.category && <FieldError>{errors.category.message}</FieldError>}
-            {errors.subCategoryId && <FieldError>{errors.subCategoryId.message}</FieldError>}
+            {errors.subCategory && <FieldError>{errors.subCategory.message}</FieldError>}
 
           </FieldSet>
 

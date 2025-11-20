@@ -3,7 +3,7 @@ import Category from '../category/category.model.js';
 
 
 class ItemService {
-   
+
     async createItem(files, itemData) {
         if (!files || files.length === 0) {
             throw new Error('At least one image is required');
@@ -16,7 +16,7 @@ class ItemService {
         }
 
         // Validate subcategory exists within the category
-        const subCategory = category.subCategories.id(itemData.subCategoryId);
+        const subCategory = category.subCategories.id(itemData.subCategory);
         if (!subCategory) {
             throw new Error('Subcategory not found in the selected category');
         }
@@ -35,8 +35,7 @@ class ItemService {
             price: itemData.price,
             stock: itemData.stock,
             category: itemData.category,
-            subCategoryId: subCategory._id,
-            subCategoryName: subCategory.name,
+            subCategory: subCategory._id,
             sizes: itemData.sizes,
             description: itemData.description,
         });
@@ -49,14 +48,16 @@ class ItemService {
     async getAllItems() {
         const items = await Item.find()
             .select("-images.data")
-            .populate('category', 'name subCategories');
+            .populate('category', 'name subCategories')
+            .populate('subCategory', 'name');
         return items;
     }
 
     async getItemById(itemId) {
         const item = await Item.findById(itemId)
             .select("-images.data")
-            .populate('category', 'name subCategories');
+            .populate('category', 'name subCategories')
+            .populate('subCategory', 'name');
 
         if (!item) {
             throw new Error('Item not found');
@@ -93,13 +94,12 @@ class ItemService {
             }
 
             // Validate subcategory if provided
-            if (itemData.subCategoryId) {
-                const subCategory = category.subCategories.id(itemData.subCategoryId);
+            if (itemData.subCategory) {
+                const subCategory = category.subCategories.id(itemData.subCategory);
                 if (!subCategory) {
                     throw new Error('Subcategory not found in the selected category');
                 }
-                item.subCategoryId = subCategory._id;
-                item.subCategoryName = subCategory.name;
+                item.subCategory = subCategory._id;
             }
             item.category = itemData.category;
         }

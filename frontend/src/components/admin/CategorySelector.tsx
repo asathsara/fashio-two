@@ -1,4 +1,3 @@
-import * as React from "react"
 import type { Category } from "../../types/category"
 import {
   Field,
@@ -16,26 +15,31 @@ import {
 
 type CategorySelectorProps = {
   categories: Category[]
-  category: Category | null
-  subCategoryId: string | null
+  categoryId: string
+  subCategory: string
   onCategoryChange: (value: string) => void
   onSubCategoryChange: (value: string) => void
 }
 
-const CategorySelector: React.FC<CategorySelectorProps> = ({
+const CategorySelector = ({
   categories,
-  category,
-  subCategoryId,
+  categoryId,
+  subCategory,
   onCategoryChange,
   onSubCategoryChange,
-}) => {
+}: CategorySelectorProps) => {
+
+  const category = categories.find((cat) => cat._id === categoryId)
+
+  console.log("CategorySelector category:", subCategory)
   return (
     <FieldGroup className="mt-4 space-y-4">
       {/* Category */}
       <Field>
         <FieldLabel>Category</FieldLabel>
         <Select
-          value={category?._id || ""}
+          value={categoryId}
+          defaultValue={category?.name}
           onValueChange={(value) => onCategoryChange(value)}
         >
           <SelectTrigger className="w-64">
@@ -58,7 +62,7 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({
       <Field>
         <FieldLabel>Subcategory</FieldLabel>
         <Select
-          value={subCategoryId || ""}
+          value={subCategory}
           onValueChange={(value) => onSubCategoryChange(value)}
           disabled={!category}
         >

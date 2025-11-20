@@ -1,5 +1,5 @@
 import type { Image } from "./image";
-import type { Category } from "./category";
+import type { Category, SubCategory } from "./category";
 
 export interface Item {
   _id?: string;
@@ -7,8 +7,7 @@ export interface Item {
   price: number;
   stock: number;
   category: Category;
-  subCategoryId: string;
-  subCategoryName: string;
+  subCategory: SubCategory;
   sizes: string[];
   images?: Image[];
   description?: string;
