@@ -48,7 +48,7 @@ export function useItemForm({ item, isEditMode = false }: UseItemFormProps = {})
                     stock: item.stock,
                     selectedSizes: item.sizes || [],
                     category: item.category._id,
-                    subCategory: item.subCategory._id,
+                    subCategory: item.category.subCategory?._id || "",
                     images: []
                 })
             }

@@ -84,7 +84,7 @@ const ItemListPage = () => {
               </span>
               <span>{item.stock}</span>
               <span>{item.category.name}</span>
-              <span>{item.subCategory.name}</span>
+              <span>{item.category.subCategory?.name || 'N/A'}</span>
               <span>{item.sizes.join(", ")}</span>
               <div className="flex gap-3">
                 <FaEdit
