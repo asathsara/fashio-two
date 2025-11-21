@@ -31,7 +31,6 @@ const CategorySelector = ({
 }: CategorySelectorProps) => {
 
   const category = useMemo(() => {
-    console.log("Finding category for ID:", categoryId);
      return categories.find((cat) => cat._id === categoryId)
   }, [categories, categoryId])
 

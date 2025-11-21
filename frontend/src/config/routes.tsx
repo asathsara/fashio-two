@@ -1,5 +1,3 @@
-import type { ReactElement } from "react";
-
 // Admin Pages
 import ImageSliderManagerPage from "@/pages/admin/ImageSliderManagerPage";
 import ItemInsertPage from "@/pages/admin/ItemInsertPage";
@@ -17,17 +15,10 @@ import VerifyEmailPage from "@/pages/client/auth/VerifyEmailPage";
 import ResetPasswordPage from "@/pages/client/auth/ResetPasswordPage";
 import ForgotPasswordPage from "@/pages/client/auth/ForgotPasswordPage";
 import LoginPage from "@/pages/client/LoginPage";
+import type { NavItem } from "@/types/nav";
 
-export type AppRoute = {
-    path: string;
-    label?: string;
-    element: ReactElement;
-    showInNav?: boolean;
-    protected?: boolean;
-    requiredRole?: "admin" | "user";
-};
 
-export const publicRoutes: AppRoute[] = [
+export const publicRoutes: NavItem[] = [
     {
         path: "/",
         label: "Home",
@@ -78,7 +69,7 @@ export const publicRoutes: AppRoute[] = [
     }
 ];
 
-export const adminRoutes: AppRoute[] = [
+export const adminRoutes: NavItem[] = [
     {
         path: "/admin/image-slider",
         label: "Image Slider",
