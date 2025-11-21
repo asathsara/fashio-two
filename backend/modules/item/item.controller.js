@@ -3,6 +3,7 @@ import ItemService from './item.service.js';
 const itemService = new ItemService();
 
 class ItemController {
+
     // Create
     async addItem(req, res) {
         try {
@@ -10,17 +11,20 @@ class ItemController {
             res.status(201).json(item);
         } catch (error) {
             console.error('Add item error:', error);
-            if (error.message === 'At least one image is required') {
+
+            if ([
+                'At least one image is required',
+                'Category not found',
+                'Subcategory not found'
+            ].includes(error.message)) {
                 return res.status(400).json({ message: error.message });
             }
-            if (error.message === 'Category not found' || error.message === 'Subcategory not found in the selected category') {
-                return res.status(404).json({ message: error.message });
-            }
+
             res.status(500).json({ message: 'Failed to add item', error: error.message });
         }
     }
 
-    // Read
+    // Read all
     async getAllItems(req, res) {
         try {
             const items = await itemService.getAllItems();
@@ -31,6 +35,7 @@ class ItemController {
         }
     }
 
+    // Read one
     async getItemById(req, res) {
         try {
             const item = await itemService.getItemById(req.params.id);
@@ -44,6 +49,7 @@ class ItemController {
         }
     }
 
+    // Image serving
     async getItemImage(req, res) {
         try {
             const { itemId, index } = req.params;
@@ -51,11 +57,14 @@ class ItemController {
 
             res.set("Content-Type", image.contentType);
             res.send(image.data);
+
         } catch (error) {
             console.error('Get item image error:', error);
-            if (error.message === 'Item not found' || error.message === 'Image not found') {
+
+            if (['Item not found', 'Image not found'].includes(error.message)) {
                 return res.status(404).json({ message: error.message });
             }
+
             res.status(500).json({ message: 'Error fetching image', error: error.message });
         }
     }
@@ -67,12 +76,15 @@ class ItemController {
             res.status(200).json(item);
         } catch (error) {
             console.error('Update item error:', error);
-            if (error.message === 'Item not found') {
+
+            if ([
+                'Item not found',
+                'Category not found',
+                'Subcategory not found'
+            ].includes(error.message)) {
                 return res.status(404).json({ message: error.message });
             }
-            if (error.message === 'Category not found' || error.message === 'Subcategory not found in the selected category') {
-                return res.status(404).json({ message: error.message });
-            }
+
             res.status(500).json({ message: 'Failed to update item', error: error.message });
         }
     }
@@ -85,9 +97,11 @@ class ItemController {
 
         } catch (error) {
             console.error('Delete item error:', error);
+
             if (error.message === 'Item not found') {
                 return res.status(404).json({ message: error.message });
             }
+
             res.status(500).json({ message: 'Failed to delete item', error: error.message });
         }
     }

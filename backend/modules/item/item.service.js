@@ -1,40 +1,33 @@
 import Item from './item.model.js';
 import Category from '../category/category.model.js';
 
-
 class ItemService {
 
+    // Create
     async createItem(files, itemData) {
-        if (!files || files.length === 0) {
-            throw new Error('At least one image is required');
-        }
+        if (!files || files.length === 0) throw new Error('At least one image is required');
 
-        // Validate category exists
+        // Find category
         const category = await Category.findById(itemData.category);
-        if (!category) {
-            throw new Error('Category not found');
-        }
+        if (!category) throw new Error('Category not found');
 
-        // Validate subcategory exists within the category
+        // Find subcategory inside category
         const subCategory = category.subCategories.id(itemData.subCategory);
-        if (!subCategory) {
-            throw new Error('Subcategory not found in the selected category');
-        }
+        if (!subCategory) throw new Error('Subcategory not found in the selected category');
 
-        // Map uploaded files into objects for MongoDB
+        // Map images
         const imageObjects = files.map(file => ({
             filename: file.originalname,
             data: file.buffer,
             contentType: file.mimetype,
         }));
 
-        // Create new Item
         const item = new Item({
             images: imageObjects,
             name: itemData.name,
             price: itemData.price,
             stock: itemData.stock,
-            category: itemData.category,
+            category: category._id,
             subCategory: subCategory._id,
             sizes: itemData.sizes,
             description: itemData.description,
@@ -44,58 +37,56 @@ class ItemService {
         return item;
     }
 
-    // Read
+    // Read all items
     async getAllItems() {
         const items = await Item.find()
-            .select("-images.data")
+            .select('-images.data')
             .populate('category', 'name subCategories');
 
-        // Manually attach subcategory info from category's subCategories
-        const itemsWithSubCategory = items.map(item => {
+        return items.map(item => {
             const itemObj = item.toObject();
-            if (itemObj.category && itemObj.category.subCategories) {
-                const subCat = itemObj.category.subCategories.find(
-                    sub => sub._id.toString() === itemObj.subCategory.toString()
-                );
-                itemObj.subCategory = subCat || { _id: itemObj.subCategory, name: 'Unknown' };
-            }
-            return itemObj;
-        });
-
-        return itemsWithSubCategory;
-    }
-
-    async getItemById(itemId) {
-        const item = await Item.findById(itemId)
-            .select("-images.data")
-            .populate('category', 'name subCategories');
-
-        if (!item) {
-            throw new Error('Item not found');
-        }
-
-        // Manually attach subcategory info from category's subCategories
-        const itemObj = item.toObject();
-        if (itemObj.category && itemObj.category.subCategories) {
             const subCat = itemObj.category.subCategories.find(
                 sub => sub._id.toString() === itemObj.subCategory.toString()
             );
-            itemObj.subCategory = subCat || { _id: itemObj.subCategory, name: 'Unknown' };
-        }
+            itemObj.category = {
+                _id: itemObj.category._id,
+                name: itemObj.category.name,
+                subCategory: subCat || { _id: itemObj.subCategory, name: 'Unknown' }
+            };
+            delete itemObj.subCategory;
+            return itemObj;
+        });
+    }
+
+    // Get one item
+    async getItemById(itemId) {
+        const item = await Item.findById(itemId)
+            .select('-images.data')
+            .populate('category', 'name subCategories');
+
+        if (!item) throw new Error('Item not found');
+
+        const itemObj = item.toObject();
+        const subCat = itemObj.category.subCategories.find(
+            sub => sub._id.toString() === itemObj.subCategory.toString()
+        );
+        itemObj.category = {
+            _id: itemObj.category._id,
+            name: itemObj.category.name,
+            subCategory: subCat || { _id: itemObj.subCategory, name: 'Unknown' }
+        };
+        delete itemObj.subCategory;
 
         return itemObj;
     }
 
+    // Get image
     async getItemImage(itemId, index) {
         const item = await Item.findById(itemId);
-        if (!item) {
-            throw new Error('Item not found');
-        }
+        if (!item) throw new Error('Item not found');
 
         const image = item.images[index];
-        if (!image) {
-            throw new Error('Image not found');
-        }
+        if (!image) throw new Error('Image not found');
 
         return image;
     }
@@ -103,39 +94,28 @@ class ItemService {
     // Update
     async updateItem(itemId, files, itemData) {
         const item = await Item.findById(itemId);
-        if (!item) {
-            throw new Error('Item not found');
-        }
+        if (!item) throw new Error('Item not found');
 
-        // Validate category if provided
         if (itemData.category) {
             const category = await Category.findById(itemData.category);
-            if (!category) {
-                throw new Error('Category not found');
-            }
+            if (!category) throw new Error('Category not found');
+            item.category = category._id;
 
-            // Validate subcategory if provided
             if (itemData.subCategory) {
                 const subCategory = category.subCategories.id(itemData.subCategory);
-                if (!subCategory) {
-                    throw new Error('Subcategory not found in the selected category');
-                }
+                if (!subCategory) throw new Error('Subcategory not found in the selected category');
                 item.subCategory = subCategory._id;
             }
-            item.category = itemData.category;
         }
 
-        // Update images if new ones are provided
         if (files && files.length > 0) {
-            const imageObjects = files.map(file => ({
+            item.images = files.map(file => ({
                 filename: file.originalname,
                 data: file.buffer,
                 contentType: file.mimetype,
             }));
-            item.images = imageObjects;
         }
 
-        // Update other fields
         if (itemData.name) item.name = itemData.name;
         if (itemData.price) item.price = itemData.price;
         if (itemData.stock !== undefined) item.stock = itemData.stock;
@@ -149,9 +129,7 @@ class ItemService {
     // Delete
     async deleteItem(itemId) {
         const item = await Item.findByIdAndDelete(itemId);
-        if (!item) {
-            throw new Error('Item not found');
-        }
+        if (!item) throw new Error('Item not found');
     }
 }
 
