@@ -16,7 +16,6 @@ const ItemListPage = () => {
   const { data: items = [], isLoading, error } = useItems();
   const deleteMutation = useDeleteItem();
 
-  console.log("Items fetched:", items);
 
   const openDeleteDialog = (item: Item) => {
     setItemToDelete(item);
@@ -37,8 +36,6 @@ const ItemListPage = () => {
       }
     });
   };
-
-
 
   return (
     <>

@@ -1,10 +1,11 @@
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import {  z } from "zod"
+import { z } from "zod"
 import { itemSchema } from "@/schemas/itemSchema"
 import { useInsertItem, useUpdateItem } from "@/hooks/useItems"
 import { useEffect } from "react"
 import type { Item } from "@/types/item"
+import { useCategories } from "../useCategories"
 
 
 type ItemForm = z.infer<typeof itemSchema>
@@ -18,6 +19,8 @@ interface UseItemFormProps {
 export function useItemForm({ item, isEditMode = false }: UseItemFormProps = {}) {
     const insertMutation = useInsertItem()
     const updateMutation = useUpdateItem()
+
+    const { data: categories = [] } = useCategories()
 
     const form = useForm<ItemForm>({
         resolver: zodResolver(itemSchema),
@@ -37,19 +40,23 @@ export function useItemForm({ item, isEditMode = false }: UseItemFormProps = {})
 
     // Populate form when in edit mode
     useEffect(() => {
-        setTimeout(() => {
-            if (isEditMode && item) {
-                setValue("name", item.name)
-                setValue("description", item.description || "")
-                setValue("categoryId", item.category._id)
-                setValue("subCategoryId", item.category.subCategory?._id || "")
-                setValue("price", item.price)
-                setValue("stock", item.stock)
-                setValue("selectedSizes", item.sizes || [])
 
-            }
-        }, 500);
-    }, [isEditMode, item, setValue])
+        if (item && isEditMode) {
+
+            reset({
+                name: item.name,
+                description: item.description,
+                categoryId: item.category._id,
+                subCategoryId: item.category.subCategory?._id || "",
+                price: item.price,
+                stock: item.stock,
+                selectedSizes: item.sizes,
+                images: [],
+            })
+        }
+
+    }, [item, isEditMode, reset]);
+
 
 
     const watchedSizes = watch("selectedSizes")
@@ -107,5 +114,6 @@ export function useItemForm({ item, isEditMode = false }: UseItemFormProps = {})
         insertMutation,
         updateMutation,
         isEditMode,
+        categories,
     }
 }

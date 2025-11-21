@@ -1,4 +1,3 @@
-import { useCategories } from "@/hooks/useCategories"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -26,7 +25,6 @@ const ItemInsertPage = () => {
   const navigate = useNavigate()
   const isEditMode = Boolean(id)
 
-  const { data: categories = [] } = useCategories()
 
   // Fetch item data if in edit mode
   const { data: item, isLoading } = useGetItem(id || "", isEditMode)
@@ -40,6 +38,7 @@ const ItemInsertPage = () => {
     onSubmit,
     setValue,
     watch,
+    categories,
     insertMutation,
     updateMutation,
   } = useItemForm({ item, isEditMode })
@@ -49,13 +48,15 @@ const ItemInsertPage = () => {
   // Navigate back after successful update
   useEffect(() => {
     if (isEditMode && updateMutation.isSuccess) {
-      navigate('/admin/items')
+      navigate('/admin/items/list')
     }
   }, [isEditMode, updateMutation.isSuccess, navigate])
 
   if (isEditMode && isLoading) {
     return <Spinner fullHeight />
   }
+
+  
 
   return (
     <div className="max-w-5xl">
@@ -103,7 +104,10 @@ const ItemInsertPage = () => {
               categories={categories}
               categoryId={watch("categoryId")}
               subCategoryId={watch("subCategoryId")}
-              onCategoryChange={(val) => setValue("categoryId", val, { shouldValidate: true })}
+              onCategoryChange={(val) => {
+                console.log("Category changed to:", val);
+                setValue("categoryId", val, { shouldValidate: true })
+              }}
               onSubCategoryChange={(val) => setValue("subCategoryId", val, { shouldValidate: true })}
             />
             {errors.categoryId && <FieldError>{errors.categoryId.message}</FieldError>}

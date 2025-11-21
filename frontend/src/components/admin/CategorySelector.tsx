@@ -1,9 +1,9 @@
 import type { Category } from "../../types/category"
 import {
   Field,
-  FieldGroup,
   FieldLabel,
   FieldDescription,
+  FieldGroup,
 } from "@/components/ui/field"
 import {
   Select,
@@ -12,6 +12,7 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select"
+import { useMemo } from "react"
 
 type CategorySelectorProps = {
   categories: Category[]
@@ -29,9 +30,11 @@ const CategorySelector = ({
   onSubCategoryChange,
 }: CategorySelectorProps) => {
 
-  const category = categories.find((cat) => cat._id === categoryId)
+  const category = useMemo(() => {
+    console.log("Finding category for ID:", categoryId);
+     return categories.find((cat) => cat._id === categoryId)
+  }, [categories, categoryId])
 
-  console.log("CategorySelector category:", subCategoryId)
   return (
     <FieldGroup className="mt-4 space-y-4">
       {/* Category */}
@@ -39,8 +42,10 @@ const CategorySelector = ({
         <FieldLabel>Category</FieldLabel>
         <Select
           value={categoryId}
-          defaultValue={category?.name}
-          onValueChange={(value) => onCategoryChange(value)}
+          onValueChange={(value) => {
+            if (!value) return; 
+            onCategoryChange(value);
+          }}
         >
           <SelectTrigger className="w-64">
             <SelectValue placeholder="Select category" />
@@ -63,7 +68,10 @@ const CategorySelector = ({
         <FieldLabel>Subcategory</FieldLabel>
         <Select
           value={subCategoryId}
-          onValueChange={(value) => onSubCategoryChange(value)}
+          onValueChange={(value) => {
+            if (!value) return; 
+            onSubCategoryChange(value);
+          }}
           disabled={!category}
         >
           <SelectTrigger className="w-64">
