@@ -1,21 +1,27 @@
 import { motion } from "framer-motion";
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import { MdClose } from "react-icons/md";
 
 type ImageUploaderSolidProps = {
   className?: string;
   onImageChange: (file: File | null) => void;
+  initialImageUrl?: string | null;
 }
 
 const ImageUploaderSolid = ({
   className = "",
   onImageChange,
+  initialImageUrl = null,
 }: ImageUploaderSolidProps) => {
-  
-  const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+
+  const [uploadedImage, setUploadedImage] = useState<string | null>(initialImageUrl);
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    setUploadedImage(initialImageUrl);
+  }, [initialImageUrl]);
 
   const handleClick = () => fileInputRef.current?.click();
 

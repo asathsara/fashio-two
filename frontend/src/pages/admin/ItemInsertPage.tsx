@@ -29,7 +29,7 @@ const ItemInsertPage = () => {
   const { data: categories = [] } = useCategories()
 
   // Fetch item data if in edit mode
-  const { data: item, isLoading } = useGetItem(id || "" , isEditMode)
+  const { data: item, isLoading } = useGetItem(id || "", isEditMode)
 
   const {
     register,
@@ -71,8 +71,18 @@ const ItemInsertPage = () => {
                 ? "Upload new images to replace existing ones (optional)."
                 : "Upload product images."}
             </FieldDescription>
-            <ImageUploaderGroup onImageChange={handleImageChange} />
-            {errors.images && <FieldError>{errors.images.message}</FieldError>}
+
+            <ImageUploaderGroup
+              onImageChange={handleImageChange}
+              existingImageUrls={
+                isEditMode && item && item.images
+                  ? item.images.map((_, index) =>
+                    `${import.meta.env.VITE_API_BASE_URL}/items/${item._id}/image/${index}`
+                  )
+                  : []
+              }
+            />
+            {!isEditMode && errors.images && <FieldError>{errors.images.message}</FieldError>}
           </FieldSet>
 
           <FieldSet>

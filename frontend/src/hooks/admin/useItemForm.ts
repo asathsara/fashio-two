@@ -47,6 +47,9 @@ export function useItemForm({ item, isEditMode = false }: UseItemFormProps = {})
                 setValue("subCategory", item.category.subCategory?._id || "")
                 setValue("price", item.price)
                 setValue("stock", item.stock)
+                setValue("selectedSizes", item.sizes || [])
+
+               
             }
         }, 500);
     }, [isEditMode, item, setValue])
