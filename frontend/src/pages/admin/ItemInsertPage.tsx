@@ -56,7 +56,7 @@ const ItemInsertPage = () => {
     return <Spinner fullHeight />
   }
 
-  
+
 
   return (
     <div className="max-w-5xl">
@@ -104,11 +104,11 @@ const ItemInsertPage = () => {
               categories={categories}
               categoryId={watch("categoryId")}
               subCategoryId={watch("subCategoryId")}
-              onCategoryChange={(val) => {
-                console.log("Category changed to:", val);
+              onCategoryChange={(val) =>
                 setValue("categoryId", val, { shouldValidate: true })
-              }}
-              onSubCategoryChange={(val) => setValue("subCategoryId", val, { shouldValidate: true })}
+              }
+              onSubCategoryChange={(val) =>
+                setValue("subCategoryId", val, { shouldValidate: true })}
             />
             {errors.categoryId && <FieldError>{errors.categoryId.message}</FieldError>}
             {errors.subCategoryId && <FieldError>{errors.subCategoryId.message}</FieldError>}
