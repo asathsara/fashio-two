@@ -19,15 +19,13 @@ export function useItemForm({ item, isEditMode = false }: UseItemFormProps = {})
     const insertMutation = useInsertItem()
     const updateMutation = useUpdateItem()
 
-
-
     const form = useForm<ItemForm>({
         resolver: zodResolver(itemSchema),
         defaultValues: {
             name: "",
             description: "",
-            category: "",
-            subCategory: "",
+            categoryId: "",
+            subCategoryId: "",
             price: undefined,
             stock: undefined,
             selectedSizes: [],
@@ -43,13 +41,12 @@ export function useItemForm({ item, isEditMode = false }: UseItemFormProps = {})
             if (isEditMode && item) {
                 setValue("name", item.name)
                 setValue("description", item.description || "")
-                setValue("category", item.category._id)
-                setValue("subCategory", item.category.subCategory?._id || "")
+                setValue("categoryId", item.category._id)
+                setValue("subCategoryId", item.category.subCategory?._id || "")
                 setValue("price", item.price)
                 setValue("stock", item.stock)
                 setValue("selectedSizes", item.sizes || [])
 
-               
             }
         }, 500);
     }, [isEditMode, item, setValue])
@@ -82,8 +79,8 @@ export function useItemForm({ item, isEditMode = false }: UseItemFormProps = {})
 
         formData.append("name", data.name)
         formData.append("description", data.description)
-        formData.append("category", data.category)
-        formData.append("subCategory", data.subCategory)
+        formData.append("categoryId", data.categoryId)
+        formData.append("subCategoryId", data.subCategoryId)
         formData.append("price", data.price.toString())
         formData.append("stock", data.stock.toString())
         formData.append("sizes", JSON.stringify(data.selectedSizes))

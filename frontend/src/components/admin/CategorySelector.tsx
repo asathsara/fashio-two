@@ -16,7 +16,7 @@ import {
 type CategorySelectorProps = {
   categories: Category[]
   categoryId: string
-  subCategory: string
+  subCategoryId: string
   onCategoryChange: (value: string) => void
   onSubCategoryChange: (value: string) => void
 }
@@ -24,14 +24,14 @@ type CategorySelectorProps = {
 const CategorySelector = ({
   categories,
   categoryId,
-  subCategory,
+  subCategoryId,
   onCategoryChange,
   onSubCategoryChange,
 }: CategorySelectorProps) => {
 
   const category = categories.find((cat) => cat._id === categoryId)
 
-  console.log("CategorySelector category:", subCategory)
+  console.log("CategorySelector category:", subCategoryId)
   return (
     <FieldGroup className="mt-4 space-y-4">
       {/* Category */}
@@ -62,7 +62,7 @@ const CategorySelector = ({
       <Field>
         <FieldLabel>Subcategory</FieldLabel>
         <Select
-          value={subCategory}
+          value={subCategoryId}
           onValueChange={(value) => onSubCategoryChange(value)}
           disabled={!category}
         >
