@@ -48,21 +48,42 @@ class ItemService {
     async getAllItems() {
         const items = await Item.find()
             .select("-images.data")
-            .populate('category', 'name subCategories')
-            .populate('subCategory', 'name');
-        return items;
+            .populate('category', 'name subCategories');
+
+        // Manually attach subcategory info from category's subCategories
+        const itemsWithSubCategory = items.map(item => {
+            const itemObj = item.toObject();
+            if (itemObj.category && itemObj.category.subCategories) {
+                const subCat = itemObj.category.subCategories.find(
+                    sub => sub._id.toString() === itemObj.subCategory.toString()
+                );
+                itemObj.subCategory = subCat || { _id: itemObj.subCategory, name: 'Unknown' };
+            }
+            return itemObj;
+        });
+
+        return itemsWithSubCategory;
     }
 
     async getItemById(itemId) {
         const item = await Item.findById(itemId)
             .select("-images.data")
-            .populate('category', 'name subCategories')
-            .populate('subCategory', 'name');
+            .populate('category', 'name subCategories');
 
         if (!item) {
             throw new Error('Item not found');
         }
-        return item;
+
+        // Manually attach subcategory info from category's subCategories
+        const itemObj = item.toObject();
+        if (itemObj.category && itemObj.category.subCategories) {
+            const subCat = itemObj.category.subCategories.find(
+                sub => sub._id.toString() === itemObj.subCategory.toString()
+            );
+            itemObj.subCategory = subCat || { _id: itemObj.subCategory, name: 'Unknown' };
+        }
+
+        return itemObj;
     }
 
     async getItemImage(itemId, index) {

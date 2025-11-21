@@ -6,8 +6,6 @@ import { useDeleteItem, useItems } from "@/hooks/useItems";
 import { Spinner } from "@/components/common/Spinner";
 import { ErrorMessage } from "@/components/common/ErrorMessage";
 import { ConfirmDialog } from "@/components/common/ConfirmDialog";
-import { toast } from "sonner";
-import { getErrorMessage } from "@/utils/errorHandler";
 
 
 const ItemListPage = () => {
@@ -17,6 +15,8 @@ const ItemListPage = () => {
 
   const { data: items = [], isLoading, error } = useItems();
   const deleteMutation = useDeleteItem();
+
+  console.log("Items fetched:", items);
 
   const openDeleteDialog = (item: Item) => {
     setItemToDelete(item);
@@ -32,12 +32,8 @@ const ItemListPage = () => {
 
     deleteMutation.mutate(itemToDelete._id, {
       onSuccess: () => {
-        toast.success(`Item "${itemToDelete.name}" deleted successfully`);
         setIsDeleteDialogOpen(false);
         setItemToDelete(null);
-      },
-      onError: (error: unknown) => {
-        toast.error(getErrorMessage(error, 'Failed to delete item'));
       }
     });
   };
