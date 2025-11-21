@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { z } from "zod"
+import {  z } from "zod"
 import { itemSchema } from "@/schemas/itemSchema"
 import { useInsertItem, useUpdateItem } from "@/hooks/useItems"
 import { useEffect } from "react"
@@ -41,19 +41,15 @@ export function useItemForm({ item, isEditMode = false }: UseItemFormProps = {})
     useEffect(() => {
         setTimeout(() => {
             if (isEditMode && item) {
-                reset({
-                    name: item.name,
-                    description: item.description || "",
-                    price: item.price,
-                    stock: item.stock,
-                    selectedSizes: item.sizes || [],
-                    category: item.category._id,
-                    subCategory: item.category.subCategory?._id || "",
-                    images: []
-                })
+                setValue("name", item.name)
+                setValue("description", item.description || "")
+                setValue("category", item.category._id)
+                setValue("subCategory", item.category.subCategory?._id || "")
+                setValue("price", item.price)
+                setValue("stock", item.stock)
             }
         }, 500);
-    }, [isEditMode, item, reset])
+    }, [isEditMode, item, setValue])
 
 
     const watchedSizes = watch("selectedSizes")

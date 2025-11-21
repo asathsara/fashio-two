@@ -1,8 +1,8 @@
 export interface Category {
   _id: string;
   name: string;
-  subCategories?: SubCategory[];
-  subCategory?: SubCategory;
+  subCategories?: SubCategory[]; // this is for listing subcategories
+  subCategory?: SubCategory; // this is for representing an item with a single subcategory
 }
 
 export interface SubCategory {

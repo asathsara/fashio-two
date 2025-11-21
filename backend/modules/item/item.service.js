@@ -22,6 +22,9 @@ class ItemService {
             contentType: file.mimetype,
         }));
 
+        // Parse sizes if it's a JSON string
+        const sizes = typeof itemData.sizes === 'string' ? JSON.parse(itemData.sizes) : itemData.sizes;
+
         const item = new Item({
             images: imageObjects,
             name: itemData.name,
@@ -29,7 +32,7 @@ class ItemService {
             stock: itemData.stock,
             category: category._id,
             subCategory: subCategory._id,
-            sizes: itemData.sizes,
+            sizes: sizes,
             description: itemData.description,
         });
 
@@ -119,7 +122,9 @@ class ItemService {
         if (itemData.name) item.name = itemData.name;
         if (itemData.price) item.price = itemData.price;
         if (itemData.stock !== undefined) item.stock = itemData.stock;
-        if (itemData.sizes) item.sizes = itemData.sizes;
+        if (itemData.sizes) {
+            item.sizes = typeof itemData.sizes === 'string' ? JSON.parse(itemData.sizes) : itemData.sizes;
+        }
         if (itemData.description !== undefined) item.description = itemData.description;
 
         await item.save();
