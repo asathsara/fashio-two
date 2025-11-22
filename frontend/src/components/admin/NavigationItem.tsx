@@ -1,7 +1,8 @@
-import type { AppRoute } from "../../config/routes";
+import type { NavItem } from "@/types/nav";
+
 
 interface NavigationItemProps {
-  item: AppRoute;
+  item: NavItem;
   selected: boolean;
   onSelect: (itemId: string) => void;
 }
@@ -12,7 +13,7 @@ const NavigationItem = ({ item, selected, onSelect }: NavigationItemProps) => {
       className={`px-10 py-3 cursor-pointer w-full rounded-full transition items-center text-left ${
         selected ? "bg-black rounded-full text-white" : "hover:bg-gray-200 text-gray-800"
       }`}
-      onClick={() => onSelect(item.label)}
+      onClick={() => onSelect(item.label  || "")}
     >
       {item.label}
     </li>

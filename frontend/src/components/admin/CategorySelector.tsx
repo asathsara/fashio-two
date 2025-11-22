@@ -1,10 +1,9 @@
-import * as React from "react"
 import type { Category } from "../../types/category"
 import {
   Field,
-  FieldGroup,
   FieldLabel,
   FieldDescription,
+  FieldGroup,
 } from "@/components/ui/field"
 import {
   Select,
@@ -13,30 +12,39 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select"
+import { useMemo } from "react"
 
 type CategorySelectorProps = {
   categories: Category[]
-  category: Category | null
-  subCategoryId: string | null
+  categoryId: string
+  subCategoryId: string
   onCategoryChange: (value: string) => void
   onSubCategoryChange: (value: string) => void
 }
 
-const CategorySelector: React.FC<CategorySelectorProps> = ({
+const CategorySelector = ({
   categories,
-  category,
+  categoryId,
   subCategoryId,
   onCategoryChange,
   onSubCategoryChange,
-}) => {
+}: CategorySelectorProps) => {
+
+  const category = useMemo(() => {
+     return categories.find((cat) => cat._id === categoryId)
+  }, [categories, categoryId])
+
   return (
     <FieldGroup className="mt-4 space-y-4">
       {/* Category */}
       <Field>
         <FieldLabel>Category</FieldLabel>
         <Select
-          value={category?._id || ""}
-          onValueChange={(value) => onCategoryChange(value)}
+          value={categoryId}
+          onValueChange={(value) => {
+            if (!value) return; 
+            onCategoryChange(value);
+          }}
         >
           <SelectTrigger className="w-64">
             <SelectValue placeholder="Select category" />
@@ -58,8 +66,11 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({
       <Field>
         <FieldLabel>Subcategory</FieldLabel>
         <Select
-          value={subCategoryId || ""}
-          onValueChange={(value) => onSubCategoryChange(value)}
+          value={subCategoryId}
+          onValueChange={(value) => {
+            if (!value) return; 
+            onSubCategoryChange(value);
+          }}
           disabled={!category}
         >
           <SelectTrigger className="w-64">

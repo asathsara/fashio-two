@@ -27,6 +27,9 @@ router.get("/", (req, res) => itemController.getAllItems(req, res));
 router.get("/:id", (req, res) => itemController.getItemById(req, res));
 router.get("/:itemId/image/:index", (req, res) => itemController.getItemImage(req, res));
 
+// Update
+router.put("/:id", upload.array("images", 4), (req, res) => itemController.updateItem(req, res));
+
 // Delete
 router.delete("/:id", (req, res) => itemController.deleteItem(req, res));
 

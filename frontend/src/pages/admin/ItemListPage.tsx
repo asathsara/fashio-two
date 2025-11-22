@@ -1,25 +1,29 @@
 import { useState } from "react";
-import { FaTrash } from "react-icons/fa";
+import { FaTrash, FaEdit } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 import type { Item } from "../../types/item";
 import { useDeleteItem, useItems } from "@/hooks/useItems";
 import { Spinner } from "@/components/common/Spinner";
 import { ErrorMessage } from "@/components/common/ErrorMessage";
 import { ConfirmDialog } from "@/components/common/ConfirmDialog";
-import { toast } from "sonner";
-import { getErrorMessage } from "@/utils/errorHandler";
 
 
 const ItemListPage = () => {
-
+  const navigate = useNavigate();
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<Item | null>(null);
 
   const { data: items = [], isLoading, error } = useItems();
   const deleteMutation = useDeleteItem();
 
+
   const openDeleteDialog = (item: Item) => {
     setItemToDelete(item);
     setIsDeleteDialogOpen(true);
+  };
+
+  const handleEdit = (item: Item) => {
+    navigate(`/admin/items/insert/${item._id}`);
   };
 
   const handleDelete = async () => {
@@ -27,17 +31,11 @@ const ItemListPage = () => {
 
     deleteMutation.mutate(itemToDelete._id, {
       onSuccess: () => {
-        toast.success(`Item "${itemToDelete.name}" deleted successfully`);
         setIsDeleteDialogOpen(false);
         setItemToDelete(null);
-      },
-      onError: (error: unknown) => {
-        toast.error(getErrorMessage(error, 'Failed to delete item'));
       }
     });
   };
-
-
 
   return (
     <>
@@ -57,7 +55,7 @@ const ItemListPage = () => {
             <span>Category</span>
             <span>Subcategory</span>
             <span>Sizes</span>
-            <span>Delete</span>
+            <span>Actions</span>
           </div>
 
           {/* Items Rows */}
@@ -83,12 +81,20 @@ const ItemListPage = () => {
               </span>
               <span>{item.stock}</span>
               <span>{item.category.name}</span>
-              <span>{item.subCategoryName}</span>
+              <span>{item.category.subCategory?.name || 'N/A'}</span>
               <span>{item.sizes.join(", ")}</span>
-              <FaTrash
-                className="cursor-pointer text-red-500 hover:text-red-700 transition duration-200"
-                onClick={() => openDeleteDialog(item)}
-              />
+              <div className="flex gap-3">
+                <FaEdit
+                  className="cursor-pointer text-blue-500 hover:text-blue-700 transition duration-200"
+                  onClick={() => handleEdit(item)}
+                  title="Edit item"
+                />
+                <FaTrash
+                  className="cursor-pointer text-red-500 hover:text-red-700 transition duration-200"
+                  onClick={() => openDeleteDialog(item)}
+                  title="Delete item"
+                />
+              </div>
             </div>
           ))}
         </div>

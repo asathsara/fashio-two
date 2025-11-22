@@ -1,8 +1,10 @@
 import type { ReactElement } from "react";
 
-export interface NavItem {
+export interface NavItem  {
     path: string;
-    label: string;
-    element: ReactElement
-    showInNav?: boolean
-}
+    label?: string;
+    element: ReactElement;
+    showInNav?: boolean;
+    protected?: boolean;
+    requiredRole?: "admin" | "user";
+};

@@ -1,46 +1,38 @@
 import Item from './item.model.js';
 import Category from '../category/category.model.js';
 
-/**
- * Item Service
- * Contains all business logic for item operations
- */
 class ItemService {
-    // ==================== Create ====================
+
+    // Create
     async createItem(files, itemData) {
-        if (!files || files.length === 0) {
-            throw new Error('At least one image is required');
-        }
+        if (!files || files.length === 0) throw new Error('At least one image is required');
 
-        // Validate category exists
+        // Find category
         const category = await Category.findById(itemData.category);
-        if (!category) {
-            throw new Error('Category not found');
-        }
+        if (!category) throw new Error('Category not found');
 
-        // Validate subcategory exists within the category
-        const subCategory = category.subCategories.id(itemData.subCategoryId);
-        if (!subCategory) {
-            throw new Error('Subcategory not found in the selected category');
-        }
+        // Find subcategory inside category
+        const subCategory = category.subCategories.id(itemData.subCategory);
+        if (!subCategory) throw new Error('Subcategory not found in the selected category');
 
-        // Map uploaded files into objects for MongoDB
+        // Map images
         const imageObjects = files.map(file => ({
             filename: file.originalname,
             data: file.buffer,
             contentType: file.mimetype,
         }));
 
-        // Create new Item
+        // Parse sizes if it's a JSON string
+        const sizes = typeof itemData.sizes === 'string' ? JSON.parse(itemData.sizes) : itemData.sizes;
+
         const item = new Item({
             images: imageObjects,
             name: itemData.name,
             price: itemData.price,
             stock: itemData.stock,
-            category: itemData.category,
-            subCategoryId: subCategory._id,
-            subCategoryName: subCategory.name,
-            sizes: itemData.sizes,
+            category: category._id,
+            subCategory: subCategory._id,
+            sizes: sizes,
             description: itemData.description,
         });
 
@@ -48,45 +40,120 @@ class ItemService {
         return item;
     }
 
-    // ==================== Read ====================
+    // Read all items
     async getAllItems() {
         const items = await Item.find()
-            .select("-images.data")
+            .select('-images.data')
             .populate('category', 'name subCategories');
-        return items;
+
+        return items.map(item => {
+            const itemObj = item.toObject();
+            const subCat = itemObj.category.subCategories.find(
+                sub => sub._id.toString() === itemObj.subCategory.toString()
+            );
+            itemObj.category = {
+                _id: itemObj.category._id,
+                name: itemObj.category.name,
+                subCategory: subCat || { _id: itemObj.subCategory, name: 'Unknown' }
+            };
+            delete itemObj.subCategory;
+            return itemObj;
+        });
     }
 
+    // Get one item
     async getItemById(itemId) {
         const item = await Item.findById(itemId)
-            .select("-images.data")
+            .select('-images.data')
             .populate('category', 'name subCategories');
 
-        if (!item) {
-            throw new Error('Item not found');
-        }
-        return item;
+        if (!item) throw new Error('Item not found');
+
+        const itemObj = item.toObject();
+        const subCat = itemObj.category.subCategories.find(
+            sub => sub._id.toString() === itemObj.subCategory.toString()
+        );
+        itemObj.category = {
+            _id: itemObj.category._id,
+            name: itemObj.category.name,
+            subCategory: subCat || { _id: itemObj.subCategory, name: 'Unknown' }
+        };
+        delete itemObj.subCategory;
+
+        return itemObj;
     }
 
+    // Get image
     async getItemImage(itemId, index) {
         const item = await Item.findById(itemId);
-        if (!item) {
-            throw new Error('Item not found');
-        }
+        if (!item) throw new Error('Item not found');
 
         const image = item.images[index];
-        if (!image) {
-            throw new Error('Image not found');
-        }
+        if (!image) throw new Error('Image not found');
 
         return image;
+    }
+
+    // Update
+    async updateItem(itemId, files, itemData) {
+        const item = await Item.findById(itemId);
+        if (!item) throw new Error('Item not found');
+
+        if (itemData.category) {
+            const category = await Category.findById(itemData.category);
+            if (!category) throw new Error('Category not found');
+            item.category = category._id;
+
+            if (itemData.subCategory) {
+                const subCategory = category.subCategories.id(itemData.subCategory);
+                if (!subCategory) throw new Error('Subcategory not found in the selected category');
+                item.subCategory = subCategory._id;
+            }
+        }
+
+        // Handle image updates with remainingImages
+        const remainingImages = itemData.remainingImages
+            ? JSON.parse(itemData.remainingImages)
+            : [];
+
+        // Keep only the existing images that are in remainingImages array
+        const keptImages = item.images.filter((_, index) =>
+            remainingImages.includes(index)
+        );
+
+        // Map new uploaded files to image objects
+        const newImageObjects = files && files.length > 0
+            ? files.map(file => ({
+                filename: file.originalname,
+                data: file.buffer,
+                contentType: file.mimetype,
+            }))
+            : [];
+
+        // Merge kept images with new uploads
+        item.images = [...keptImages, ...newImageObjects];
+
+        // Validate that at least one image exists
+        if (item.images.length === 0) {
+            throw new Error('At least one image is required');
+        }
+
+        if (itemData.name) item.name = itemData.name;
+        if (itemData.price) item.price = itemData.price;
+        if (itemData.stock !== undefined) item.stock = itemData.stock;
+        if (itemData.sizes) {
+            item.sizes = typeof itemData.sizes === 'string' ? JSON.parse(itemData.sizes) : itemData.sizes;
+        }
+        if (itemData.description !== undefined) item.description = itemData.description;
+
+        await item.save();
+        return item;
     }
 
     // Delete
     async deleteItem(itemId) {
         const item = await Item.findByIdAndDelete(itemId);
-        if (!item) {
-            throw new Error('Item not found');
-        }
+        if (!item) throw new Error('Item not found');
     }
 }
 

@@ -7,8 +7,6 @@ export interface Item {
   price: number;
   stock: number;
   category: Category;
-  subCategoryId: string;
-  subCategoryName: string;
   sizes: string[];
   images?: Image[];
   description?: string;
