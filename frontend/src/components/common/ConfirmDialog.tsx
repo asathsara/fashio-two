@@ -36,7 +36,7 @@ export const ConfirmDialog = ({
       </AlertDialogHeader>
       <AlertDialogFooter>
         <AlertDialogCancel>{cancelLabel}</AlertDialogCancel>
-        <AlertDialogAction onClick={onConfirm} className="bg-destructive hover:bg-destructive/90">
+        <AlertDialogAction onClick={onConfirm} >
           {confirmLabel}
         </AlertDialogAction>
       </AlertDialogFooter>
