@@ -11,6 +11,8 @@ import PromoPage from "@/pages/client/PromoPage";
 import HelpPage from "@/pages/client/HelpPage";
 import ProfilePage from "@/pages/client/ProfilePage";
 import ItemDetailPage from "@/pages/client/ItemDetailPage";
+import CartPage from "@/pages/client/CartPage";
+import CheckoutPage from "@/pages/client/CheckoutPage";
 import VerifyEmailPage from "@/pages/client/auth/VerifyEmailPage";
 import ResetPasswordPage from "@/pages/client/auth/ResetPasswordPage";
 import ForgotPasswordPage from "@/pages/client/auth/ForgotPasswordPage";
@@ -45,6 +47,18 @@ export const publicRoutes: NavItem[] = [
         path: "/profile",
         label: "Profile",
         element: <ProfilePage />,
+        protected: true,
+    },
+    {
+        path: "/cart",
+        label: "Cart",
+        element: <CartPage />,
+        protected: true,
+    },
+    {
+        path: "/checkout",
+        label: "Checkout",
+        element: <CheckoutPage />,
         protected: true,
     },
     {
