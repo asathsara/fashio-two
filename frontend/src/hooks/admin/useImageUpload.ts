@@ -13,9 +13,24 @@ export const useImageUpload = (
     setUploadedImage(initialImageUrl);
   }, [initialImageUrl]);
 
+  useEffect(() => {
+    return () => {
+      if (uploadedImage?.startsWith("blob:")) {
+        URL.revokeObjectURL(uploadedImage);
+      }
+    };
+  }, [uploadedImage]);
+
   const handleFile = (file: File) => {
     if (disabled) return;
+
     const fileURL = URL.createObjectURL(file);
+
+    // Clean up previous blob URL
+    if (uploadedImage?.startsWith("blob:")) {
+      URL.revokeObjectURL(uploadedImage);
+    }
+
     setUploadedImage(fileURL);
     onImageChange(file);
   };
@@ -42,10 +57,15 @@ export const useImageUpload = (
   };
 
   const triggerFileSelect = () => {
-    if (!disabled && !uploadedImage) fileInputRef.current?.click();
+    if (!disabled && !uploadedImage) {
+      fileInputRef.current?.click();
+    }
   };
 
   const removeImage = () => {
+    if (uploadedImage?.startsWith("blob:")) {
+      URL.revokeObjectURL(uploadedImage);
+    }
     setUploadedImage(null);
     onImageChange(null);
   };
