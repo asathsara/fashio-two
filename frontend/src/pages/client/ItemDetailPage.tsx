@@ -95,7 +95,7 @@ const ItemDetailPage = () => {
                 <div className="space-y-6">
                     {/* Category Badge */}
                     <Badge variant="secondary" className="text-sm">
-                        {item.category.name} - {item.subCategoryName}
+                        {item.category.name} - {item.category.subCategory?.name || 'N/A'}
                     </Badge>
 
                     {/* Item Name */}

@@ -1,4 +1,3 @@
-import { useCategories } from "@/hooks/useCategories"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -16,31 +15,102 @@ import CategorySelector from "@/components/admin/CategorySelector"
 import SizeSelector from "@/components/admin/SizeSelector"
 import ImageUploaderGroup from "@/components/admin/ImageUploaderGroup"
 import { useItemForm } from "@/hooks/admin/useItemForm"
+import { useParams, useNavigate } from "react-router-dom"
+import { Spinner } from "@/components/common/Spinner"
+import { useEffect, useState } from "react"
+import { useGetItem } from "@/hooks/useItems"
 
 const ItemInsertPage = () => {
-  const { data: categories = [] } = useCategories()
+  const { id } = useParams<{ id: string }>()
+  const navigate = useNavigate()
+  const isEditMode = Boolean(id)
+  const [formKey, setFormKey] = useState(0)
+
+
+  // Fetch item data if in edit mode
+  const { data: item, isLoading } = useGetItem(id || "", isEditMode)
+
   const {
     register,
     errors,
     watchedSizes,
+    existingImages,
+    newImages,
+    totalImages,
+    hasMinimumImages,
     handleImageChange,
+    handleRemoveExistingImage,
+    handleRemoveNewImage,
     handleSizeToggle,
     onSubmit,
     setValue,
     watch,
+    categories,
     insertMutation,
-  } = useItemForm()
+    updateMutation,
+  } = useItemForm({ item, isEditMode })
+
+  const mutation = isEditMode ? updateMutation : insertMutation
+
+  // Navigate back after successful update
+  useEffect(() => {
+    if (isEditMode && updateMutation.isSuccess) {
+      navigate('/admin/items/list')
+    }
+  }, [isEditMode, updateMutation.isSuccess, navigate])
+
+  // Reset form and images after successful insert
+  useEffect(() => {
+    if (!isEditMode && insertMutation.isSuccess) {
+      setFormKey(prev => prev + 1)
+    }
+  }, [insertMutation.isSuccess, isEditMode])
+
+  if (isEditMode && isLoading) {
+    return <Spinner fullHeight />
+  }
 
   return (
     <div className="max-w-5xl">
-      <h1 className="text-3xl font-semibold">Item Insert</h1>
+      <h1 className="text-3xl font-semibold">
+        {isEditMode ? "Edit Item" : "Add New Item"}
+      </h1>
       <form onSubmit={onSubmit} className="mt-8 space-y-6">
         <FieldGroup>
           <FieldSet>
             <FieldLegend>Images</FieldLegend>
-            <FieldDescription>Upload product images.</FieldDescription>
-            <ImageUploaderGroup onImageChange={handleImageChange} />
-            {errors.images && <FieldError>{errors.images.message}</FieldError>}
+            <FieldDescription>
+              {isEditMode
+                ? "Manage your product images. You can remove existing images or upload new ones."
+                : "Upload product images (at least 1 required)."}
+            </FieldDescription>
+
+            {isEditMode && (
+              <div className="mb-2 text-sm">
+                <span className="font-medium">
+                  Total: {totalImages} image{totalImages !== 1 ? 's' : ''}
+                </span>
+                {!hasMinimumImages && (
+                  <span className="text-red-500 ml-2">
+                    (At least 1 image required)
+                  </span>
+                )}
+              </div>
+            )}
+
+            <ImageUploaderGroup
+              key={formKey}
+              existingImages={existingImages}
+              newImages={newImages}
+              onImageChange={handleImageChange}
+              onRemoveExisting={handleRemoveExistingImage}
+              onRemoveNew={handleRemoveNewImage}
+            />
+
+            {!isEditMode && errors.images && <FieldError>{errors.images.message}</FieldError>}
+            {isEditMode && !hasMinimumImages && (
+              <FieldError>At least one image is required</FieldError>
+            )}
           </FieldSet>
 
           <FieldSet>
@@ -59,13 +129,16 @@ const ItemInsertPage = () => {
 
             <CategorySelector
               categories={categories}
-              category={watch("category") ? categories.find((c) => c._id === watch("category")) || null : null}
-              subCategoryId={watch("subCategoryId") || null}
-              onCategoryChange={(val) => setValue("category", val, { shouldValidate: true })}
-              onSubCategoryChange={(val) => setValue("subCategoryId", val, { shouldValidate: true })}
+              categoryId={watch("category")}
+              subCategoryId={watch("subCategory")}
+              onCategoryChange={(val) =>
+                setValue("category", val, { shouldValidate: true })
+              }
+              onSubCategoryChange={(val) =>
+                setValue("subCategory", val, { shouldValidate: true })}
             />
             {errors.category && <FieldError>{errors.category.message}</FieldError>}
-            {errors.subCategoryId && <FieldError>{errors.subCategoryId.message}</FieldError>}
+            {errors.subCategory && <FieldError>{errors.subCategory.message}</FieldError>}
 
           </FieldSet>
 
@@ -93,8 +166,14 @@ const ItemInsertPage = () => {
             {errors.selectedSizes && <FieldError>{errors.selectedSizes.message}</FieldError>}
           </FieldSet>
 
-          <Button type="submit" disabled={insertMutation.isPending} className="w-full">
-            {insertMutation.isPending ? "Submitting…" : "Submit"}
+          <Button
+            type="submit"
+            disabled={mutation.isPending || (isEditMode && !hasMinimumImages)}
+            className="w-full"
+          >
+            {mutation.isPending
+              ? (isEditMode ? "Updating…" : "Submitting…")
+              : (isEditMode ? "Update Item" : "Add Item")}
           </Button>
         </FieldGroup>
       </form>

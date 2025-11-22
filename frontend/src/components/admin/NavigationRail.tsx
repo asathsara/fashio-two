@@ -1,8 +1,8 @@
 import { NavLink } from "react-router-dom";
-import type { AppRoute } from "../../config/routes";
+import type { NavItem } from "@/types/nav";
 
 type RailProps = {
-  routes: AppRoute[];
+  routes: NavItem[];
 };
 
 const NavigationRail = ({ routes }: RailProps) => {
