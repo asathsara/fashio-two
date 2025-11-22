@@ -111,12 +111,31 @@ class ItemService {
             }
         }
 
-        if (files && files.length > 0) {
-            item.images = files.map(file => ({
+        // Handle image updates with remainingImages
+        const remainingImages = itemData.remainingImages
+            ? JSON.parse(itemData.remainingImages)
+            : [];
+
+        // Keep only the existing images that are in remainingImages array
+        const keptImages = item.images.filter((_, index) =>
+            remainingImages.includes(index)
+        );
+
+        // Map new uploaded files to image objects
+        const newImageObjects = files && files.length > 0
+            ? files.map(file => ({
                 filename: file.originalname,
                 data: file.buffer,
                 contentType: file.mimetype,
-            }));
+            }))
+            : [];
+
+        // Merge kept images with new uploads
+        item.images = [...keptImages, ...newImageObjects];
+
+        // Validate that at least one image exists
+        if (item.images.length === 0) {
+            throw new Error('At least one image is required');
         }
 
         if (itemData.name) item.name = itemData.name;

@@ -3,7 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { itemSchema } from "@/schemas/itemSchema"
 import { useInsertItem, useUpdateItem } from "@/hooks/useItems"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import type { Item } from "@/types/item"
 import { useCategories } from "../useCategories"
 
@@ -15,6 +15,10 @@ interface UseItemFormProps {
     isEditMode?: boolean
 }
 
+interface ExistingImage {
+    index: number
+    url: string
+}
 
 export function useItemForm({ item, isEditMode = false }: UseItemFormProps = {}) {
     const insertMutation = useInsertItem()
@@ -22,8 +26,22 @@ export function useItemForm({ item, isEditMode = false }: UseItemFormProps = {})
 
     const { data: categories = [] } = useCategories()
 
-    const form = useForm<ItemForm>({
-        resolver: zodResolver(itemSchema),
+    // State for tracking images
+    const [existingImages, setExistingImages] = useState<ExistingImage[]>([])
+    const [newImages, setNewImages] = useState<File[]>([])
+    const [remainingExistingImages, setRemainingExistingImages] = useState<number[]>([])
+
+    // Create schema for edit mode that makes images optional
+    const editSchema = itemSchema.omit({ images: true }).extend({
+        images: z.array(z.instanceof(File)).optional(),
+    })
+
+    type EditItemForm = z.infer<typeof editSchema>
+    type FormData = ItemForm | EditItemForm
+
+    const form = useForm<FormData>({
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        resolver: zodResolver(isEditMode ? editSchema : itemSchema) as any,
         defaultValues: {
             name: "",
             description: "",
@@ -40,9 +58,7 @@ export function useItemForm({ item, isEditMode = false }: UseItemFormProps = {})
 
     // Populate form when in edit mode
     useEffect(() => {
-
         if (item && isEditMode) {
-
             reset({
                 name: item.name,
                 description: item.description,
@@ -53,21 +69,42 @@ export function useItemForm({ item, isEditMode = false }: UseItemFormProps = {})
                 selectedSizes: item.sizes,
                 images: [],
             })
+
+            // Initialize existing images
+            if (item.images && item.images.length > 0) {
+                const existingImgs = item.images.map((_, index) => ({
+                    index,
+                    url: `${import.meta.env.VITE_API_BASE_URL}/items/${item._id}/image/${index}`
+                }))
+                setExistingImages(existingImgs)
+                setRemainingExistingImages(existingImgs.map(img => img.index))
+            }
+
+            // Clear new images
+            setNewImages([])
+        } else {
+            // Clear for insert mode
+            setExistingImages([])
+            setNewImages([])
+            setRemainingExistingImages([])
         }
-
     }, [item, isEditMode, reset]);
-
-
 
     const watchedSizes = watch("selectedSizes")
     const watchedImages = watch("images")
 
-    const handleImageChange = (_key: unknown, file: File | null) => {
+    const handleImageChange = (file: File | null) => {
         if (!file) return
-        setValue("images", [...(watchedImages || []), file])
+        setNewImages(prev => [...prev, file])
     }
 
+    const handleRemoveExistingImage = (index: number) => {
+        setRemainingExistingImages(prev => prev.filter(i => i !== index))
+    }
 
+    const handleRemoveNewImage = (index: number) => {
+        setNewImages(prev => prev.filter((_, i) => i !== index))
+    }
 
     const handleSizeToggle = (size: string) => {
         const updated = (watchedSizes || []).includes(size)
@@ -76,12 +113,29 @@ export function useItemForm({ item, isEditMode = false }: UseItemFormProps = {})
         setValue("selectedSizes", updated)
     }
 
+    // Calculate total images and filter displayed existing images
+    const totalImages = remainingExistingImages.length + newImages.length
+    const hasMinimumImages = totalImages >= 1
+    const displayedExistingImages = existingImages.filter(img =>
+        remainingExistingImages.includes(img.index)
+    )
+
     const onSubmit = handleSubmit(async (data) => {
+        // Validate images
+        if (isEditMode && !hasMinimumImages) {
+            return
+        }
+
         const formData = new FormData()
 
-        // Only append images if they exist
-        if (data.images && data.images.length > 0) {
-            data.images.forEach((file) => formData.append("images", file))
+        // Append new images
+        if (newImages.length > 0) {
+            newImages.forEach((file) => formData.append("images", file))
+        }
+
+        // For edit mode, include remainingImages
+        if (isEditMode) {
+            formData.append("remainingImages", JSON.stringify(remainingExistingImages))
         }
 
         formData.append("name", data.name)
@@ -98,6 +152,7 @@ export function useItemForm({ item, isEditMode = false }: UseItemFormProps = {})
             insertMutation.mutate(formData, {
                 onSuccess: () => {
                     reset();
+                    setNewImages([])
                 }
             })
         }
@@ -108,7 +163,14 @@ export function useItemForm({ item, isEditMode = false }: UseItemFormProps = {})
         errors,
         watchedSizes,
         watchedImages,
+        existingImages: displayedExistingImages,
+        newImages,
+        remainingExistingImages,
+        totalImages,
+        hasMinimumImages,
         handleImageChange,
+        handleRemoveExistingImage,
+        handleRemoveNewImage,
         handleSizeToggle,
         onSubmit,
         insertMutation,

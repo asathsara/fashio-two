@@ -34,7 +34,13 @@ const ItemInsertPage = () => {
     register,
     errors,
     watchedSizes,
+    existingImages,
+    newImages,
+    totalImages,
+    hasMinimumImages,
     handleImageChange,
+    handleRemoveExistingImage,
+    handleRemoveNewImage,
     handleSizeToggle,
     onSubmit,
     setValue,
@@ -75,22 +81,36 @@ const ItemInsertPage = () => {
             <FieldLegend>Images</FieldLegend>
             <FieldDescription>
               {isEditMode
-                ? "Upload new images or replace existing ones (optional)."
-                : "Upload product images."}
+                ? "Manage your product images. You can remove existing images or upload new ones."
+                : "Upload product images (at least 1 required)."}
             </FieldDescription>
+
+            {isEditMode && (
+              <div className="mb-2 text-sm">
+                <span className="font-medium">
+                  Total: {totalImages} image{totalImages !== 1 ? 's' : ''}
+                </span>
+                {!hasMinimumImages && (
+                  <span className="text-red-500 ml-2">
+                    (At least 1 image required)
+                  </span>
+                )}
+              </div>
+            )}
 
             <ImageUploaderGroup
               key={formKey}
+              existingImages={existingImages}
+              newImages={newImages}
               onImageChange={handleImageChange}
-              existingImageUrls={
-                isEditMode && item && item.images
-                  ? item.images.map((_, index) =>
-                    `${import.meta.env.VITE_API_BASE_URL}/items/${item._id}/image/${index}`
-                  )
-                  : []
-              }
+              onRemoveExisting={handleRemoveExistingImage}
+              onRemoveNew={handleRemoveNewImage}
             />
+
             {!isEditMode && errors.images && <FieldError>{errors.images.message}</FieldError>}
+            {isEditMode && !hasMinimumImages && (
+              <FieldError>At least one image is required</FieldError>
+            )}
           </FieldSet>
 
           <FieldSet>
@@ -146,7 +166,11 @@ const ItemInsertPage = () => {
             {errors.selectedSizes && <FieldError>{errors.selectedSizes.message}</FieldError>}
           </FieldSet>
 
-          <Button type="submit" disabled={mutation.isPending} className="w-full">
+          <Button
+            type="submit"
+            disabled={mutation.isPending || (isEditMode && !hasMinimumImages)}
+            className="w-full"
+          >
             {mutation.isPending
               ? (isEditMode ? "Updating…" : "Submitting…")
               : (isEditMode ? "Update Item" : "Add Item")}

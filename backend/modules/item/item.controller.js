@@ -80,9 +80,10 @@ class ItemController {
             if ([
                 'Item not found',
                 'Category not found',
-                'Subcategory not found'
+                'Subcategory not found',
+                'At least one image is required'
             ].includes(error.message)) {
-                return res.status(404).json({ message: error.message });
+                return res.status(400).json({ message: error.message });
             }
 
             res.status(500).json({ message: 'Failed to update item', error: error.message });
