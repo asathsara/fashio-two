@@ -27,8 +27,8 @@ export function useItemForm({ item, isEditMode = false }: UseItemFormProps = {})
         defaultValues: {
             name: "",
             description: "",
-            categoryId: "",
-            subCategoryId: "",
+            category: "",
+            subCategory: "",
             price: undefined,
             stock: undefined,
             selectedSizes: [],
@@ -46,8 +46,8 @@ export function useItemForm({ item, isEditMode = false }: UseItemFormProps = {})
             reset({
                 name: item.name,
                 description: item.description,
-                categoryId: item.category._id,
-                subCategoryId: item.category.subCategory?._id || "",
+                category: item.category._id,
+                subCategory: item.category.subCategory?._id || "",
                 price: item.price,
                 stock: item.stock,
                 selectedSizes: item.sizes,
@@ -86,8 +86,8 @@ export function useItemForm({ item, isEditMode = false }: UseItemFormProps = {})
 
         formData.append("name", data.name)
         formData.append("description", data.description)
-        formData.append("categoryId", data.categoryId)
-        formData.append("subCategoryId", data.subCategoryId)
+        formData.append("category", data.category)
+        formData.append("subCategory", data.subCategory)
         formData.append("price", data.price.toString())
         formData.append("stock", data.stock.toString())
         formData.append("sizes", JSON.stringify(data.selectedSizes))
@@ -95,11 +95,11 @@ export function useItemForm({ item, isEditMode = false }: UseItemFormProps = {})
         if (isEditMode && item?._id) {
             updateMutation.mutate({ id: item._id, formData })
         } else {
-            insertMutation.mutate(formData)
-        }
-
-        if (!isEditMode) {
-            reset()
+            insertMutation.mutate(formData, {
+                onSuccess: () => {
+                    reset();
+                }
+            })
         }
     })
 

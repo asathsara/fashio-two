@@ -17,13 +17,14 @@ import ImageUploaderGroup from "@/components/admin/ImageUploaderGroup"
 import { useItemForm } from "@/hooks/admin/useItemForm"
 import { useParams, useNavigate } from "react-router-dom"
 import { Spinner } from "@/components/common/Spinner"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useGetItem } from "@/hooks/useItems"
 
 const ItemInsertPage = () => {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const isEditMode = Boolean(id)
+  const [formKey, setFormKey] = useState(0)
 
 
   // Fetch item data if in edit mode
@@ -52,6 +53,13 @@ const ItemInsertPage = () => {
     }
   }, [isEditMode, updateMutation.isSuccess, navigate])
 
+  // Reset form and images after successful insert
+  useEffect(() => {
+    if (!isEditMode && insertMutation.isSuccess) {
+      setFormKey(prev => prev + 1)
+    }
+  }, [insertMutation.isSuccess, isEditMode])
+
   if (isEditMode && isLoading) {
     return <Spinner fullHeight />
   }
@@ -74,6 +82,7 @@ const ItemInsertPage = () => {
             </FieldDescription>
 
             <ImageUploaderGroup
+              key={formKey}
               onImageChange={handleImageChange}
               existingImageUrls={
                 isEditMode && item && item.images
@@ -102,16 +111,16 @@ const ItemInsertPage = () => {
 
             <CategorySelector
               categories={categories}
-              categoryId={watch("categoryId")}
-              subCategoryId={watch("subCategoryId")}
+              categoryId={watch("category")}
+              subCategoryId={watch("subCategory")}
               onCategoryChange={(val) =>
-                setValue("categoryId", val, { shouldValidate: true })
+                setValue("category", val, { shouldValidate: true })
               }
               onSubCategoryChange={(val) =>
-                setValue("subCategoryId", val, { shouldValidate: true })}
+                setValue("subCategory", val, { shouldValidate: true })}
             />
-            {errors.categoryId && <FieldError>{errors.categoryId.message}</FieldError>}
-            {errors.subCategoryId && <FieldError>{errors.subCategoryId.message}</FieldError>}
+            {errors.category && <FieldError>{errors.category.message}</FieldError>}
+            {errors.subCategory && <FieldError>{errors.subCategory.message}</FieldError>}
 
           </FieldSet>
 

@@ -8,8 +8,8 @@ export const itemSchema = z.object({
   stock: z
     .number("Stock is required")
     .min(1, "Stock must be at least 1"),
-  categoryId: z.string().min(1, "Category is required"),
-  subCategoryId: z.string().min(1, "Subcategory is required"),
+  category: z.string().min(1, "Category is required"),
+  subCategory: z.string().min(1, "Subcategory is required"),
   selectedSizes: z.array(z.string()).min(1, "Select at least one size"),
   description: z.string().min(1, "Description required"),
   images: z

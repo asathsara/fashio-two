@@ -8,11 +8,11 @@ class ItemService {
         if (!files || files.length === 0) throw new Error('At least one image is required');
 
         // Find category
-        const category = await Category.findById(itemData.categoryId);
+        const category = await Category.findById(itemData.category);
         if (!category) throw new Error('Category not found');
 
         // Find subcategory inside category
-        const subCategory = category.subCategories.id(itemData.subCategoryId);
+        const subCategory = category.subCategories.id(itemData.subCategory);
         if (!subCategory) throw new Error('Subcategory not found in the selected category');
 
         // Map images
@@ -99,13 +99,13 @@ class ItemService {
         const item = await Item.findById(itemId);
         if (!item) throw new Error('Item not found');
 
-        if (itemData.categoryId) {
-            const category = await Category.findById(itemData.categoryId);
+        if (itemData.category) {
+            const category = await Category.findById(itemData.category);
             if (!category) throw new Error('Category not found');
             item.category = category._id;
 
-            if (itemData.subCategoryId) {
-                const subCategory = category.subCategories.id(itemData.subCategoryId);
+            if (itemData.subCategory) {
+                const subCategory = category.subCategories.id(itemData.subCategory);
                 if (!subCategory) throw new Error('Subcategory not found in the selected category');
                 item.subCategory = subCategory._id;
             }
