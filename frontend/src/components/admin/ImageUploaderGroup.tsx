@@ -8,8 +8,8 @@ type ImageUploaderGroupProps = {
 const UPLOAD_KEYS = ["uploader1", "uploader2", "uploader3", "uploader4"] as const;
 
 
-const ImageUploaderGroup: React.FC<ImageUploaderGroupProps> = ({ onImageChange, existingImageUrls = [] }) => {
-  
+const ImageUploaderGroup = ({ onImageChange, existingImageUrls = [] }: ImageUploaderGroupProps) => {
+
   return (
     <div className="flex flex-col mr-4">
       {/* First ImageUploader */}

@@ -64,8 +64,6 @@ const ItemInsertPage = () => {
     return <Spinner fullHeight />
   }
 
-
-
   return (
     <div className="max-w-5xl">
       <h1 className="text-3xl font-semibold">
@@ -77,7 +75,7 @@ const ItemInsertPage = () => {
             <FieldLegend>Images</FieldLegend>
             <FieldDescription>
               {isEditMode
-                ? "Upload new images to replace existing ones (optional)."
+                ? "Upload new images or replace existing ones (optional)."
                 : "Upload product images."}
             </FieldDescription>
 

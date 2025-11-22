@@ -79,7 +79,7 @@ export function useItemForm({ item, isEditMode = false }: UseItemFormProps = {})
     const onSubmit = handleSubmit(async (data) => {
         const formData = new FormData()
 
-        // Only append images if they exist (for update, images are optional)
+        // Only append images if they exist
         if (data.images && data.images.length > 0) {
             data.images.forEach((file) => formData.append("images", file))
         }
