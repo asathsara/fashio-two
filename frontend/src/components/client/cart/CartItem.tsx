@@ -2,6 +2,8 @@ import { Link } from 'react-router-dom';
 import { Trash2, Plus, Minus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import type { CartItem as CartItemType } from '@/types/cart';
+import { getImageUrl } from '@/utils/cart/image';
+import { buildImageSrc } from '@/utils/image';
 
 interface CartItemProps {
     item: CartItemType;
@@ -10,10 +12,9 @@ interface CartItemProps {
 }
 
 export const CartItem = ({ item, onUpdateQuantity, onRemove }: CartItemProps) => {
-    const imageUrl = item.item.images && item.item.images.length > item.selectedImageIndex
-        ? `/items/${item.item._id}/image/${item.selectedImageIndex}`
-        : '/placeholder-image.jpg';
 
+    const imageUrl = getImageUrl(item);
+    
     const subtotal = item.item.price * item.quantity;
     const itemId = item.item._id || '';
 
@@ -32,16 +33,16 @@ export const CartItem = ({ item, onUpdateQuantity, onRemove }: CartItemProps) =>
     return (
         <div className="flex gap-4 p-4 border rounded-lg bg-white">
             {/* Image */}
-            <Link to={`/items/${item.item._id}`} className="flex-shrink-0">
+            <Link to={`/items/${item.item._id}`} className="flex-shrink-0 pt-4">
                 <img
-                    src={imageUrl}
+                    src={buildImageSrc(imageUrl)}
                     alt={item.item.name}
                     className="w-24 h-24 object-cover rounded-md"
                 />
             </Link>
 
             {/* Details */}
-            <div className="flex-1">
+            <div className="flex-1 pt-4">
                 <Link to={`/items/${item.item._id}`} className="hover:underline">
                     <h3 className="font-semibold text-lg">{item.item.name}</h3>
                 </Link>
@@ -58,7 +59,7 @@ export const CartItem = ({ item, onUpdateQuantity, onRemove }: CartItemProps) =>
             <div className="flex flex-col items-end justify-between">
                 <button
                     onClick={() => onRemove(itemId, item.size)}
-                    className="text-red-500 hover:text-red-700 p-1"
+                    className="text-red-500 hover:text-red-700 p-1 pb-4"
                     aria-label="Remove item"
                 >
                     <Trash2 size={18} />
@@ -86,7 +87,7 @@ export const CartItem = ({ item, onUpdateQuantity, onRemove }: CartItemProps) =>
                     </Button>
                 </div>
 
-                <p className="font-semibold text-lg mt-2">${subtotal.toFixed(2)}</p>
+                <p className="font-semibold text-lg mt-2">Rs. {subtotal.toFixed(2)}</p>
             </div>
         </div>
     );

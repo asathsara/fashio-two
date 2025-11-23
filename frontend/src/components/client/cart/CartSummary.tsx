@@ -42,7 +42,6 @@ export const CartSummary = ({ subtotal, onCheckout, onClearCart, itemCount }: Ca
             <Button
                 onClick={onCheckout}
                 className="w-full mb-3"
-                size="lg"
             >
                 Proceed to Checkout
             </Button>
