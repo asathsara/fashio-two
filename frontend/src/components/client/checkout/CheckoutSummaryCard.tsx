@@ -7,7 +7,6 @@ import { Textarea } from '@/components/ui/textarea';
 
 interface CheckoutSummaryCardProps {
     subtotal: number;
-    tax: number;
     total: number;
     itemCount: number;
     paymentMethod: string;
@@ -21,7 +20,6 @@ interface CheckoutSummaryCardProps {
 
 export const CheckoutSummaryCard = ({
     subtotal,
-    tax,
     total,
     itemCount,
     paymentMethod,
@@ -36,7 +34,7 @@ export const CheckoutSummaryCard = ({
         <Card className="sticky top-6 h-max">
             <CardHeader>
                 <CardTitle className="text-xl">Order Summary</CardTitle>
-                <CardDescription>Rs. values include local taxes</CardDescription>
+                <CardDescription>Review your order details</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
                 <div className="space-y-2 text-sm">
@@ -47,10 +45,6 @@ export const CheckoutSummaryCard = ({
                     <div className="flex justify-between text-gray-600">
                         <span>Shipping</span>
                         <span className="text-green-600 font-medium">FREE</span>
-                    </div>
-                    <div className="flex justify-between text-gray-600">
-                        <span>Tax (10%)</span>
-                        <span className="font-medium text-gray-900">Rs. {tax.toFixed(2)}</span>
                     </div>
                 </div>
 

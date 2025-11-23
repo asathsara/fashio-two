@@ -3,8 +3,6 @@ import Cart from '../cart/cart.model.js';
 import { Item } from '../item/index.js';
 import { User } from '../auth/index.js';
 
-const TAX_RATE = 0.1; // 10%
-
 class OrderService {
 
     // create order from user's cart
@@ -57,15 +55,13 @@ class OrderService {
         }));
 
         const subtotal = orderItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-        const tax = Number((subtotal * TAX_RATE).toFixed(2));
-        const total = Number((subtotal + tax).toFixed(2));
+        const total = Number(subtotal.toFixed(2));
 
         const order = await Order.create({
             user: userId,
             items: orderItems,
             shippingAddress,
             subtotal,
-            tax,
             total,
             paymentMethod,
             notes

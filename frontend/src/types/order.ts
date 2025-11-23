@@ -24,7 +24,6 @@ export interface Order {
     items: OrderItem[];
     shippingAddress: Address;
     subtotal: number;
-    tax: number;
     total: number;
     status: OrderStatus;
     paymentStatus: PaymentStatus;

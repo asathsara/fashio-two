@@ -10,8 +10,7 @@ interface CartSummaryProps {
 
 export const CartSummary = ({ subtotal, onCheckout, onClearCart, itemCount }: CartSummaryProps) => {
     const shipping = 0; // Free shipping for now
-    const tax = subtotal * 0.1; // 10% tax
-    const total = subtotal + shipping + tax;
+    const total = subtotal + shipping;
 
     return (
         <div className="bg-white border rounded-lg p-6 sticky top-4">
@@ -25,10 +24,6 @@ export const CartSummary = ({ subtotal, onCheckout, onClearCart, itemCount }: Ca
                 <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Shipping</span>
                     <span className="font-medium text-green-600">FREE</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Tax (10%)</span>
-                    <span className="font-medium">Rs. {tax.toFixed(2)}</span>
                 </div>
             </div>
 

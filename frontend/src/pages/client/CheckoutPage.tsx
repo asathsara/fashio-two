@@ -21,15 +21,13 @@ export const CheckoutPage = () => {
 
     const address = user?.addresses?.[0] ?? null;
 
-    const { subtotal, tax, total, itemCount } = useMemo(() => {
+    const { subtotal, total, itemCount } = useMemo(() => {
         const subtotalValue = cart?.items.reduce((sum, cartItem) => sum + cartItem.item.price * cartItem.quantity, 0) ?? 0;
-        const taxValue = subtotalValue * 0.1;
-        const totalValue = subtotalValue + taxValue;
+        const totalValue = subtotalValue;
         const count = cart?.items.reduce((sum, cartItem) => sum + cartItem.quantity, 0) ?? 0;
 
         return {
             subtotal: subtotalValue,
-            tax: taxValue,
             total: totalValue,
             itemCount: count
         };
@@ -87,7 +85,6 @@ export const CheckoutPage = () => {
                 <div className="lg:col-span-1">
                     <CheckoutSummaryCard
                         subtotal={subtotal}
-                        tax={tax}
                         total={total}
                         itemCount={itemCount}
                         paymentMethod={paymentMethod}
