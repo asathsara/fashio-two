@@ -2,8 +2,7 @@ import { Link } from 'react-router-dom';
 import { Trash2, Plus, Minus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import type { CartItem as CartItemType } from '@/types/cart';
-import { getImageUrl } from '@/utils/cart/image';
-import { buildImageSrc } from '@/utils/image';
+import { buildImageSrc, getImageUrl } from '@/utils/image';
 
 interface CartItemProps {
     item: CartItemType;
@@ -13,7 +12,7 @@ interface CartItemProps {
 
 export const CartItem = ({ item, onUpdateQuantity, onRemove }: CartItemProps) => {
 
-    const imageUrl = getImageUrl(item);
+    const imageUrl = getImageUrl(item.item, item.selectedImageIndex);
     
     const subtotal = item.item.price * item.quantity;
     const itemId = item.item._id || '';

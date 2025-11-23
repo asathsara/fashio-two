@@ -10,6 +10,7 @@ import { useState } from "react";
 import { useCart } from "@/hooks/useCart";
 import { useAuth } from "@/hooks/UseAuth";
 import type { Image } from "@/types/image";
+import { buildImageSrc, getImageUrl } from "@/utils/image";
 
 const ItemDetailPage = () => {
     const { id } = useParams<{ id: string }>();
@@ -66,9 +67,7 @@ const ItemDetailPage = () => {
         );
     }
 
-    const imageUrl = item.images && item.images.length > 0
-        ? `${import.meta.env.VITE_API_BASE_URL}/items/${item._id}/image/${selectedImageIndex}`
-        : "";
+    const imageUrl = buildImageSrc(getImageUrl(item, selectedImageIndex));
 
     return (
         <div className="container mx-auto px-4 py-8">
@@ -108,7 +107,7 @@ const ItemDetailPage = () => {
                                         }`}
                                 >
                                     <img
-                                        src={`${import.meta.env.VITE_API_BASE_URL}/items/${item._id}/image/${index}`}
+                                        src={buildImageSrc(getImageUrl(item, index))}
                                         alt={`${item.name} thumbnail ${index + 1}`}
                                         className="w-full h-full object-cover"
                                     />
