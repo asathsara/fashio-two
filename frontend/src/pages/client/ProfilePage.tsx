@@ -7,8 +7,24 @@ import { OrderHistoryTab } from "@/components/client/profile/OrderHistoryTab";
 import { SecurityTab } from "@/components/client/profile/SecurityTab";
 
 import { useProfile } from "@/hooks/useProfile";
+import { useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 const ProfilePage = () => {
+  type ProfileTab = 'personal' | 'orders' | 'security';
+  const location = useLocation();
+  const highlightState = (location.state as { highlight?: 'orders' } | null)?.highlight;
+  const [activeTab, setActiveTab] = useState<ProfileTab>(
+    highlightState === 'orders' ? 'orders' : 'personal'
+  );
+
+  useEffect(() => {
+    const nextHighlight = (location.state as { highlight?: 'orders' } | null)?.highlight;
+    if (nextHighlight === 'orders') {
+      setActiveTab('orders');
+    }
+  }, [location.state]);
+
   const {
     user,
     form,
@@ -33,7 +49,7 @@ const ProfilePage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white py-12">
       <div className="container mx-auto px-4 max-w-6xl">
-        
+
         {/* Page Heading */}
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-2">My Profile</h1>
@@ -69,7 +85,7 @@ const ProfilePage = () => {
         )}
 
         {/* Tabs */}
-        <Tabs defaultValue="personal" className="space-y-6">
+        <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as ProfileTab)} className="space-y-6">
           <TabsList className="grid grid-cols-3 max-w-md mx-auto h-12">
             <TabsTrigger value="personal">Personal Info</TabsTrigger>
             <TabsTrigger value="orders">Order History</TabsTrigger>
