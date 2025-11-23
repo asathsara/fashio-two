@@ -4,6 +4,7 @@ import ItemInsertPage from "@/pages/admin/ItemInsertPage";
 import ItemListPage from "@/pages/admin/ItemListPage";
 import CategoriesInsertPage from "@/pages/admin/CategoriesInsertPage";
 import PromoAddPage from "@/pages/admin/PromoAddPge";
+import OrderDashboardPage from "@/pages/admin/OrderDashboardPage";
 
 // Client Pages
 import HomePage from "@/pages/client/HomePage";
@@ -85,6 +86,13 @@ export const publicRoutes: NavItem[] = [
 
 export const adminRoutes: NavItem[] = [
     {
+        path: "/admin/orders",
+        label: "Orders",
+        element: <OrderDashboardPage />,
+        protected: true,
+        requiredRole: "admin",
+    },
+    {
         path: "/admin/image-slider",
         label: "Image Slider",
         element: <ImageSliderManagerPage />,
@@ -129,4 +137,4 @@ export const adminRoutes: NavItem[] = [
 
 export const publicNavRoutes = publicRoutes.filter((r) => r.showInNav);
 export const adminNavRoutes = adminRoutes.filter(r => r.label);
-export const DEFAULT_ADMIN_ROUTE = "/admin/image-slider";
+export const DEFAULT_ADMIN_ROUTE = "/admin/orders";
