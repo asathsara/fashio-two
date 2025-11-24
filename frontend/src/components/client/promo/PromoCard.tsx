@@ -1,5 +1,6 @@
 import { Calendar, Clock, ShoppingBag, Percent } from "lucide-react";
 import type { PromoWithItem } from "@/types/promo";
+import { buildImageSrc } from "@/utils/image";
 
 interface PromoCardProps {
     promo: PromoWithItem;
@@ -23,6 +24,13 @@ export const PromoCard = ({ promo, status }: PromoCardProps) => {
 
     const isActive = status === "active";
 
+    const getPromoImageUrl = () => {
+        if (promo.item?.images && promo.item.images.length > 0) {
+            return buildImageSrc(`${promo.item._id}/image/0`);
+        }
+        return null;
+    };
+
     return (
         <div
             className={`bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 border border-gray-200 ${!isActive ? "opacity-75" : ""
@@ -30,9 +38,9 @@ export const PromoCard = ({ promo, status }: PromoCardProps) => {
         >
             {/* Image */}
             <div className="relative h-56 bg-gray-100">
-                {promo.item.urls && promo.item.urls[0] ? (
+                {getPromoImageUrl() ? (
                     <img
-                        src={import.meta.env.VITE_API_UPLOAD_IMAGES_URL + promo.item.urls[0]}
+                        src={getPromoImageUrl()!}
                         alt={promo.item.name}
                         className="w-full h-full object-cover"
                     />
@@ -56,14 +64,10 @@ export const PromoCard = ({ promo, status }: PromoCardProps) => {
             {/* Content */}
             <div className="p-5">
                 <div className="mb-3">
-                    <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
-                        {promo.item.category}
-                    </span>
                     <h3 className="text-xl font-semibold text-gray-900 mt-1">
                         {promo.item.name}
                     </h3>
                 </div>
-
                 {/* Price or Discount Info */}
                 {isActive ? (
                     <div className="flex items-baseline gap-2 mb-4">

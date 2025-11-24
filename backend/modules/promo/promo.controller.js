@@ -2,10 +2,7 @@ import PromoService from './promo.service.js';
 
 const promoService = new PromoService();
 
-/**
- * Promo Controller
- * Handles all promo-related HTTP requests
- */
+
 class PromoController {
     // Create
     async addPromo(req, res) {

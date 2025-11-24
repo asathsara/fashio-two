@@ -1,11 +1,7 @@
 import Promo from './promo.model.js';
 
-/**
- * Promo Service
- * Contains all business logic for promo operations
- */
+
 class PromoService {
-    // ==================== Create ====================
     async createPromo(promoData) {
         const promo = new Promo({
             item: promoData.item,
