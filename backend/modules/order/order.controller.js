@@ -108,7 +108,7 @@ class OrderController {
         try {
             const canceledOrder = await orderService.cancelOrder(req.params.id, req.user._id);
             res.json({
-                message: 'Order canceled successfully',
+                message: 'Order cancelled successfully',
                 order: canceledOrder
             });
         } catch (error) {
