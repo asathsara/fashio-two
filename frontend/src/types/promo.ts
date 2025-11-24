@@ -23,7 +23,7 @@ export interface PromoWithItem extends Omit<Promo, 'item'> {
     name: string;
     price: number;
     category: string;
-    urls?: string[];
+    images: string[];
   };
 }
 

@@ -4,7 +4,7 @@ export const buildImageSrc = (path: string) =>
   `${import.meta.env.VITE_API_ITEM_IMAGES_URL}${path}`;
 
 
-export const getImageUrl = (item: Item, selectedImageIndex: number) => {
+export const getImageUrl = (item: Item, selectedImageIndex: number = 0) => {
   const hasImage = 
     item.images &&
     item.images.length > selectedImageIndex;

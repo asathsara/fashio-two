@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import AdminOrderTable from '@/components/admin/order/AdminOrderTable';
-import AdminOrderStats from '@/components/admin/order/AdminOrderStats';
-import AdminUsersPlaceholder from '@/components/admin/order/AdminUsersPlaceholder';
+import AdminOrderTable from '@/components/admin/dashboard/AdminOrderTable';
+import AdminOrderStats from '@/components/admin/dashboard/AdminOrderStats';
+import AdminUsersPlaceholder from '@/components/admin/dashboard/AdminUsersPlaceholder';
 import { useAdminOrders, useOrderStats } from '@/hooks/useOrders';
 import type { OrderStatus } from '@/types/order';
 

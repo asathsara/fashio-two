@@ -4,6 +4,7 @@ import authController from './auth.controller.js';
 import authMiddleware from '../../middleware/auth.js';
 
 const { protect } = authMiddleware;
+const { admin } = authMiddleware;
 const router = Router();
 
 // Validation middleware
@@ -61,5 +62,10 @@ router.post('/resend-verification', protect, (req, res) => authController.resend
 // Profile Management
 router.put('/profile', protect, updateProfileValidation, (req, res) => authController.updateProfile(req, res));
 router.put('/change-password', protect, changePasswordValidation, (req, res) => authController.changePassword(req, res));
+
+// Admin Routes
+router.get('/admin/users', protect, admin, (req, res) => authController.getAllUsers(req, res));
+router.put('/admin/users/:userId/role', protect, admin, (req, res) => authController.updateUserRole(req, res));
+router.delete('/admin/users/:userId', protect, admin, (req, res) => authController.deleteUser(req, res));
 
 export default router;

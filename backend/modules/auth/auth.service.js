@@ -177,7 +177,7 @@ class AuthService {
         }
 
         if (updateData.name) user.name = updateData.name;
-        if (updateData.address)  user.addresses = [updateData.address];
+        if (updateData.address) user.addresses = [updateData.address];
 
         await user.save();
 
@@ -215,6 +215,83 @@ class AuthService {
         await user.save();
 
         return { message: 'Password changed successfully!' };
+    }
+
+    // Admin: Get all users
+    async getAllUsers() {
+        const users = await User.find()
+            .select('-password -verificationToken -verificationTokenExpiry -resetPasswordToken -resetPasswordExpiry')
+            .sort({ createdAt: -1 });
+
+        return users.map(user => ({
+            id: user._id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+            emailVerified: user.emailVerified,
+            avatar: user.avatar,
+            createdAt: user.createdAt,
+            lastLogin: user.lastLogin
+        }));
+    }
+
+    // Admin: Update user role
+    async updateUserRole(userId, role, requestingUserId) {
+        if (!['user', 'admin'].includes(role)) {
+            throw new Error('Invalid role');
+        }
+
+        const user = await User.findById(userId);
+        if (!user) {
+            throw new Error('User not found');
+        }
+
+        // Prevent self-demotion
+        if (userId === requestingUserId && user.role === 'admin' && role === 'user') {
+            throw new Error('You cannot demote yourself');
+        }
+
+        // If demoting an admin, ensure at least one admin remains
+        if (user.role === 'admin' && role === 'user') {
+            const adminCount = await User.countDocuments({ role: 'admin' });
+            if (adminCount <= 1) {
+                throw new Error('Cannot demote the last admin. At least one admin must remain.');
+            }
+        }
+
+        user.role = role;
+        await user.save();
+
+        return {
+            id: user._id,
+            name: user.name,
+            email: user.email,
+            role: user.role
+        };
+    }
+
+    // Admin: Delete user
+    async deleteUser(userId, requestingUserId) {
+        const user = await User.findById(userId);
+        if (!user) {
+            throw new Error('User not found');
+        }
+
+        // Prevent self-deletion
+        if (userId === requestingUserId) {
+            throw new Error('You cannot delete your own account');
+        }
+
+        // If deleting an admin, ensure at least one admin remains
+        if (user.role === 'admin') {
+            const adminCount = await User.countDocuments({ role: 'admin' });
+            if (adminCount <= 1) {
+                throw new Error('Cannot delete the last admin. At least one admin must remain.');
+            }
+        }
+
+        await User.findByIdAndDelete(userId);
+        return { message: 'User deleted successfully' };
     }
 }
 

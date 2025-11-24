@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { OrderStatusBadge, PaymentStatusBadge } from '@/components/admin/order/OrderStatusBadge';
+import { OrderStatusBadge, PaymentStatusBadge } from '@/components/admin/dashboard/OrderStatusBadge';
 import type { Order, OrderStatus } from '@/types/order';
 import { useUpdateOrderStatus } from '@/hooks/useOrders';
 import { Spinner } from '@/components/common/Spinner';
