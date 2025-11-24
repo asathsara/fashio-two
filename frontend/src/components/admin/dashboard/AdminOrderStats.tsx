@@ -23,6 +23,12 @@ export const AdminOrderStats = ({ stats, loading }: AdminOrderStatsProps) => {
         return <div className="rounded-xl border bg-white p-10 text-center text-gray-500">No stats available yet.</div>;
     }
 
+     /**
+     * maxMonthly:
+     * We calculate the highest monthly revenue value.
+     * This is used to scale each bar proportionally in the Monthly Trend graph.
+     * The `1` ensures we never divide by zero.
+     */
     const maxMonthly = Math.max(...stats.monthlySales.map((month) => month.total), 1);
 
     return (

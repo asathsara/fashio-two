@@ -39,7 +39,8 @@ const ItemListPage = () => {
 
   return (
     <>
-      <h1 className="font-poppins text-3xl font-semibold mb-6">Items List</h1>
+      <h1 className="font-poppins text-3xl font-semibold">Items List</h1>
+      <p className="text-gray-600">Manage your inventory by editing or deleting items below.</p>
       {isLoading ? (
         <Spinner fullHeight />
       ) : error ? (

@@ -26,6 +26,7 @@ const ImageSliderManager = () => {
   return (
     <div>
       <h1 className="font-poppins text-3xl font-semibold">Images for Slider</h1>
+      <p className="text-gray-600">Manage your slider images by uploading new ones or deleting existing ones below.</p>
       <ImageUploader onUpload={handleUpload} />
       {error && <p className="text-red-500">{error.message}</p>}
       <div className="flex flex-wrap">

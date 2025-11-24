@@ -87,7 +87,7 @@ export const publicRoutes: NavItem[] = [
 export const adminRoutes: NavItem[] = [
     {
         path: "/admin/orders",
-        label: "Admin Dashboard",
+        label: "Dashboard",
         element: <OrderDashboardPage />,
         protected: true,
         requiredRole: "admin",

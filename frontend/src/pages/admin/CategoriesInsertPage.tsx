@@ -56,6 +56,7 @@ const CategoriesInsertPage = () => {
       <h1 className="font-poppins text-3xl font-semibold">
         Fashion Categories
       </h1>
+      <p className="text-gray-600">Manage your fashion categories by adding new ones or editing existing ones below.</p>
 
       <div className="flex flex-row items-center mt-8">
         <div className="flex flex-8 rounded-full p-3 md:min-w-72 min-w-64 bg-backgroundGray justify-between items-center">
