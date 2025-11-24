@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { userService, type AdminUser } from '@/services/userService';
 import { toast } from 'sonner';
+import { getErrorMessage } from '@/utils/errorHandler';
 
 const USERS_QUERY_KEY = ['admin', 'users'];
 
@@ -23,8 +24,8 @@ export const useUpdateUserRole = () => {
             queryClient.invalidateQueries({ queryKey: USERS_QUERY_KEY });
             toast.success('User role updated successfully');
         },
-        onError: () => {
-            toast.error('Failed to update user role');
+        onError: (error) => {
+             toast.error(getErrorMessage(error, 'Failed to update user role'));
         },
     });
 };
@@ -39,8 +40,8 @@ export const useDeleteUser = () => {
             queryClient.invalidateQueries({ queryKey: USERS_QUERY_KEY });
             toast.success('User deleted successfully');
         },
-        onError: () => {
-            toast.error('Failed to delete user');
+        onError: (error) => {
+            toast.error(getErrorMessage(error, 'Failed to delete user'));
         },
     });
 };
