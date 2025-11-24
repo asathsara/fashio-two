@@ -48,6 +48,9 @@ export const AUTH_ENDPOINTS = {
   ME: '/auth/me',
   UPDATE_PROFILE: '/auth/profile',
   CHANGE_PASSWORD: '/auth/change-password',
+  ADMIN_USERS: '/auth/admin/users',
+  ADMIN_UPDATE_USER_ROLE: (userId: Id) => `/auth/admin/users/${userId}/role`,
+  ADMIN_DELETE_USER: (userId: Id) => `/auth/admin/users/${userId}`,
 };
 
 export default API_ENDPOINTS;

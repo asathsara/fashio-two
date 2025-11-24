@@ -1,6 +1,6 @@
 import type { Order } from '@/types/order';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { OrderStatusBadge, PaymentStatusBadge } from '@/components/admin/order/OrderStatusBadge';
+import { OrderStatusBadge, PaymentStatusBadge } from '@/components/admin/dashboard/OrderStatusBadge';
 import { Link } from 'react-router-dom';
 import { buildImageSrc, getImageUrl } from '@/utils/image';
 import { formatDateTime } from '@/utils/datetime';

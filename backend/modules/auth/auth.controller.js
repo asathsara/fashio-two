@@ -212,6 +212,49 @@ class AuthController {
         }
     }
 
+    // Admin: Get all users
+    async getAllUsers(req, res) {
+        try {
+            const users = await authService.getAllUsers();
+            res.json(users);
+        } catch (error) {
+            console.error('Get all users error:', error);
+            res.status(500).json({ message: 'Server error fetching users' });
+        }
+    }
+
+    // Admin: Update user role
+    async updateUserRole(req, res) {
+        try {
+            const { userId } = req.params;
+            const { role } = req.body;
+
+            const user = await authService.updateUserRole(userId, role);
+            res.json({ message: 'User role updated successfully', user });
+        } catch (error) {
+            console.error('Update user role error:', error);
+            if (error.message === 'User not found' || error.message === 'Invalid role') {
+                return res.status(error.message === 'User not found' ? 404 : 400).json({ message: error.message });
+            }
+            res.status(500).json({ message: 'Server error updating user role' });
+        }
+    }
+
+    // Admin: Delete user
+    async deleteUser(req, res) {
+        try {
+            const { userId } = req.params;
+            await authService.deleteUser(userId);
+            res.json({ message: 'User deleted successfully' });
+        } catch (error) {
+            console.error('Delete user error:', error);
+            if (error.message === 'User not found') {
+                return res.status(404).json({ message: error.message });
+            }
+            res.status(500).json({ message: 'Server error deleting user' });
+        }
+    }
+
     // Helper Methods
     generateToken(id) {
         return sign({ id }, process.env.JWT_SECRET, { expiresIn: '30d' });

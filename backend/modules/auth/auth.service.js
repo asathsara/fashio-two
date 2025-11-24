@@ -177,7 +177,7 @@ class AuthService {
         }
 
         if (updateData.name) user.name = updateData.name;
-        if (updateData.address)  user.addresses = [updateData.address];
+        if (updateData.address) user.addresses = [updateData.address];
 
         await user.save();
 
@@ -215,6 +215,57 @@ class AuthService {
         await user.save();
 
         return { message: 'Password changed successfully!' };
+    }
+
+    // Admin: Get all users
+    async getAllUsers() {
+        const users = await User.find()
+            .select('-password -verificationToken -verificationTokenExpiry -resetPasswordToken -resetPasswordExpiry')
+            .sort({ createdAt: -1 });
+
+        return users.map(user => ({
+            id: user._id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+            emailVerified: user.emailVerified,
+            avatar: user.avatar,
+            createdAt: user.createdAt,
+            lastLogin: user.lastLogin
+        }));
+    }
+
+    // Admin: Update user role
+    async updateUserRole(userId, role) {
+        if (!['user', 'admin'].includes(role)) {
+            throw new Error('Invalid role');
+        }
+
+        const user = await User.findById(userId);
+        if (!user) {
+            throw new Error('User not found');
+        }
+
+        user.role = role;
+        await user.save();
+
+        return {
+            id: user._id,
+            name: user.name,
+            email: user.email,
+            role: user.role
+        };
+    }
+
+    // Admin: Delete user
+    async deleteUser(userId) {
+        const user = await User.findById(userId);
+        if (!user) {
+            throw new Error('User not found');
+        }
+
+        await User.findByIdAndDelete(userId);
+        return { message: 'User deleted successfully' };
     }
 }
 
