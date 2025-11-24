@@ -7,19 +7,47 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, ShoppingCart } from "lucide-react";
 import { useState } from "react";
+import { useCart } from "@/hooks/useCart";
+import { useAuth } from "@/hooks/UseAuth";
 import type { Image } from "@/types/image";
+import { buildImageSrc, getImageUrl } from "@/utils/image";
 
 const ItemDetailPage = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
     const [selectedSize, setSelectedSize] = useState<string>("");
     const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+    const [quantity] = useState(1);
+    const { addToCart, loading: cartLoading } = useCart();
+    const { isAuthenticated } = useAuth();
 
     const { data: item, isLoading, error } = useQuery({
         queryKey: ["item", id],
         queryFn: () => fetchItemById(id!),
         enabled: !!id,
     });
+
+    const handleAddToCart = async () => {
+        if (!isAuthenticated) {
+            navigate('/login');
+            return;
+        }
+
+        if (!id || !selectedSize) {
+            return;
+        }
+
+        try {
+            await addToCart({
+                itemId: id,
+                quantity,
+                size: selectedSize,
+                selectedImageIndex
+            });
+        } catch (error) {
+            console.error('Failed to add to cart:', error);
+        }
+    };
 
     if (isLoading) {
         return (
@@ -39,9 +67,7 @@ const ItemDetailPage = () => {
         );
     }
 
-    const imageUrl = item.images && item.images.length > 0
-        ? `${import.meta.env.VITE_API_BASE_URL}/items/${item._id}/image/${selectedImageIndex}`
-        : "";
+    const imageUrl = buildImageSrc(getImageUrl(item, selectedImageIndex));
 
     return (
         <div className="container mx-auto px-4 py-8">
@@ -81,7 +107,7 @@ const ItemDetailPage = () => {
                                         }`}
                                 >
                                     <img
-                                        src={`${import.meta.env.VITE_API_BASE_URL}/items/${item._id}/image/${index}`}
+                                        src={buildImageSrc(getImageUrl(item, index))}
                                         alt={`${item.name} thumbnail ${index + 1}`}
                                         className="w-full h-full object-cover"
                                     />
@@ -162,14 +188,20 @@ const ItemDetailPage = () => {
                         <Button
                             size="lg"
                             className="w-full md:w-auto flex items-center gap-2"
-                            disabled={item.stock === 0 || (item.sizes.length > 0 && !selectedSize)}
+                            disabled={item.stock === 0 || (item.sizes.length > 0 && !selectedSize) || cartLoading}
+                            onClick={handleAddToCart}
                         >
                             <ShoppingCart size={20} />
-                            Add to Cart
+                            {cartLoading ? 'Adding...' : 'Add to Cart'}
                         </Button>
                         {item.sizes.length > 0 && !selectedSize && (
                             <p className="text-sm text-gray-500 mt-2">
                                 Please select a size
+                            </p>
+                        )}
+                        {!isAuthenticated && (
+                            <p className="text-sm text-gray-500 mt-2">
+                                Please login to add items to cart
                             </p>
                         )}
                     </div>

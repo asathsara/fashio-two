@@ -25,6 +25,15 @@ const API_ENDPOINTS = {
   ADD_PROMOS: '/promos/add',
   DELETE_PROMO: (id: Id) => `/promos/${id}`,
 
+  ORDERS: '/orders',
+  ORDER_CHECKOUT: '/orders/checkout',
+  ORDER_ME: '/orders/me',
+  ORDER_DETAIL: (id: Id) => `/orders/${id}`,
+  ORDER_ADMIN: '/orders/admin',
+  ORDER_ADMIN_STATS: '/orders/admin/stats',
+  ORDER_STATUS: (id: Id) => `/orders/${id}/status`,
+  ORDER_CANCEL: (id: Id) => `/orders/cancel/${id}`,
+
 };
 
 export const AUTH_ENDPOINTS = {

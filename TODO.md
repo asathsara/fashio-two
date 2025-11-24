@@ -1,235 +1,248 @@
-# ⚙️ Fashio Backend - Modular Monolith Implementation Guide
+# 🎯 Fashio TODO - Project Roadmap
 
-This document provides the roadmap to structure your **Fashio backend** as a **Modular Monolith** — combining clarity, scalability, and a clean transition path to microservices later (if you get that "I want Kafka" itch 😎).
+**Last Updated:** November 23, 2025  
+**Current Progress:** 75% Complete ⬆️ (+15%)
 
 ---
 
-## 🏗️ Updated Folder Structure
+## ✅ Completed Features
 
+### Backend (100%)
+- ✅ Auth Module (JWT + bcrypt, Google OAuth, email verification, password reset)
+- ✅ Category Module (CRUD operations)
+- ✅ Item Module (Product management with images)
+- ✅ Image Module (Carousel/slider management)
+- ✅ Promo Module (Promotions management)
+- ✅ **Cart Module (Add, update, remove, clear cart operations)** 🆕
+- ✅ Middleware (JWT auth, role-based access control)
+- ✅ Email Service (Nodemailer integration)
+- ✅ File Upload (Multer integration)
+
+### Frontend (100%)
+- ✅ Authentication UI (Login, Register, Forgot Password, Email Verification)
+- ✅ Admin Dashboard (Navigation rail, CRUD pages)
+- ✅ Product Browsing (Category filtering, item details)
+- ✅ Profile Management
+- ✅ Help/Support Pages
+- ✅ **Shopping Cart (Cart page, add/remove items, quantity controls, cart badge)** 🆕
+- ✅ Responsive Design (Mobile-first)
+- ✅ Image Upload & Management
+
+---
+
+## 🚧 To Implement (25% remaining)
+
+### **Priority 1: Order Management** 📦
+**Estimated Time:** 3-4 days  
+**Status:** 🔴 Not Started
+
+#### Backend Tasks:
+- [ ] Create Order model (items, total, status, shipping info)
+- [ ] Order routes: Create, Get by ID, Get user orders, Update status (admin)
+- [ ] Order controller & service
+- [ ] Inventory/stock management (reduce stock on order)
+- [ ] Order status enum (pending, processing, shipped, delivered, cancelled)
+- [ ] Connect orders with cart (checkout process)
+
+#### Frontend Tasks:
+- [ ] Checkout page (review cart, shipping form, order summary)
+- [ ] Order confirmation page
+- [ ] Order history page (connect placeholder in profile)
+- [ ] Order details/tracking page
+- [ ] Admin order management page (view all orders, update status)
+- [ ] Clear cart after successful order
+
+---
+
+### **Priority 2: Payment Integration** 💳
+**Estimated Time:** 2-3 days  
+**Status:** 🔴 Not Started
+
+#### Backend Tasks:
+- [ ] Choose provider (Stripe recommended or PayPal)
+- [ ] Payment model (transaction records)
+- [ ] Payment routes: Create intent, Verify payment, Webhooks
+- [ ] Payment controller & service
+- [ ] Connect payment to orders (update order status after payment)
+- [ ] Handle payment failures/refunds
+
+#### Frontend Tasks:
+- [ ] Payment form/integration (Stripe Elements or PayPal SDK)
+- [ ] Payment processing UI (loading states)
+- [ ] Payment success page
+- [ ] Payment failure page (retry option)
+- [ ] Payment status in order details
+- [ ] Secure payment flow
+
+---
+
+## 🔮 Future Enhancements (Post-MVP)
+
+### Phase 1 - User Experience
+- [ ] Product Reviews & Ratings
+- [ ] Wishlist functionality
+- [ ] Product recommendations (based on browsing/purchase history)
+- [ ] Advanced search & filters (price range, sorting, availability)
+- [ ] Size/color guides
+- [ ] Recently viewed items
+
+### Phase 2 - Admin Features
+- [ ] Analytics dashboard (sales, revenue, popular items)
+- [ ] Inventory alerts (low stock notifications)
+- [ ] Bulk product import/export (CSV)
+- [ ] Discount codes/coupons system
+- [ ] Report generation (sales reports, inventory reports)
+- [ ] Customer management dashboard
+
+### Phase 3 - Communication
+- [ ] Email notifications (order confirmation, shipping updates)
+- [ ] SMS notifications (optional, via Twilio)
+- [ ] In-app notifications
+- [ ] Customer support chat (live chat or chatbot)
+- [ ] Newsletter subscription
+
+### Phase 4 - Technical Improvements
+- [ ] Unit & integration tests (Jest, Supertest, React Testing Library)
+- [ ] Performance optimization (lazy loading, code splitting, image optimization)
+- [ ] SEO optimization (meta tags, sitemap, structured data)
+- [ ] CI/CD pipeline (GitHub Actions)
+- [ ] Error logging service (Sentry or LogRocket)
+- [ ] Rate limiting (express-rate-limit)
+- [ ] API documentation (Swagger/OpenAPI)
+- [ ] Database indexing optimization
+- [ ] Caching strategy (Redis)
+
+---
+
+## 📊 Module Status Overview
+
+| Module | Backend | Frontend | Status |
+|--------|---------|----------|--------|
+| **Auth & User** | ✅ | ✅ | Complete |
+| **Categories** | ✅ | ✅ | Complete |
+| **Items** | ✅ | ✅ | Complete |
+| **Images** | ✅ | ✅ | Complete |
+| **Promos** | ✅ | ✅ | Complete |
+| **Cart** | ✅ | ✅ | **Complete** 🎉 |
+| **Orders** | ❌ | ❌ | Not Started |
+| **Payments** | ❌ | ❌ | Not Started |
+
+---
+
+## 🎯 Next Implementation Priority
+
+### **START HERE: Order Management System** 📦
+
+This is the next critical feature to complete your e-commerce flow:
+1. ✅ User browses items (Done)
+2. ✅ User adds to cart (Done)
+3. 🔨 **User places order** ← Build this next
+4. 🔨 User pays for order ← Then this
+5. ✅ Order confirmation email (Use existing emailService)
+
+**Implementation Steps:**
 ```bash
-backend/
-├── src/
-│   ├── modules/
-│   │   ├── auth/
-│   │   │   ├── auth.controller.js
-│   │   │   ├── auth.service.js
-│   │   │   ├── auth.model.js
-│   │   │   ├── auth.routes.js
-│   │   │   └── index.js
-│   │   ├── category/
-│   │   │   ├── category.controller.js
-│   │   │   ├── category.service.js
-│   │   │   ├── category.model.js
-│   │   │   ├── category.routes.js
-│   │   │   └── index.js
-│   │   ├── image/
-│   │   │   ├── image.controller.js
-│   │   │   ├── image.service.js
-│   │   │   ├── image.model.js
-│   │   │   ├── image.routes.js
-│   │   │   └── index.js
-│   │   ├── item/
-│   │   │   ├── item.controller.js
-│   │   │   ├── item.service.js
-│   │   │   ├── item.model.js
-│   │   │   ├── item.routes.js
-│   │   │   └── index.js
-│   │   ├── promo/
-│   │   │   ├── promo.controller.js
-│   │   │   ├── promo.service.js
-│   │   │   ├── promo.model.js
-│   │   │   ├── promo.routes.js
-│   │   │   └── index.js
-│   │   ├── user/
-│   │   │   ├── user.controller.js
-│   │   │   ├── user.service.js
-│   │   │   ├── user.model.js
-│   │   │   ├── user.routes.js
-│   │   │   └── index.js
-│   │   ├── orders/                 # 🆕 Future Module
-│   │   │   ├── order.controller.js
-│   │   │   ├── order.service.js
-│   │   │   ├── order.model.js
-│   │   │   ├── order.routes.js
-│   │   │   └── index.js
-│   │   ├── inventory/              # 🆕 Future Module
-│   │   │   ├── inventory.controller.js
-│   │   │   ├── inventory.service.js
-│   │   │   ├── inventory.model.js
-│   │   │   ├── inventory.routes.js
-│   │   │   └── index.js
-│   │   └── payments/               # 🆕 Future Module
-│   │       ├── payment.controller.js
-│   │       ├── payment.service.js
-│   │       ├── payment.model.js
-│   │       ├── payment.routes.js
-│   │       └── index.js
-│   │
-│   ├── config/
-│   │   ├── passport.js
-│   │   ├── db.js
-│   │   └── index.js
-│   │
-│   ├── middleware/
-│   │   └── auth.js
-│   │
-│   ├── services/
-│   │   ├── emailService.js
-│   │   └── logger.js
-│   │
-│   ├── app.js
-│   └── server.js
-│
-├── .env
-├── package.json
-└── README.md
+# Backend
+cd backend/modules
+mkdir order
+cd order
+touch order.model.js order.controller.js order.service.js order.routes.js index.js
+
+# Frontend
+cd frontend/src
+mkdir pages/client/checkout
+mkdir pages/client/orders
+mkdir components/client/order
 ```
 
----
-
-## 🧱 Phase 1: Core Setup
-
-**Goal:** Establish a unified modular architecture.
-
-**Tasks:**
-
-* [ ] Create `/src/modules` structure for all business logic
-* [ ] Move shared logic to `/src/config`, `/src/services`, `/src/middleware`
-* [ ] Centralize MongoDB connection in `config/db.js`
-* [ ] Load environment configs from `.env`
-
----
-
-## 🔐 Phase 2: Auth & User Module
-
-**Purpose:** Handle registration, login, and access control.
-
-**Endpoints:**
-
-* `POST /api/auth/register` → Register user
-* `POST /api/auth/login` → Login & return JWT
-* `GET /api/auth/profile` → Get current user
-* `POST /api/auth/logout` → Logout user
-
-**Tasks:**
-
-* [ ] Implement JWT + bcrypt
-* [ ] Add role-based middleware
-* [ ] Protect admin routes
-
----
-
-## 📦 Phase 3: Orders Module (Future)
-
-**Purpose:** Manage order lifecycle.
-
-**Endpoints:**
-
-* `POST /api/orders` → Create new order
-* `GET /api/orders/:id` → Fetch order details
-* `PATCH /api/orders/:id/status` → Update order status
-* `GET /api/orders/user/:userId` → Fetch all user orders
-
----
-
-## 🏬 Phase 4: Inventory Module (Future)
-
-**Purpose:** Manage stock and product quantities.
-
-**Endpoints:**
-
-* `GET /api/inventory` → Fetch inventory items
-* `PATCH /api/inventory/:id` → Update stock
-* `POST /api/inventory/reorder` → Restock
-
----
-
-## 💳 Phase 5: Payments Module (Future)
-
-**Purpose:** Integrate payment flow (Stripe or PayPal).
-
-**Endpoints:**
-
-* `POST /api/payments/create` → Create payment intent
-* `GET /api/payments/status/:id` → Verify payment
-* `POST /api/payments/webhook` → Handle callbacks
-
----
-
-## 🔌 Phase 6: Module Integration in app.js
-
-**Goal:** Connect all modules in one entry file.
-
+**Order Schema Example:**
 ```js
-import express from 'express';
-import userRoutes from './modules/user/user.routes.js';
-import authRoutes from './modules/auth/auth.routes.js';
-import orderRoutes from './modules/orders/order.routes.js';
-import inventoryRoutes from './modules/inventory/inventory.routes.js';
-import paymentRoutes from './modules/payments/payment.routes.js';
-
-const app = express();
-
-app.use('/api/users', userRoutes);
-app.use('/api/auth', authRoutes);
-app.use('/api/orders', orderRoutes);
-app.use('/api/inventory', inventoryRoutes);
-app.use('/api/payments', paymentRoutes);
-
-export default app;
+{
+  userId: ObjectId,
+  orderNumber: String, // Auto-generated (e.g., ORD-20251123-001)
+  items: [{
+    itemId: ObjectId,
+    name: String,
+    price: Number,
+    quantity: Number,
+    size: String,
+    image: String
+  }],
+  subtotal: Number,
+  tax: Number,
+  shipping: Number,
+  total: Number,
+  status: String, // pending, processing, shipped, delivered, cancelled
+  shippingAddress: {
+    fullName: String,
+    address: String,
+    city: String,
+    postalCode: String,
+    phone: String
+  },
+  paymentStatus: String, // pending, paid, failed, refunded
+  paymentMethod: String,
+  createdAt: Date,
+  updatedAt: Date
+}
 ```
 
 ---
 
-## 🧰 Phase 7: Common Services & Middleware
+## 🚀 Recent Achievements
 
-* `config/db.js` → MongoDB connection
-* `config/passport.js` → Strategy setup (if needed)
-* `middleware/auth.js` → JWT verification
-* `services/emailService.js` → Nodemailer logic
-* `services/logger.js` → Centralized logging
+### ✅ Shopping Cart Module (Completed November 23, 2025)
 
----
+**Backend Implementation:**
+- Cart model with user reference and cart items
+- Full CRUD operations (add, update, remove, clear)
+- Stock validation on add/update
+- Cart summary endpoint
+- Protected routes (authentication required)
 
-## 🧪 Phase 8: Testing Checklist
+**Frontend Implementation:**
+- CartContext & CartProvider for global state
+- useCart hook for easy cart operations
+- CartPage with items list and summary
+- CartItem component with quantity controls
+- EmptyCart component for better UX
+- Cart badge in navbar showing item count
+- Connected "Add to Cart" button in ItemDetailPage
+- Toast notifications for user feedback
+- CheckoutPage placeholder (ready for Phase 2)
 
-**Manual Tests:**
-
-* [ ] Register/login user
-* [ ] Create, update, view orders
-* [ ] Test inventory adjustment
-* [ ] Mock payment flows
-
----
-
-## 🚀 Phase 9: Future Expansion
-
-Once stable, modules can evolve into microservices — easily detached thanks to clear boundaries.
-For async communication (like `order → payment confirmation`), Kafka or RabbitMQ can be plugged in later.
-
----
-
-### ✅ Summary
-
-| Phase | Module/Area      | Status |
-| ----- | ---------------- | ------ |
-| 1     | Core Setup       | ⏳      |
-| 2     | Auth & User      | ⏳      |
-| 3     | Orders           | 🔜     |
-| 4     | Inventory        | 🔜     |
-| 5     | Payments         | 🔜     |
-| 6     | Integration      | ⏳      |
-| 7     | Common Services  | ⏳      |
-| 8     | Testing          | ⏳      |
-| 9     | Future Expansion | 🚀     |
+**API Endpoints:**
+- `GET /api/cart` - Get user's cart
+- `GET /api/cart/summary` - Get cart summary
+- `POST /api/cart/add` - Add item to cart
+- `PUT /api/cart/update` - Update item quantity
+- `DELETE /api/cart/remove` - Remove item from cart
+- `DELETE /api/cart/clear` - Clear entire cart
 
 ---
 
-✨ **Benefits of This Modular Design**
+## 📝 Development Notes
 
-* Each domain lives in its own folder (clean separation of concerns)
-* Easy to maintain and scale
-* Ready to split into microservices later
-* Keeps your Git commits, debugging, and deployments simple
+- ✅ Shopping Cart fully functional and tested
+- 🔨 Next: Order Management (checkout → order placement)
+- 🔨 Then: Payment Integration (Stripe/PayPal)
+- Current architecture is modular and scalable
+- Follow existing module patterns for consistency
+- Cart implementation can serve as template for Orders
+- Test thoroughly before moving to next feature
+- Keep commits small and focused
 
-Your backend will now run smoother than a freshly steamed outfit on the runway. 🧵🔥
+---
+
+## 📅 Timeline Estimate
+
+| Feature | Status | Time Remaining |
+|---------|--------|----------------|
+| ✅ Shopping Cart | Complete | 0 days |
+| 🔨 Order Management | Not Started | 3-4 days |
+| 🔨 Payment Integration | Not Started | 2-3 days |
+| **Total to MVP** | | **~5-7 days** |
+
+---
+
+Made with ❤️ by the Fashio Team | **Target MVP:** ~5-7 days remaining 🎯

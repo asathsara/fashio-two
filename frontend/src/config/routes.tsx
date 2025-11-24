@@ -4,6 +4,7 @@ import ItemInsertPage from "@/pages/admin/ItemInsertPage";
 import ItemListPage from "@/pages/admin/ItemListPage";
 import CategoriesInsertPage from "@/pages/admin/CategoriesInsertPage";
 import PromoAddPage from "@/pages/admin/PromoAddPge";
+import OrderDashboardPage from "@/pages/admin/OrderDashboardPage";
 
 // Client Pages
 import HomePage from "@/pages/client/HomePage";
@@ -11,6 +12,8 @@ import PromoPage from "@/pages/client/PromoPage";
 import HelpPage from "@/pages/client/HelpPage";
 import ProfilePage from "@/pages/client/ProfilePage";
 import ItemDetailPage from "@/pages/client/ItemDetailPage";
+import CartPage from "@/pages/client/CartPage";
+import CheckoutPage from "@/pages/client/CheckoutPage";
 import VerifyEmailPage from "@/pages/client/auth/VerifyEmailPage";
 import ResetPasswordPage from "@/pages/client/auth/ResetPasswordPage";
 import ForgotPasswordPage from "@/pages/client/auth/ForgotPasswordPage";
@@ -48,6 +51,18 @@ export const publicRoutes: NavItem[] = [
         protected: true,
     },
     {
+        path: "/cart",
+        label: "Cart",
+        element: <CartPage />,
+        protected: true,
+    },
+    {
+        path: "/checkout",
+        label: "Checkout",
+        element: <CheckoutPage />,
+        protected: true,
+    },
+    {
         path: "/login",
         label: "Login",
         element: <LoginPage />,
@@ -70,6 +85,13 @@ export const publicRoutes: NavItem[] = [
 ];
 
 export const adminRoutes: NavItem[] = [
+    {
+        path: "/admin/orders",
+        label: "Orders",
+        element: <OrderDashboardPage />,
+        protected: true,
+        requiredRole: "admin",
+    },
     {
         path: "/admin/image-slider",
         label: "Image Slider",
@@ -115,4 +137,4 @@ export const adminRoutes: NavItem[] = [
 
 export const publicNavRoutes = publicRoutes.filter((r) => r.showInNav);
 export const adminNavRoutes = adminRoutes.filter(r => r.label);
-export const DEFAULT_ADMIN_ROUTE = "/admin/image-slider";
+export const DEFAULT_ADMIN_ROUTE = "/admin/orders";

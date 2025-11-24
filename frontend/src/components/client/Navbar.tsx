@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { FaSearch } from "react-icons/fa";
 import { MdOutlineShoppingBag } from "react-icons/md";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,8 +13,9 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { publicNavRoutes } from "@/config/routes"; // ✅ uses route config
+import { publicNavRoutes } from "@/config/routes"; 
 import { useAuth } from "@/hooks/UseAuth";
+import { useCart } from "@/hooks/useCart";
 
 type NavbarProps = {
   onOpenDrawer: () => void;
@@ -23,9 +25,18 @@ const Navbar = ({ onOpenDrawer }: NavbarProps) => {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const navigate = useNavigate();
   const { user, isAuthenticated, logout } = useAuth();
+  const { itemCount } = useCart();
 
   const handleLogout = async () => {
     await logout();
+  };
+
+  const handleCartClick = () => {
+    if (isAuthenticated) {
+      navigate('/cart');
+    } else {
+      navigate('/login');
+    }
   };
 
   return (
@@ -65,9 +76,22 @@ const Navbar = ({ onOpenDrawer }: NavbarProps) => {
                 className="bg-transparent border-0 outline-none flex-1 font-poppins text-background-gray"
               />
             </div>
-            <div className="flex items-center ml-2">
+            <div className="flex items-center ml-2 relative">
               <div className="h-full w-px bg-slate-300"></div>
-              <MdOutlineShoppingBag className="mx-3 text-background-gray size-6" />
+              <div
+                className="mx-3 cursor-pointer relative"
+                onClick={handleCartClick}
+              >
+                <MdOutlineShoppingBag className="text-background-gray size-6" />
+                {isAuthenticated && itemCount > 0 && (
+                  <Badge
+                    className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 text-xs"
+                    variant="secondary"
+                  >
+                    {itemCount > 99 ? '99+' : itemCount}
+                  </Badge>
+                )}
+              </div>
             </div>
           </div>
 
@@ -94,8 +118,8 @@ const Navbar = ({ onOpenDrawer }: NavbarProps) => {
                   <DropdownMenuItem onClick={() => navigate("/profile")}>
                     Profile
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate("/orders")}>
-                    Orders
+                  <DropdownMenuItem onClick={() => navigate("/cart")}>
+                    Cart {itemCount > 0 && `(${itemCount})`}
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleLogout}>
