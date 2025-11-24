@@ -92,6 +92,7 @@ export const useCancelOrder = () => {
             toast.success('Order cancelled successfully');
             queryClient.invalidateQueries({ queryKey: ['orders', 'me'] });
             queryClient.invalidateQueries({ queryKey: ['orders', 'admin'] });
+            queryClient.invalidateQueries({ queryKey: ['orders', 'stats'] });
         },
         onError: (error) => {
             toast.error(getErrorMessage(error, 'Unable to cancel order right now'));
