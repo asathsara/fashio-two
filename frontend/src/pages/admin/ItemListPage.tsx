@@ -39,65 +39,88 @@ const ItemListPage = () => {
 
   return (
     <>
-      <h1 className="font-poppins text-3xl font-semibold">Items List</h1>
-      <p className="text-gray-600">Manage your inventory by editing or deleting items below.</p>
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-900">Items List</h1>
+        <p className="text-sm text-gray-500">Manage your inventory by editing or deleting items below.</p>
+      </div>
+
       {isLoading ? (
-        <Spinner fullHeight />
+        <div className="flex min-h-[400px] items-center justify-center">
+          <Spinner />
+        </div>
       ) : error ? (
         <ErrorMessage message="Failed to load items." />
       ) : (
-        <div className="w-full mt-8">
-          {/* Header Row */}
-          <div className="min-w-[1000px] grid grid-cols-8 gap-4 text-left font-semibold text-gray-700 px-4 py-4 bg-gray-100 rounded-md mb-2 font-poppins">
-            <span>Image</span>
-            <span>Name</span>
-            <span>Price</span>
-            <span>Stock</span>
-            <span>Category</span>
-            <span>Subcategory</span>
-            <span>Sizes</span>
-            <span>Actions</span>
+        <div className="rounded-xl border bg-white shadow-sm">
+          <div className="border-b px-6 py-4">
+            <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+              Items
+              <span className="px-2 py-0.5 text-sm rounded-full bg-gray-200 text-gray-700">
+                {items.length}
+              </span>
+            </h3>
+            <p className="text-sm text-gray-500">Total items in inventory</p>
           </div>
 
-          {/* Items Rows */}
-          {items.map((item) => (
-            <div
-              key={item._id}
-              className="min-w-[1000px] grid grid-cols-8 gap-4 items-center text-left text-gray-800 px-4 py-4 hover:bg-gray-50 border-b border-gray-200 font-poppins"
-            >
-              <div className="flex items-center">
-                {item.images && item.images.length > 0 ? (
-                  <img
-                    src={`${import.meta.env.VITE_API_BASE_URL}/items/${item._id}/image/0`}
-                    alt={item.images[0].filename}
-                    className="w-16 h-16 object-cover rounded-md"
-                  />
-                ) : (
-                  <span className="text-sm text-gray-500">No Image</span>
-                )}
-              </div>
-              <span>{item.name}</span>
-              <span>
-                Rs. {(Math.round(item.price * 100) / 100).toFixed(2)}
-              </span>
-              <span>{item.stock}</span>
-              <span>{item.category.name}</span>
-              <span>{item.category.subCategory?.name || 'N/A'}</span>
-              <span>{item.sizes.join(", ")}</span>
-              <div className="flex gap-3">
-                <FaEdit
-                  className="cursor-pointer text-blue-500 hover:text-blue-700 transition duration-200"
-                  onClick={() => handleEdit(item)}
-                  title="Edit item"
-                />
-                <FaTrash
-                  className="cursor-pointer text-red-500 hover:text-red-700 transition duration-200"
-                  onClick={() => openDeleteDialog(item)}
-                  title="Delete item"
-                />
-              </div>
+          {items.length === 0 ? (
+            <div className="py-16 text-center text-gray-500">No items found.</div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-sm">
+                <thead className="bg-gray-50 text-xs uppercase tracking-wider text-gray-500">
+                  <tr>
+                    <th className="px-6 py-3">Image</th>
+                    <th className="px-6 py-3">Name</th>
+                    <th className="px-6 py-3">Price</th>
+                    <th className="px-6 py-3">Stock</th>
+                    <th className="px-6 py-3">Category</th>
+                    <th className="px-6 py-3">Subcategory</th>
+                    <th className="px-6 py-3">Sizes</th>
+                    <th className="px-6 py-3">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {items.map((item) => (
+                    <tr key={item._id} className="border-b last:border-0">
+                      <td className="px-6 py-4">
+                        {item.images && item.images.length > 0 ? (
+                          <img
+                            src={`${import.meta.env.VITE_API_BASE_URL}/items/${item._id}/image/0`}
+                            alt={item.images[0].filename}
+                            className="h-16 w-16 rounded-md object-cover"
+                          />
+                        ) : (
+                          <span className="text-xs text-gray-500">No Image</span>
+                        )}
+                      </td>
+                      <td className="px-6 py-4 font-medium text-gray-900">{item.name}</td>
+                      <td className="px-6 py-4 font-semibold text-gray-900">
+                        Rs. {(Math.round(item.price * 100) / 100).toFixed(2)}
+                      </td>
+                      <td className="px-6 py-4 text-gray-700">{item.stock}</td>
+                      <td className="px-6 py-4 text-gray-700">{item.category.name}</td>
+                      <td className="px-6 py-4 text-gray-700">{item.category.subCategory?.name || 'N/A'}</td>
+                      <td className="px-6 py-4 text-gray-700">{item.sizes.join(", ")}</td>
+                      <td className="px-6 py-4">
+                        <div className="flex gap-3">
+                          <FaEdit
+                            className="cursor-pointer text-blue-500 transition duration-200 hover:text-blue-700"
+                            onClick={() => handleEdit(item)}
+                            title="Edit item"
+                          />
+                          <FaTrash
+                            className="cursor-pointer text-red-500 transition duration-200 hover:text-red-700"
+                            onClick={() => openDeleteDialog(item)}
+                            title="Delete item"
+                          />
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
-          ))}
+          )}
         </div>
       )}
 
@@ -109,8 +132,6 @@ const ItemListPage = () => {
         onConfirm={handleDelete}
         confirmLabel="Delete"
       />
-
-
     </>
   );
 };

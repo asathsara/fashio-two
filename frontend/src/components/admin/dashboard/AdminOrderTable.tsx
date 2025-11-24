@@ -30,7 +30,13 @@ export const AdminOrderTable = ({ orders = [], loading, statusFilter, onStatusFi
         <div className="rounded-xl border bg-white shadow-sm">
             <div className="flex flex-col gap-3 border-b px-6 py-4 md:flex-row md:items-center md:justify-between">
                 <div>
-                    <h3 className="text-lg font-semibold text-gray-900">Orders ({orders.length})</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                        Orders
+                        <span className="px-2 py-0.5 text-sm rounded-full bg-gray-200 text-gray-700">
+                            {orders.length}
+                        </span>
+                    </h3>
+
                     <p className="text-sm text-gray-500">Rs. {totalRevenue.toFixed(2)} in this view</p>
                 </div>
                 <Select value={statusFilter} onValueChange={(value) => onStatusFilterChange(value as OrderStatus | 'all')}>
