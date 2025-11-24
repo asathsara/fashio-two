@@ -14,6 +14,7 @@ import { itemRoutes } from './modules/item/index.js';
 import { imageRoutes } from './modules/image/index.js';
 import { promoRoutes } from './modules/promo/index.js';
 import { cartRoutes } from './modules/cart/index.js';
+import { orderRoutes } from './modules/order/index.js';
 
 dotenv.config();
 
@@ -60,6 +61,7 @@ app.use('/api/items', itemRoutes);
 app.use('/api/images', imageRoutes);
 app.use('/api/promos', promoRoutes);
 app.use('/api/cart', cartRoutes);
+app.use('/api/orders', orderRoutes);
 
 // Health check
 app.get('/health', (req, res) => {

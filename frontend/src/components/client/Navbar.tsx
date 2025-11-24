@@ -121,9 +121,6 @@ const Navbar = ({ onOpenDrawer }: NavbarProps) => {
                   <DropdownMenuItem onClick={() => navigate("/cart")}>
                     Cart {itemCount > 0 && `(${itemCount})`}
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate("/orders")}>
-                    Orders
-                  </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleLogout}>
                     Logout
