@@ -79,9 +79,9 @@ export const CheckoutSummaryCard = ({
                         placeholder="Leave a note for our delivery team..."
                         value={notes}
                         onChange={(event) => onNotesChange(event.target.value)}
-                        maxLength={240}
+                        maxLength={500}
                     />
-                    <p className="text-xs text-gray-500">Optional • {notes.length}/240</p>
+                    <p className="text-xs text-gray-500">Optional • {notes.length}/500</p>
                 </div>
 
                 <Button

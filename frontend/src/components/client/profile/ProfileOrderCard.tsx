@@ -39,15 +39,27 @@ export const ProfileOrderCard = ({ order }: ProfileOrderCardProps) => {
                         className="flex items-center justify-between"
                     >
                         <div className="flex">
-                            <Link to={`/items/${item._id}`} className="flex-shrink-0 pt-4">
-                                <img
-                                    src={buildImageSrc(
-                                        getImageUrl(item.item!, item.selectedImageIndex)
-                                    )}
-                                    alt={item.name}
-                                    className="w-16 h-16 object-cover rounded-md"
-                                />
-                            </Link>
+                            {item.item && typeof item.item === 'object' && '._id' in item.item ? (
+                                <Link to={`/items/${item.item._id}`} className="flex-shrink-0 pt-4">
+                                    <img
+                                        src={buildImageSrc(
+                                            getImageUrl(item.item, item.selectedImageIndex)
+                                        )}
+                                        alt={item.name}
+                                        className="w-16 h-16 object-cover rounded-md"
+                                    />
+                                </Link>
+                            ) : (
+                                <div className="flex-shrink-0 pt-4">
+                                    <img
+                                        src={buildImageSrc(
+                                            getImageUrl(item.item!, item.selectedImageIndex)
+                                        )}
+                                        alt={item.name}
+                                        className="w-16 h-16 object-cover rounded-md"
+                                    />
+                                </div>
+                            )}
 
                             <div className="mt-4 ml-4">
                                 <p className="font-semibold text-gray-900">{item.name}</p>

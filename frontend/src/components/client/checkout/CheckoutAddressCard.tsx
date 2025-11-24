@@ -10,7 +10,7 @@ interface CheckoutAddressCardProps {
 
 export const CheckoutAddressCard = ({ address }: CheckoutAddressCardProps) => {
     return (
-        <Card >
+        <Card>
             <CardHeader className="flex items-start gap-3">
                 <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-100">
                     <MapPin className="h-6 w-6 text-gray-600" />
