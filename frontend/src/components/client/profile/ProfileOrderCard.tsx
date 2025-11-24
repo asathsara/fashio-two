@@ -3,20 +3,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { OrderStatusBadge, PaymentStatusBadge } from '@/components/admin/order/OrderStatusBadge';
 import { Link } from 'react-router-dom';
 import { buildImageSrc, getImageUrl } from '@/utils/image';
+import { formatDateTime } from '@/utils/datetime';
 
 interface ProfileOrderCardProps {
     order: Order;
 }
-
-const formatDateTime = (value: string) =>
-    new Date(value).toLocaleString('en-LK', {
-        day: 'numeric',
-        month: 'short',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-    });
-
 
 
 export const ProfileOrderCard = ({ order }: ProfileOrderCardProps) => {
