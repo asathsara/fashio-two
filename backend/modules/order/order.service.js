@@ -244,6 +244,26 @@ class OrderService {
             }))
         };
     }
+
+    async cancelOrder(orderId, userId) {
+        const order = await Order.findById(orderId);
+        if (!order) {
+            throw new Error('Order not found');
+        }
+        if (order.user.toString() !== userId.toString()) {
+            throw new Error('You are not allowed to cancel this order');
+        }
+        if (order.status === 'Cancelled') {
+            throw new Error('Order is already cancelled');
+        }
+        if(order.status === 'Shipped' || order.status === 'Delivered') {
+            throw new Error('Cannot cancel an order that has been shipped or delivered');
+        }
+
+        order.status = 'Cancelled';
+        await order.save();
+        return order;
+    }
 }
 
 export default OrderService;

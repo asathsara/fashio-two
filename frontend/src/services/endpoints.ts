@@ -32,6 +32,7 @@ const API_ENDPOINTS = {
   ORDER_ADMIN: '/orders/admin',
   ORDER_ADMIN_STATS: '/orders/admin/stats',
   ORDER_STATUS: (id: Id) => `/orders/${id}/status`,
+  ORDER_CANCEL: (id: Id) => `/orders/cancel/${id}`,
 
 };
 

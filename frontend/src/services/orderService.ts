@@ -43,6 +43,10 @@ export const orderService = {
     getOrderStats: async (): Promise<OrderStats> => {
         const response = await api.get(API_ENDPOINTS.ORDER_ADMIN_STATS);
         return response.data;
+    },
+
+    cancelOrder: async (orderId: string): Promise<void> => {
+        await api.delete(API_ENDPOINTS.ORDER_CANCEL(orderId));
     }
 };
 

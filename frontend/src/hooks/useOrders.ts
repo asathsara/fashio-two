@@ -82,4 +82,19 @@ export const useUpdateOrderStatus = () => {
             toast.error(getErrorMessage(error, 'Unable to update order right now'));
         }
     });
-};
+}
+
+export const useCancelOrder = () => {
+    const queryClient = useQueryClient();
+    return useMutation<void, unknown, string>({
+        mutationFn: (orderId) => orderService.cancelOrder(orderId),
+        onSuccess: () => {
+            toast.success('Order cancelled successfully');
+            queryClient.invalidateQueries({ queryKey: ['orders', 'me'] });
+            queryClient.invalidateQueries({ queryKey: ['orders', 'admin'] });
+        },
+        onError: (error) => {
+            toast.error(getErrorMessage(error, 'Unable to cancel order right now'));
+        }
+    });
+}

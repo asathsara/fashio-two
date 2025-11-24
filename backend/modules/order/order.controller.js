@@ -103,6 +103,20 @@ class OrderController {
             res.status(500).json({ message: 'Unable to fetch order stats' });
         }
     }
+
+    async cancelOrder(req, res) {
+        try {
+            const canceledOrder = await orderService.cancelOrder(req.params.id, req.user._id);
+            res.json({
+                message: 'Order canceled successfully',
+                order: canceledOrder
+            });
+        } catch (error) {
+            console.error('Cancel order error:', error);
+            res.status(500).json({ message: `Unable to cancel order: ${error.message}` });
+        }
+    }
+
 }
 
 export default new OrderController();

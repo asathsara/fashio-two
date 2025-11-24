@@ -28,6 +28,7 @@ router.use(protect);
 // Customer routes
 router.post('/checkout', checkoutValidation, (req, res) => orderController.checkout(req, res));
 router.get('/me', (req, res) => orderController.getMyOrders(req, res));
+router.delete('/cancel/:id', (req, res) => orderController.cancelOrder(req, res));
 
 // Admin routes
 router.get('/admin/stats', admin, (req, res) => orderController.getStats(req, res));
