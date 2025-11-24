@@ -1,5 +1,3 @@
-import type { AdminUser } from '@/services/userService';
-
 interface UserRoleBadgeProps {
     role: 'user' | 'admin';
 }
