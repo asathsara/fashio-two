@@ -160,7 +160,9 @@ class OrderService {
     async getOrderStats() {
 
         // Aggregate total orders, revenue, pending orders, average order value 
+        // Exclude cancelled orders from statistics
         const [summary] = await Order.aggregate([
+            { $match: { status: { $ne: 'Cancelled' } } },
             {
                 $group: {
                     _id: null,
@@ -182,9 +184,14 @@ class OrderService {
         sixMonthsAgo.setDate(1);
         sixMonthsAgo.setHours(0, 0, 0, 0);
 
-        // Aggregate monthly sales data for past 6 months   
+        // Aggregate monthly sales data for past 6 months (exclude cancelled orders)
         const monthlyRaw = await Order.aggregate([
-            { $match: { createdAt: { $gte: sixMonthsAgo } } },
+            {
+                $match: {
+                    createdAt: { $gte: sixMonthsAgo },
+                    status: { $ne: 'Cancelled' }
+                }
+            },
             {
                 $group: {
                     _id: { year: { $year: '$createdAt' }, month: { $month: '$createdAt' } },
@@ -217,8 +224,9 @@ class OrderService {
 
         const monthlySales = monthBuckets.map(({ label, total, orders }) => ({ label, total, orders }));
 
-        // Aggregate top 5 best-selling items
+        // Aggregate top 5 best-selling items (exclude cancelled orders)
         const topItems = await Order.aggregate([
+            { $match: { status: { $ne: 'Cancelled' } } },
             { $unwind: '$items' },
             {
                 $group: {
@@ -256,7 +264,7 @@ class OrderService {
         if (order.status === 'Cancelled') {
             throw new Error('Order is already cancelled');
         }
-        if(order.status === 'Shipped' || order.status === 'Delivered') {
+        if (order.status === 'Shipped' || order.status === 'Delivered') {
             throw new Error('Cannot cancel an order that has been shipped or delivered');
         }
 
