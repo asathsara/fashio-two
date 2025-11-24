@@ -228,13 +228,19 @@ class AuthController {
         try {
             const { userId } = req.params;
             const { role } = req.body;
+            const requestingUserId = req.user._id.toString();
 
-            const user = await authService.updateUserRole(userId, role);
+            const user = await authService.updateUserRole(userId, role, requestingUserId);
             res.json({ message: 'User role updated successfully', user });
         } catch (error) {
             console.error('Update user role error:', error);
-            if (error.message === 'User not found' || error.message === 'Invalid role') {
-                return res.status(error.message === 'User not found' ? 404 : 400).json({ message: error.message });
+            if (error.message === 'User not found') {
+                return res.status(404).json({ message: error.message });
+            }
+            if (error.message === 'Invalid role' ||
+                error.message === 'You cannot demote yourself' ||
+                error.message.includes('Cannot demote the last admin')) {
+                return res.status(400).json({ message: error.message });
             }
             res.status(500).json({ message: 'Server error updating user role' });
         }
@@ -244,12 +250,18 @@ class AuthController {
     async deleteUser(req, res) {
         try {
             const { userId } = req.params;
-            await authService.deleteUser(userId);
+            const requestingUserId = req.user._id.toString();
+
+            await authService.deleteUser(userId, requestingUserId);
             res.json({ message: 'User deleted successfully' });
         } catch (error) {
             console.error('Delete user error:', error);
             if (error.message === 'User not found') {
                 return res.status(404).json({ message: error.message });
+            }
+            if (error.message === 'You cannot delete your own account' ||
+                error.message.includes('Cannot delete the last admin')) {
+                return res.status(400).json({ message: error.message });
             }
             res.status(500).json({ message: 'Server error deleting user' });
         }

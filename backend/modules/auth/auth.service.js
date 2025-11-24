@@ -236,7 +236,7 @@ class AuthService {
     }
 
     // Admin: Update user role
-    async updateUserRole(userId, role) {
+    async updateUserRole(userId, role, requestingUserId) {
         if (!['user', 'admin'].includes(role)) {
             throw new Error('Invalid role');
         }
@@ -244,6 +244,19 @@ class AuthService {
         const user = await User.findById(userId);
         if (!user) {
             throw new Error('User not found');
+        }
+
+        // Prevent self-demotion
+        if (userId === requestingUserId && user.role === 'admin' && role === 'user') {
+            throw new Error('You cannot demote yourself');
+        }
+
+        // If demoting an admin, ensure at least one admin remains
+        if (user.role === 'admin' && role === 'user') {
+            const adminCount = await User.countDocuments({ role: 'admin' });
+            if (adminCount <= 1) {
+                throw new Error('Cannot demote the last admin. At least one admin must remain.');
+            }
         }
 
         user.role = role;
@@ -258,10 +271,23 @@ class AuthService {
     }
 
     // Admin: Delete user
-    async deleteUser(userId) {
+    async deleteUser(userId, requestingUserId) {
         const user = await User.findById(userId);
         if (!user) {
             throw new Error('User not found');
+        }
+
+        // Prevent self-deletion
+        if (userId === requestingUserId) {
+            throw new Error('You cannot delete your own account');
+        }
+
+        // If deleting an admin, ensure at least one admin remains
+        if (user.role === 'admin') {
+            const adminCount = await User.countDocuments({ role: 'admin' });
+            if (adminCount <= 1) {
+                throw new Error('Cannot delete the last admin. At least one admin must remain.');
+            }
         }
 
         await User.findByIdAndDelete(userId);
