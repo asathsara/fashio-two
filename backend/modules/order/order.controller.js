@@ -113,7 +113,14 @@ class OrderController {
             });
         } catch (error) {
             console.error('Cancel order error:', error);
-            res.status(500).json({ message: `Unable to cancel order: ${error.message}` });
+            if (
+                error.message === 'Order not found' ||
+                error.message.includes('already cancelled') ||
+                error.message.includes('not allowed')
+            ) {
+                return res.status(400).json({ message: error.message });
+            }
+            res.status(500).json({ message: 'Unable to cancel order' });
         }
     }
 
