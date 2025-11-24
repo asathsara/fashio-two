@@ -262,6 +262,14 @@ class OrderService {
 
         order.status = 'Cancelled';
         await order.save();
+        // Restore stock for cancelled items
+        await Promise.all(order.items.map(async (orderItem) => {
+            const item = await Item.findById(orderItem.item);
+            if (item) {
+                item.stock += orderItem.quantity;
+                await item.save();
+            }
+        }));
         return order;
     }
 }
