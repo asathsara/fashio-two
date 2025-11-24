@@ -3,21 +3,11 @@ import { ErrorMessage } from "@/components/common/ErrorMessage";
 import { PromoHero } from "@/components/client/promo/PromoHero";
 import { PromoSection } from "@/components/client/promo/PromoSection";
 import { EmptyPromos } from "@/components/client/promo/EmptyPromos";
-import type { PromoWithItem } from "@/types/promo";
 import { usePromos } from "@/hooks/usePromos";
+import { getPromoStatus } from "@/utils/promo";
 
 const PromoPage = () => {
   const { data: promos = [], isLoading, error } = usePromos();
-
-  const getPromoStatus = (promo: PromoWithItem): "active" | "upcoming" | "expired" => {
-    const now = new Date();
-    const start = new Date(`${promo.startDate}T${promo.startTime}`);
-    const end = new Date(`${promo.endDate}T${promo.endTime}`);
-
-    if (now < start) return "upcoming";
-    if (now > end) return "expired";
-    return "active";
-  };
 
   const activePromos = promos.filter(p => getPromoStatus(p) === "active");
   const upcomingPromos = promos.filter(p => getPromoStatus(p) === "upcoming");

@@ -1,6 +1,6 @@
 import { Calendar, Clock, ShoppingBag, Percent } from "lucide-react";
 import type { PromoWithItem } from "@/types/promo";
-import { buildImageSrc } from "@/utils/image";
+import { calculateDiscountedPrice, formatDate, getPromoImageUrl } from "@/utils/promo";
 
 interface PromoCardProps {
     promo: PromoWithItem;
@@ -8,28 +8,8 @@ interface PromoCardProps {
 }
 
 export const PromoCard = ({ promo, status }: PromoCardProps) => {
-    const formatDate = (date: string) => {
-        const dateObj = new Date(date);
-        return dateObj.toLocaleDateString("en-US", {
-            month: "short",
-            day: "numeric",
-            year: "numeric",
-        });
-    };
-
-    const calculateDiscountedPrice = (price: number, discount: string) => {
-        const discountPercent = parseFloat(discount);
-        return (price * (1 - discountPercent / 100)).toFixed(2);
-    };
-
     const isActive = status === "active";
-
-    const getPromoImageUrl = () => {
-        if (promo.item?.images && promo.item.images.length > 0) {
-            return buildImageSrc(`${promo.item._id}/image/0`);
-        }
-        return null;
-    };
+    const imageUrl = getPromoImageUrl(promo);
 
     return (
         <div
@@ -38,9 +18,9 @@ export const PromoCard = ({ promo, status }: PromoCardProps) => {
         >
             {/* Image */}
             <div className="relative h-56 bg-gray-100">
-                {getPromoImageUrl() ? (
+                {imageUrl ? (
                     <img
-                        src={getPromoImageUrl()!}
+                        src={imageUrl}
                         alt={promo.item.name}
                         className="w-full h-full object-cover"
                     />
