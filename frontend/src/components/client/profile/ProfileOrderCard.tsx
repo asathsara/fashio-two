@@ -29,17 +29,6 @@ export const ProfileOrderCard = ({ order }: ProfileOrderCardProps) => {
                 <div className="flex flex-wrap gap-2 items-center">
                     <OrderStatusBadge status={order.status} />
                     <PaymentStatusBadge status={order.paymentStatus} />
-
-                    {canCancel && (
-                        <Button
-                            variant="destructive"
-                            size="sm"
-                            disabled={cancelMutation.isPending}
-                            onClick={() => cancelMutation.mutate(order._id)}
-                        >
-                            {cancelMutation.isPending ? 'Cancelling…' : 'Cancel Order'}
-                        </Button>
-                    )}
                 </div>
             </CardHeader>
 
@@ -77,6 +66,17 @@ export const ProfileOrderCard = ({ order }: ProfileOrderCardProps) => {
                     <span>Total</span>
                     <span>Rs. {order.total.toFixed(2)}</span>
                 </div>
+
+                {canCancel && (
+                    <Button
+                        variant="outline"
+                        className="w-full"
+                        disabled={cancelMutation.isPending}
+                        onClick={() => cancelMutation.mutate(order._id)}
+                    >
+                        {cancelMutation.isPending ? 'Cancelling…' : 'Cancel Order'}
+                    </Button>
+                )}
             </CardContent>
         </Card>
     );
