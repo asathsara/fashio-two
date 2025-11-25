@@ -6,6 +6,7 @@ import { Spinner } from '@/components/common/Spinner';
 import { ChevronDown, ChevronRight } from "lucide-react";
 import OrderItemsTable from './order/OrderItemsTable';
 import { useUpdateOrderStatus } from '@/hooks/useOrders';
+import { formatDate } from '@/utils/datetime';
 
 
 const statusFilters: Array<OrderStatus | 'all'> = ['all', 'Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled'];
@@ -17,15 +18,9 @@ interface AdminOrderTableProps {
     onStatusFilterChange: (value: OrderStatus | 'all') => void;
 }
 
-const formatDate = (value: string) =>
-    new Date(value).toLocaleDateString('en-LK', {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric'
-    });
 
 export const AdminOrderTable = ({ orders = [], loading, statusFilter, onStatusFilterChange }: AdminOrderTableProps) => {
-    
+
 
     const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
 
@@ -33,7 +28,7 @@ export const AdminOrderTable = ({ orders = [], loading, statusFilter, onStatusFi
         setExpandedOrderId(prev => (prev === id ? null : id));
     };
 
-   const updateStatus = useUpdateOrderStatus();
+    const updateStatus = useUpdateOrderStatus();
 
     const totalRevenue = useMemo(() => orders.reduce((sum, order) => sum + order.total, 0), [orders]);
 
@@ -128,31 +123,31 @@ export const AdminOrderTable = ({ orders = [], loading, statusFilter, onStatusFi
 
                                         <td className="px-6 py-4">
                                             <div className="flex flex-col gap-2">
-                                            <OrderStatusBadge status={order.status} />
-                                            <Select
-                                                value={order.status}
-                                                disabled={updateStatus.isPending}
-                                                onValueChange={(value) => {
-                                                    if (value === order.status || updateStatus.isPending) {
-                                                        return;
-                                                    }
-                                                    updateStatus.mutate({ orderId: order._id, status: value as OrderStatus });
-                                                }}
-                                            >
-                                                <SelectTrigger size="sm">
-                                                    <SelectValue placeholder="Update status" />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    {statusFilters
-                                                        .filter((status) => status !== 'all')
-                                                        .map((status) => (
-                                                            <SelectItem key={status} value={status}>
-                                                                {status}
-                                                            </SelectItem>
-                                                        ))}
-                                                </SelectContent>
-                                            </Select>
-                                        </div>
+                                                <OrderStatusBadge status={order.status} />
+                                                <Select
+                                                    value={order.status}
+                                                    disabled={updateStatus.isPending}
+                                                    onValueChange={(value) => {
+                                                        if (value === order.status || updateStatus.isPending) {
+                                                            return;
+                                                        }
+                                                        updateStatus.mutate({ orderId: order._id, status: value as OrderStatus });
+                                                    }}
+                                                >
+                                                    <SelectTrigger size="sm">
+                                                        <SelectValue placeholder="Update status" />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        {statusFilters
+                                                            .filter((status) => status !== 'all')
+                                                            .map((status) => (
+                                                                <SelectItem key={status} value={status}>
+                                                                    {status}
+                                                                </SelectItem>
+                                                            ))}
+                                                    </SelectContent>
+                                                </Select>
+                                            </div>
                                         </td>
 
                                         <td className="px-6 py-4">
@@ -161,8 +156,17 @@ export const AdminOrderTable = ({ orders = [], loading, statusFilter, onStatusFi
 
                                         {/* EXPAND/COLLAPSE BUTTON */}
                                         <td
-                                            className="px-6 py-4 cursor-pointer"
+                                            className='px-6 py-4 cursor-pointer'
+                                            role="button"
+                                            tabIndex={0}
+                                            aria-label={expandedOrderId === order._id ? "Collapse order details" : "Expand order details"}
                                             onClick={() => toggleExpand(order._id)}
+                                            onKeyDown={(e) => {
+                                                if (e.key === 'Enter' || e.key === ' ') {
+                                                    e.preventDefault();
+                                                    toggleExpand(order._id);
+                                                }
+                                            }}
                                         >
                                             {expandedOrderId === order._id ? (
                                                 <ChevronDown size={18} />
