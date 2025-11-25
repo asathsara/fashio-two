@@ -1,9 +1,13 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { OrderStatusBadge, PaymentStatusBadge } from '@/components/admin/dashboard/OrderStatusBadge';
 import type { Order, OrderStatus } from '@/types/order';
-import { useUpdateOrderStatus } from '@/hooks/useOrders';
 import { Spinner } from '@/components/common/Spinner';
+import { ChevronDown, ChevronRight } from "lucide-react";
+import OrderItemsTable from './order/OrderItemsTable';
+import { useUpdateOrderStatus } from '@/hooks/useOrders';
+import { formatDate } from '@/utils/datetime';
+
 
 const statusFilters: Array<OrderStatus | 'all'> = ['all', 'Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled'];
 
@@ -14,20 +18,24 @@ interface AdminOrderTableProps {
     onStatusFilterChange: (value: OrderStatus | 'all') => void;
 }
 
-const formatDate = (value: string) =>
-    new Date(value).toLocaleDateString('en-LK', {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric'
-    });
 
 export const AdminOrderTable = ({ orders = [], loading, statusFilter, onStatusFilterChange }: AdminOrderTableProps) => {
+
+
+    const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
+
+    const toggleExpand = (id: string) => {
+        setExpandedOrderId(prev => (prev === id ? null : id));
+    };
+
     const updateStatus = useUpdateOrderStatus();
 
     const totalRevenue = useMemo(() => orders.reduce((sum, order) => sum + order.total, 0), [orders]);
 
     return (
         <div className="rounded-xl border bg-white shadow-sm">
+
+            {/* Top Section */}
             <div className="flex flex-col gap-3 border-b px-6 py-4 md:flex-row md:items-center md:justify-between">
                 <div>
                     <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
@@ -37,9 +45,15 @@ export const AdminOrderTable = ({ orders = [], loading, statusFilter, onStatusFi
                         </span>
                     </h3>
 
-                    <p className="text-sm text-gray-500">Rs. {totalRevenue.toFixed(2)} in this view</p>
+                    <p className="text-sm text-gray-500">
+                        Rs. {totalRevenue.toFixed(2)} in this view
+                    </p>
                 </div>
-                <Select value={statusFilter} onValueChange={(value) => onStatusFilterChange(value as OrderStatus | 'all')}>
+
+                <Select
+                    value={statusFilter}
+                    onValueChange={(value) => onStatusFilterChange(value as OrderStatus | 'all')}
+                >
                     <SelectTrigger className="w-40">
                         <SelectValue placeholder="All statuses" />
                     </SelectTrigger>
@@ -53,6 +67,7 @@ export const AdminOrderTable = ({ orders = [], loading, statusFilter, onStatusFi
                 </Select>
             </div>
 
+            {/* TABLE */}
             {loading ? (
                 <div className="flex min-h-[200px] items-center justify-center">
                     <Spinner />
@@ -70,53 +85,107 @@ export const AdminOrderTable = ({ orders = [], loading, statusFilter, onStatusFi
                                 <th className="px-6 py-3">Total</th>
                                 <th className="px-6 py-3">Status</th>
                                 <th className="px-6 py-3">Payment</th>
+                                <th className="px-6 py-3 w-10"></th> {/* expandable column */}
                             </tr>
                         </thead>
+
                         <tbody>
                             {orders.map((order) => (
-                                <tr key={order._id} className="border-b last:border-0">
-                                    <td className="px-6 py-4">
-                                        <p className="font-semibold text-gray-900">#{order._id.slice(-6).toUpperCase()}</p>
-                                        <p className="text-xs text-gray-500">{formatDate(order.createdAt)}</p>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <p className="font-medium text-gray-900">{order.user?.name || 'Online order'}</p>
-                                        <p className="text-xs text-gray-500">{order.user?.email ?? 'guest@store.com'}</p>
-                                    </td>
-                                    <td className="px-6 py-4 text-gray-700">{order.items.length} item(s)</td>
-                                    <td className="px-6 py-4 font-semibold text-gray-900">Rs. {order.total.toFixed(2)}</td>
-                                    <td className="px-6 py-4">
-                                        <div className="flex flex-col gap-2">
-                                            <OrderStatusBadge status={order.status} />
-                                            <Select
-                                                value={order.status}
-                                                disabled={updateStatus.isPending}
-                                                onValueChange={(value) => {
-                                                    if (value === order.status || updateStatus.isPending) {
-                                                        return;
-                                                    }
-                                                    updateStatus.mutate({ orderId: order._id, status: value as OrderStatus });
-                                                }}
-                                            >
-                                                <SelectTrigger size="sm">
-                                                    <SelectValue placeholder="Update status" />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    {statusFilters
-                                                        .filter((status) => status !== 'all')
-                                                        .map((status) => (
-                                                            <SelectItem key={status} value={status}>
-                                                                {status}
-                                                            </SelectItem>
-                                                        ))}
-                                                </SelectContent>
-                                            </Select>
-                                        </div>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <PaymentStatusBadge status={order.paymentStatus} />
-                                    </td>
-                                </tr>
+                                <>
+
+                                    {/* MAIN ROW */}
+                                    <tr key={order._id} className="border-b last:border-0">
+                                        <td className="px-6 py-4">
+                                            <p className="font-semibold text-gray-900">
+                                                #{order._id.slice(-6).toUpperCase()}
+                                            </p>
+                                            <p className="text-xs text-gray-500">
+                                                {formatDate(order.createdAt)}
+                                            </p>
+                                        </td>
+
+                                        <td className="px-6 py-4">
+                                            <p className="font-medium text-gray-900">
+                                                {order.user?.name || 'Online order'}
+                                            </p>
+                                            <p className="text-xs text-gray-500">
+                                                {order.user?.email ?? 'guest@store.com'}
+                                            </p>
+                                        </td>
+
+                                        <td className="px-6 py-4 text-gray-700">
+                                            {order.items.length} item(s)
+                                        </td>
+
+                                        <td className="px-6 py-4 font-semibold text-gray-900">
+                                            Rs. {order.total.toFixed(2)}
+                                        </td>
+
+                                        <td className="px-6 py-4">
+                                            <div className="flex flex-col gap-2">
+                                                <OrderStatusBadge status={order.status} />
+                                                <Select
+                                                    value={order.status}
+                                                    disabled={updateStatus.isPending}
+                                                    onValueChange={(value) => {
+                                                        if (value === order.status || updateStatus.isPending) {
+                                                            return;
+                                                        }
+                                                        updateStatus.mutate({ orderId: order._id, status: value as OrderStatus });
+                                                    }}
+                                                >
+                                                    <SelectTrigger size="sm">
+                                                        <SelectValue placeholder="Update status" />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        {statusFilters
+                                                            .filter((status) => status !== 'all')
+                                                            .map((status) => (
+                                                                <SelectItem key={status} value={status}>
+                                                                    {status}
+                                                                </SelectItem>
+                                                            ))}
+                                                    </SelectContent>
+                                                </Select>
+                                            </div>
+                                        </td>
+
+                                        <td className="px-6 py-4">
+                                            <PaymentStatusBadge status={order.paymentStatus} />
+                                        </td>
+
+                                        {/* EXPAND/COLLAPSE BUTTON */}
+                                        <td
+                                            className='px-6 py-4 cursor-pointer'
+                                            role="button"
+                                            tabIndex={0}
+                                            aria-label={expandedOrderId === order._id ? "Collapse order details" : "Expand order details"}
+                                            onClick={() => toggleExpand(order._id)}
+                                            onKeyDown={(e) => {
+                                                if (e.key === 'Enter' || e.key === ' ') {
+                                                    e.preventDefault();
+                                                    toggleExpand(order._id);
+                                                }
+                                            }}
+                                        >
+                                            {expandedOrderId === order._id ? (
+                                                <ChevronDown size={18} />
+                                            ) : (
+                                                <ChevronRight size={18} />
+                                            )}
+                                        </td>
+                                    </tr>
+
+                                    {/* EXPANDED ROW */}
+                                    {expandedOrderId === order._id && (
+                                        <tr className="bg-gray-50">
+                                            <td colSpan={7} className="px-6 py-4">
+                                                <OrderItemsTable items={order.items} />
+                                            </td>
+                                        </tr>
+                                    )}
+
+                                </>
                             ))}
                         </tbody>
                     </table>
