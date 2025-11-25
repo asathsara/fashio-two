@@ -103,16 +103,24 @@ const ItemListPage = () => {
                       <td className="px-6 py-4 text-gray-700">{item.sizes.join(", ")}</td>
                       <td className="px-6 py-4">
                         <div className="flex gap-3">
-                          <FaEdit
-                            className="cursor-pointer text-blue-500 transition duration-200 hover:text-blue-700"
-                            onClick={() => handleEdit(item)}
+                          <button
+                            type="button"
+                            aria-label="Edit item"
                             title="Edit item"
-                          />
-                          <FaTrash
-                            className="cursor-pointer text-red-500 transition duration-200 hover:text-red-700"
-                            onClick={() => openDeleteDialog(item)}
+                            className="p-0 bg-transparent border-none cursor-pointer text-blue-500 transition duration-200 hover:text-blue-700 focus:outline-none"
+                            onClick={() => handleEdit(item)}
+                          >
+                            <FaEdit />
+                          </button>
+                          <button
+                            type="button"
+                            aria-label="Delete item"
                             title="Delete item"
-                          />
+                            className="p-0 bg-transparent border-none cursor-pointer text-red-500 transition duration-200 hover:text-red-700 focus:outline-none"
+                            onClick={() => openDeleteDialog(item)}
+                          >
+                            <FaTrash />
+                          </button>
                         </div>
                       </td>
                     </tr>
