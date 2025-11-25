@@ -6,6 +6,7 @@ import { buildImageSrc, getImageUrl } from '@/utils/image';
 import { formatDateTime } from '@/utils/datetime';
 import { Button } from '@/components/ui/button';
 import { useCancelOrder } from '@/hooks/useOrders';
+import { SmartImage } from '@/components/common/SmartImage';
 
 interface ProfileOrderCardProps {
     order: Order;
@@ -41,22 +42,24 @@ export const ProfileOrderCard = ({ order }: ProfileOrderCardProps) => {
                         <div className="flex">
                             {item.item && typeof item.item === 'object' && '._id' in item.item ? (
                                 <Link to={`/items/${item.item._id}`} className="flex-shrink-0 pt-4">
-                                    <img
+                                    <SmartImage
                                         src={buildImageSrc(
                                             getImageUrl(item.item, item.selectedImageIndex)
                                         )}
                                         alt={item.name}
-                                        className="w-16 h-16 object-cover rounded-md"
+                                        className="w-16 h-16"
+                                        rounded="rounded-md"
                                     />
                                 </Link>
                             ) : (
                                 <div className="flex-shrink-0 pt-4">
-                                    <img
+                                    <SmartImage
                                         src={buildImageSrc(
                                             getImageUrl(item.item!, item.selectedImageIndex)
                                         )}
                                         alt={item.name}
-                                        className="w-16 h-16 object-cover rounded-md"
+                                        className="w-16 h-16"
+                                        rounded="rounded-md"
                                     />
                                 </div>
                             )}
