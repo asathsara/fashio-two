@@ -3,6 +3,7 @@ import { Trash2, Plus, Minus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import type { CartItem as CartItemType } from '@/types/cart';
 import { buildImageSrc, getImageUrl } from '@/utils/image';
+import { SmartImage } from '@/components/common/SmartImage';
 
 interface CartItemProps {
     item: CartItemType;
@@ -33,10 +34,11 @@ export const CartItem = ({ item, onUpdateQuantity, onRemove }: CartItemProps) =>
         <div className="flex gap-4 p-4 border rounded-lg bg-white">
             {/* Image */}
             <Link to={`/items/${item.item._id}`} className="flex-shrink-0 pt-4">
-                <img
+                <SmartImage
                     src={buildImageSrc(imageUrl)}
                     alt={item.item.name}
-                    className="w-24 h-24 object-cover rounded-md"
+                    className="w-24 h-24"
+                    rounded="rounded-md"
                 />
             </Link>
 

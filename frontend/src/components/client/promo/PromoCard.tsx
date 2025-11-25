@@ -1,6 +1,7 @@
 import { Calendar, Clock, ShoppingBag, Percent } from "lucide-react";
 import type { PromoWithItem } from "@/types/promo";
 import { calculateDiscountedPrice, formatDate, getPromoImageUrl } from "@/utils/promo";
+import { SmartImage } from "@/components/common/SmartImage";
 
 interface PromoCardProps {
     promo: PromoWithItem;
@@ -19,10 +20,11 @@ export const PromoCard = ({ promo, status }: PromoCardProps) => {
             {/* Image */}
             <div className="relative h-56 bg-gray-100">
                 {imageUrl ? (
-                    <img
+                    <SmartImage
                         src={imageUrl}
                         alt={promo.item.name}
-                        className="w-full h-full object-cover"
+                        className="w-full h-56"
+                        rounded="rounded-none"
                     />
                 ) : (
                     <div className="w-full h-full flex items-center justify-center">

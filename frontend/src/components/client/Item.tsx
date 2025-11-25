@@ -1,5 +1,7 @@
 import type { Item } from "../../types/item";
 import { useNavigate } from "react-router-dom";
+import { SmartImage } from "@/components/common/SmartImage";
+import { buildImageSrc, getImageUrl } from "@/utils/image";
 
 type ItemCardProps = {
   item: Item;
@@ -16,14 +18,13 @@ const ItemCard = ({ item }: ItemCardProps) => {
     <div
       onClick={handleClick}
       className={`rounded-md border-1 border-x-gray-100 md:w-64 mr-10 mt-10 w-56 cursor-pointer hover:shadow-lg transition-shadow`}
-    >      <img
-        className="rounded-t-md md:h-72 h-64 w-full object-cover"
-        src={
-          item.images && item.images.length > 0
-            ? `${import.meta.env.VITE_API_BASE_URL}/items/${item._id}/image/0`
-            : ""
-        }
+    >
+      <SmartImage
+        src={buildImageSrc(getImageUrl(item, 0))}
         alt={item.name}
+        className="md:h-72 h-64 w-full"
+        rounded="rounded-t-md"
+        showOverlay
       />
       <div className="flex flex-col w-full items-center font-poppins">
         <p className="text-lg text-dark-gray mt-8">{item.name}</p>

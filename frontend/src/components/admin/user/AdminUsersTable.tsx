@@ -13,6 +13,7 @@ import { Spinner } from '@/components/common/Spinner';
 import type { AdminUser } from '@/services/userService';
 import { useUpdateUserRole, useDeleteUser } from '@/hooks/useUsers';
 import { Trash2 } from 'lucide-react';
+import { SmartImage } from '@/components/common/SmartImage';
 
 interface AdminUsersTableProps {
     users: AdminUser[];
@@ -80,10 +81,11 @@ export const AdminUsersTable = ({ users, loading }: AdminUsersTableProps) => {
                                     <td className="px-6 py-4">
                                         <div className="flex items-center gap-3">
                                             {user.avatar ? (
-                                                <img
+                                                <SmartImage
                                                     src={user.avatar}
                                                     alt={user.name}
-                                                    className="h-10 w-10 rounded-full"
+                                                    className="h-10 w-10"
+                                                    rounded="rounded-full"
                                                 />
                                             ) : (
                                                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-200 text-gray-600 font-semibold">

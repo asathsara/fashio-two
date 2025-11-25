@@ -6,6 +6,8 @@ import { useDeleteItem, useItems } from "@/hooks/useItems";
 import { Spinner } from "@/components/common/Spinner";
 import { ErrorMessage } from "@/components/common/ErrorMessage";
 import { ConfirmDialog } from "@/components/common/ConfirmDialog";
+import { SmartImage } from "@/components/common/SmartImage";
+import { buildImageSrc, getImageUrl } from "@/utils/image";
 
 
 const ItemListPage = () => {
@@ -84,13 +86,16 @@ const ItemListPage = () => {
                     <tr key={item._id} className="border-b last:border-0">
                       <td className="px-6 py-4">
                         {item.images && item.images.length > 0 ? (
-                          <img
-                            src={`${import.meta.env.VITE_API_BASE_URL}/items/${item._id}/image/0`}
-                            alt={item.images[0].filename}
-                            className="h-16 w-16 rounded-md object-cover"
+                          <SmartImage
+                            src={buildImageSrc(getImageUrl(item, 0))}
+                            alt={item.name}
+                            className="h-16 w-16"
+                            rounded="rounded-md"
                           />
                         ) : (
-                          <span className="text-xs text-gray-500">No Image</span>
+                          <div className="flex h-16 w-16 items-center justify-center rounded-md bg-gray-100">
+                            <span className="text-xs text-gray-400">No Image</span>
+                          </div>
                         )}
                       </td>
                       <td className="px-6 py-4 font-medium text-gray-900">{item.name}</td>
