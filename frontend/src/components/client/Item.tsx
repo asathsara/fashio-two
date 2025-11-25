@@ -25,7 +25,7 @@ const ItemCard = ({ item }: ItemCardProps) => {
       className={`rounded-md border-1 border-x-gray-100 md:w-64 mr-10 mt-10 w-56 cursor-pointer hover:shadow-lg transition-shadow relative`}
     >
       {pricing.hasPromo && pricing.discountPercentage && (
-        <Badge className="absolute top-2 right-2 z-10 bg-red-500 hover:bg-red-600 text-white">
+        <Badge className="absolute top-2 right-2 z-2 bg-red-500 hover:bg-red-600 text-white">
           -{pricing.discountPercentage}%
         </Badge>
       )}
@@ -41,7 +41,7 @@ const ItemCard = ({ item }: ItemCardProps) => {
         <div className="flex items-center gap-2 mt-2 mb-6">
           {pricing.hasPromo ? (
             <>
-              <h2 className="text-md font-bold text-red-600">
+              <h2 className="text-md font-bold text-red-500">
                 {`Rs. ${(Math.round(pricing.appliedPrice * 100) / 100).toFixed(2)}`}
               </h2>
               <span className="text-sm text-gray-500 line-through">

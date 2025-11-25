@@ -12,6 +12,7 @@ import { useAuth } from "@/hooks/UseAuth";
 import type { Image } from "@/types/image";
 import { buildImageSrc, getImageUrl } from "@/utils/image";
 import { SmartImage } from "@/components/common/SmartImage";
+import { usePromoData } from "@/hooks/usePromoData";
 
 const ItemDetailPage = () => {
     const { id } = useParams<{ id: string }>();
@@ -21,6 +22,7 @@ const ItemDetailPage = () => {
     const [quantity] = useState(1);
     const { addToCart, loading: cartLoading } = useCart();
     const { isAuthenticated } = useAuth();
+    const { getItemPricing } = usePromoData();
 
     const { data: item, isLoading, error } = useQuery({
         queryKey: ["item", id],
@@ -34,9 +36,7 @@ const ItemDetailPage = () => {
             return;
         }
 
-        if (!id || !selectedSize) {
-            return;
-        }
+        if (!id || !selectedSize) return;
 
         try {
             await addToCart({
@@ -51,10 +51,7 @@ const ItemDetailPage = () => {
     };
 
     if (isLoading) {
-        return (
-            <Spinner fullHeight />
-
-        );
+        return <Spinner fullHeight />;
     }
 
     if (error || !item) {
@@ -68,10 +65,12 @@ const ItemDetailPage = () => {
         );
     }
 
+    const pricing = getItemPricing(item);
     const imageUrl = buildImageSrc(getImageUrl(item, selectedImageIndex));
 
     return (
         <div className="container mx-auto px-4 py-8">
+
             {/* Back Button */}
             <Button
                 variant="ghost"
@@ -82,12 +81,19 @@ const ItemDetailPage = () => {
                 Back
             </Button>
 
-            {/* Main Content */}
             <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
+
                 {/* Image Section */}
                 <div className="space-y-4">
-                    {/* Main Image */}
-                    <div className="aspect-square rounded-lg overflow-hidden border">
+                    <div className="aspect-square rounded-lg overflow-hidden border relative">
+
+                        {/* Promo Badge */}
+                        {pricing.hasPromo && pricing.discountPercentage && (
+                            <Badge className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white">
+                                -{pricing.discountPercentage}%
+                            </Badge>
+                        )}
+
                         <SmartImage
                             src={imageUrl}
                             alt={item.name}
@@ -96,23 +102,23 @@ const ItemDetailPage = () => {
                         />
                     </div>
 
-                    {/* Thumbnail Images */}
+                    {/* Thumbnails */}
                     {item.images && item.images.length > 1 && (
                         <div className="flex gap-2 overflow-x-auto">
                             {item.images.map((_image: Image, index: number) => (
                                 <button
                                     key={index}
                                     onClick={() => setSelectedImageIndex(index)}
-                                    className={`flex-shrink-0 w-20 h-20 rounded-md overflow-hidden border-2 transition-all ${selectedImageIndex === index
-                                        ? "border-black"
-                                        : "border-gray-200 hover:border-gray-400"
-                                        }`}
+                                    className={`flex-shrink-0 w-20 h-20 rounded-md overflow-hidden border-2 transition-all ${
+                                        selectedImageIndex === index
+                                            ? "border-black"
+                                            : "border-gray-200 hover:border-gray-400"
+                                    }`}
                                 >
                                     <SmartImage
                                         src={buildImageSrc(getImageUrl(item, index))}
                                         alt={`${item.name} thumbnail ${index + 1}`}
                                         className="w-20 h-20"
-                                        rounded="rounded-none"
                                     />
                                 </button>
                             ))}
@@ -122,24 +128,39 @@ const ItemDetailPage = () => {
 
                 {/* Details Section */}
                 <div className="space-y-6">
-                    {/* Category Badge */}
+
+                    {/* Category */}
                     <Badge variant="secondary" className="text-sm">
                         {item.category.name} - {item.category.subCategory?.name || 'N/A'}
                     </Badge>
 
-                    {/* Item Name */}
+                    {/* Name */}
                     <h1 className="text-3xl md:text-4xl font-bold text-gray-900">
                         {item.name}
                     </h1>
 
-                    {/* Price */}
-                    <div className="flex items-baseline gap-2">
-                        <span className="text-3xl font-bold text-gray-900">
-                            Rs. {(Math.round(item.price * 100) / 100).toFixed(2)}
-                        </span>
+                    {/* Pricing */}
+                    <div className="flex items-center gap-2">
+
+                        {pricing.hasPromo ? (
+                            <>
+                                <span className="text-3xl font-bold text-red-600">
+                                    Rs. {(Math.round(pricing.appliedPrice * 100) / 100).toFixed(2)}
+                                </span>
+
+                                <span className="text-lg text-gray-500 line-through">
+                                    Rs. {(Math.round(pricing.originalPrice * 100) / 100).toFixed(2)}
+                                </span>
+                            </>
+                        ) : (
+                            <span className="text-3xl font-bold text-gray-900">
+                                Rs. {(Math.round(item.price * 100) / 100).toFixed(2)}
+                            </span>
+                        )}
+
                     </div>
 
-                    {/* Stock Status */}
+                    {/* Stock */}
                     <div className="flex items-center gap-2">
                         <span className="text-sm text-gray-600">Availability:</span>
                         {item.stock > 0 ? (
@@ -151,21 +172,20 @@ const ItemDetailPage = () => {
                         )}
                     </div>
 
-                    {/* Size Selector */}
-                    {item.sizes && item.sizes.length > 0 && (
+                    {/* Sizes */}
+                    {item.sizes?.length > 0 && (
                         <div className="space-y-3">
-                            <label className="text-sm font-medium text-gray-700">
-                                Select Size
-                            </label>
+                            <label className="text-sm font-medium text-gray-700">Select Size</label>
                             <div className="flex flex-wrap gap-2">
                                 {item.sizes.map((size: string) => (
                                     <button
                                         key={size}
                                         onClick={() => setSelectedSize(size)}
-                                        className={`px-4 py-2 border rounded-md font-medium transition-all ${selectedSize === size
-                                            ? "bg-black text-white border-black"
-                                            : "bg-white text-gray-900 border-gray-300 hover:border-gray-900"
-                                            }`}
+                                        className={`px-4 py-2 border rounded-md font-medium transition-all ${
+                                            selectedSize === size
+                                                ? "bg-black text-white border-black"
+                                                : "bg-white text-gray-900 border-gray-300 hover:border-gray-900"
+                                        }`}
                                     >
                                         {size}
                                     </button>
@@ -177,31 +197,33 @@ const ItemDetailPage = () => {
                     {/* Description */}
                     {item.description && (
                         <div className="space-y-2">
-                            <h3 className="text-lg font-semibold text-gray-900">
-                                Description
-                            </h3>
-                            <p className="text-gray-600 leading-relaxed">
-                                {item.description}
-                            </p>
+                            <h3 className="text-lg font-semibold text-gray-900">Description</h3>
+                            <p className="text-gray-600 leading-relaxed">{item.description}</p>
                         </div>
                     )}
 
-                    {/* Add to Cart Button */}
+                    {/* Add to Cart */}
                     <div className="pt-4">
                         <Button
                             size="lg"
                             className="w-full md:w-auto flex items-center gap-2"
-                            disabled={item.stock === 0 || (item.sizes.length > 0 && !selectedSize) || cartLoading}
+                            disabled={
+                                item.stock === 0 ||
+                                (item.sizes.length > 0 && !selectedSize) ||
+                                cartLoading
+                            }
                             onClick={handleAddToCart}
                         >
                             <ShoppingCart size={20} />
-                            {cartLoading ? 'Adding...' : 'Add to Cart'}
+                            {cartLoading ? "Adding..." : "Add to Cart"}
                         </Button>
+
                         {item.sizes.length > 0 && !selectedSize && (
                             <p className="text-sm text-gray-500 mt-2">
                                 Please select a size
                             </p>
                         )}
+
                         {!isAuthenticated && (
                             <p className="text-sm text-gray-500 mt-2">
                                 Please login to add items to cart
