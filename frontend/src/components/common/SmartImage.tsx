@@ -49,14 +49,16 @@ export const SmartImage = ({
             )}
 
             {/* Image */}
-            <img
-                src={src}
-                alt={alt}
-                onLoad={handleLoad}
-                onError={handleError}
-                className={`w-full h-full object-cover transition-all duration-700 ease-out ${rounded} ${loading ? "opacity-0 scale-105" : "opacity-100 scale-100"
-                    }`}
-            />
+            {!error && (
+                <img
+                    src={src}
+                    alt={alt}
+                    onLoad={handleLoad}
+                    onError={handleError}
+                    className={`w-full h-full object-cover transition-all duration-700 ease-out ${rounded} ${loading ? "opacity-0 scale-105" : "opacity-100 scale-100"
+                        }`}
+                />
+            )}
 
             {/* Optional Hover Overlay */}
             {showOverlay && !loading && !error && (
