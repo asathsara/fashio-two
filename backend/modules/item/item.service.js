@@ -1,7 +1,11 @@
 import Item from './item.model.js';
 import Category from '../category/category.model.js';
+import PromoService from '../promo/promo.service.js';
 
 class ItemService {
+    constructor() {
+        this.promoService = new PromoService();
+    }
 
     // Create
     async createItem(files, itemData) {
@@ -46,7 +50,7 @@ class ItemService {
             .select('-images.data')
             .populate('category', 'name subCategories');
 
-        return items.map(item => {
+        const itemsWithPromo = await Promise.all(items.map(async (item) => {
             const itemObj = item.toObject();
             const subCat = itemObj.category.subCategories.find(
                 sub => sub._id.toString() === itemObj.subCategory.toString()
@@ -57,8 +61,16 @@ class ItemService {
                 subCategory: subCat || { _id: itemObj.subCategory, name: 'Unknown' }
             };
             delete itemObj.subCategory;
-            return itemObj;
-        });
+
+            // Add promo pricing information
+            const pricingInfo = await this.promoService.getItemPricing(itemObj._id, itemObj.price);
+            return {
+                ...itemObj,
+                ...pricingInfo
+            };
+        }));
+
+        return itemsWithPromo;
     }
 
     // Get one item
@@ -80,7 +92,13 @@ class ItemService {
         };
         delete itemObj.subCategory;
 
-        return itemObj;
+        // Add promo pricing information
+        const pricingInfo = await this.promoService.getItemPricing(itemObj._id, itemObj.price);
+
+        return {
+            ...itemObj,
+            ...pricingInfo
+        };
     }
 
     // Get image

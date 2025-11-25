@@ -4,9 +4,11 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { Textarea } from '@/components/ui/textarea';
+import { Badge } from '@/components/ui/badge';
 
 interface CheckoutSummaryCardProps {
     subtotal: number;
+    totalDiscount?: number;
     total: number;
     itemCount: number;
     paymentMethod: string;
@@ -20,6 +22,7 @@ interface CheckoutSummaryCardProps {
 
 export const CheckoutSummaryCard = ({
     subtotal,
+    totalDiscount = 0,
     total,
     itemCount,
     paymentMethod,
@@ -30,6 +33,8 @@ export const CheckoutSummaryCard = ({
     onPaymentMethodChange,
     onPlaceOrder
 }: CheckoutSummaryCardProps) => {
+    const hasDiscount = totalDiscount > 0;
+
     return (
         <Card className="sticky top-6 h-max">
             <CardHeader>
@@ -42,6 +47,12 @@ export const CheckoutSummaryCard = ({
                         <span>Items ({itemCount})</span>
                         <span className="font-medium text-gray-900">Rs. {subtotal.toFixed(2)}</span>
                     </div>
+                    {hasDiscount && (
+                        <div className="flex justify-between text-gray-600">
+                            <span>Discount</span>
+                            <span className="font-medium text-green-600">-Rs. {totalDiscount.toFixed(2)}</span>
+                        </div>
+                    )}
                     <div className="flex justify-between text-gray-600">
                         <span>Shipping</span>
                         <span className="text-green-600 font-medium">FREE</span>
@@ -54,6 +65,14 @@ export const CheckoutSummaryCard = ({
                     <span>Total</span>
                     <span>Rs. {total.toFixed(2)}</span>
                 </div>
+
+                {hasDiscount && (
+                    <div className="flex justify-center">
+                        <Badge className="bg-green-500 hover:bg-green-600 text-white">
+                            You save Rs. {totalDiscount.toFixed(2)}!
+                        </Badge>
+                    </div>
+                )}
 
                 <div className="space-y-2">
                     <Label className="text-sm text-gray-600">Payment Method</Label>

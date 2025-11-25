@@ -55,7 +55,17 @@ export const CartPage = () => {
     }
 
     const subtotal = cart.items.reduce(
-        (sum, item) => sum + item.item.price * item.quantity,
+        (sum, item) => sum + item.originalPrice * item.quantity,
+        0
+    );
+
+    const totalDiscount = cart.items.reduce(
+        (sum, item) => sum + item.discount * item.quantity,
+        0
+    );
+
+    const total = cart.items.reduce(
+        (sum, item) => sum + item.appliedPrice * item.quantity,
         0
     );
 
@@ -80,6 +90,8 @@ export const CartPage = () => {
                 <div className="lg:col-span-1">
                     <CartSummary
                         subtotal={subtotal}
+                        totalDiscount={totalDiscount}
+                        total={total}
                         itemCount={cart.totalItems}
                         onCheckout={handleCheckout}
                         onClearCart={() => setShowClearDialog(true)}
@@ -87,7 +99,7 @@ export const CartPage = () => {
                 </div>
             </div>
 
-            
+
 
             <ConfirmDialog
                 open={showClearDialog}

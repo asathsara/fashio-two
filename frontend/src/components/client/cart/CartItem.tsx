@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Trash2, Plus, Minus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import type { CartItem as CartItemType } from '@/types/cart';
 import { buildImageSrc, getImageUrl } from '@/utils/image';
 import { SmartImage } from '@/components/common/SmartImage';
@@ -14,8 +15,10 @@ interface CartItemProps {
 export const CartItem = ({ item, onUpdateQuantity, onRemove }: CartItemProps) => {
 
     const imageUrl = getImageUrl(item.item, item.selectedImageIndex);
-    
-    const subtotal = item.item.price * item.quantity;
+
+    const hasDiscount = item.discount > 0;
+    const itemTotal = item.appliedPrice * item.quantity;
+    const totalSavings = item.discount * item.quantity;
     const itemId = item.item._id || '';
 
     const handleIncrease = () => {
@@ -31,7 +34,13 @@ export const CartItem = ({ item, onUpdateQuantity, onRemove }: CartItemProps) =>
     };
 
     return (
-        <div className="flex gap-4 p-4 border rounded-lg bg-white">
+        <div className="flex gap-4 p-4 border rounded-lg bg-white relative">
+            {hasDiscount && (
+                <Badge className="absolute top-2 right-2 bg-green-500 hover:bg-green-600 text-white text-xs">
+                    Save Rs. {totalSavings.toFixed(2)}
+                </Badge>
+            )}
+
             {/* Image */}
             <Link to={`/items/${item.item._id}`} className="flex-shrink-0 pt-4">
                 <SmartImage
@@ -48,7 +57,19 @@ export const CartItem = ({ item, onUpdateQuantity, onRemove }: CartItemProps) =>
                     <h3 className="font-semibold text-lg">{item.item.name}</h3>
                 </Link>
                 <p className="text-sm text-gray-600 mt-1">Size: {item.size}</p>
-                <p className="text-sm text-gray-600">Price: Rs. {item.item.price.toFixed(2)}</p>
+
+                {hasDiscount ? (
+                    <div className="flex items-center gap-2 mt-1">
+                        <span className="text-sm font-semibold text-red-600">
+                            Rs. {item.appliedPrice.toFixed(2)}
+                        </span>
+                        <span className="text-xs text-gray-500 line-through">
+                            Rs. {item.originalPrice.toFixed(2)}
+                        </span>
+                    </div>
+                ) : (
+                    <p className="text-sm text-gray-600">Price: Rs. {item.appliedPrice.toFixed(2)}</p>
+                )}
 
                 {/* Stock warning */}
                 {item.quantity >= item.item.stock && (
@@ -88,7 +109,7 @@ export const CartItem = ({ item, onUpdateQuantity, onRemove }: CartItemProps) =>
                     </Button>
                 </div>
 
-                <p className="font-semibold text-lg mt-2">Rs. {subtotal.toFixed(2)}</p>
+                <p className="font-semibold text-lg mt-2">Rs. {itemTotal.toFixed(2)}</p>
             </div>
         </div>
     );

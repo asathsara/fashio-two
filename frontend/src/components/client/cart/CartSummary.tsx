@@ -1,16 +1,25 @@
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
+import { Badge } from '@/components/ui/badge';
 
 interface CartSummaryProps {
     subtotal: number;
+    totalDiscount?: number;
+    total: number;
     onCheckout: () => void;
     onClearCart: () => void;
     itemCount: number;
 }
 
-export const CartSummary = ({ subtotal, onCheckout, onClearCart, itemCount }: CartSummaryProps) => {
-    const shipping = 0; // Free shipping for now
-    const total = subtotal + shipping;
+export const CartSummary = ({
+    subtotal,
+    totalDiscount = 0,
+    total,
+    onCheckout,
+    onClearCart,
+    itemCount
+}: CartSummaryProps) => {
+    const hasDiscount = totalDiscount > 0;
 
     return (
         <div className="bg-white border rounded-lg p-6 sticky top-4">
@@ -21,6 +30,14 @@ export const CartSummary = ({ subtotal, onCheckout, onClearCart, itemCount }: Ca
                     <span className="text-gray-600">Items ({itemCount})</span>
                     <span className="font-medium">Rs. {subtotal.toFixed(2)}</span>
                 </div>
+
+                {hasDiscount && (
+                    <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">Discount</span>
+                        <span className="font-medium text-green-600">-Rs. {totalDiscount.toFixed(2)}</span>
+                    </div>
+                )}
+
                 <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Shipping</span>
                     <span className="font-medium text-green-600">FREE</span>
@@ -29,10 +46,18 @@ export const CartSummary = ({ subtotal, onCheckout, onClearCart, itemCount }: Ca
 
             <Separator className="my-4" />
 
-            <div className="flex justify-between text-lg font-semibold mb-6">
+            <div className="flex justify-between text-lg font-semibold mb-2">
                 <span>Total</span>
                 <span>Rs. {total.toFixed(2)}</span>
             </div>
+
+            {hasDiscount && (
+                <div className="flex justify-center mb-4">
+                    <Badge className="bg-green-500 hover:bg-green-600 text-white">
+                        You save Rs. {totalDiscount.toFixed(2)}!
+                    </Badge>
+                </div>
+            )}
 
             <Button
                 onClick={onCheckout}
