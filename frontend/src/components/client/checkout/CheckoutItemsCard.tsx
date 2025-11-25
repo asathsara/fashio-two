@@ -32,13 +32,13 @@ export const CheckoutItemsCard = ({ items }: CheckoutItemsCardProps) => {
                                         Save Rs. {totalSavings.toFixed(2)}
                                     </Badge>
                                 )}
-                                <div>
+                                <div className='mt-2'>
                                     <p className="font-semibold text-gray-900">{cartItem.item.name}</p>
                                     <p className="text-sm text-gray-500">
                                         Size {cartItem.size} • Qty {cartItem.quantity}
                                     </p>
                                 </div>
-                                <div className="text-right">
+                                <div className="text-right mt-6">
                                     {hasDiscount ? (
                                         <>
                                             <div className="flex items-center gap-2">
