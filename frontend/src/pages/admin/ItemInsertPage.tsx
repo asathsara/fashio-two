@@ -75,6 +75,7 @@ const ItemInsertPage = () => {
       <h1 className="text-3xl font-semibold">
         {isEditMode ? "Edit Item" : "Add New Item"}
       </h1>
+      <p className="text-gray-600">{isEditMode ? "Modify the details of your item below." : "Fill out the form below to add a new item to your inventory."}</p>
       <form onSubmit={onSubmit} className="mt-8 space-y-6">
         <FieldGroup>
           <FieldSet>

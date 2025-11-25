@@ -11,6 +11,7 @@ import { useCart } from "@/hooks/useCart";
 import { useAuth } from "@/hooks/UseAuth";
 import type { Image } from "@/types/image";
 import { buildImageSrc, getImageUrl } from "@/utils/image";
+import { SmartImage } from "@/components/common/SmartImage";
 
 const ItemDetailPage = () => {
     const { id } = useParams<{ id: string }>();
@@ -87,10 +88,11 @@ const ItemDetailPage = () => {
                 <div className="space-y-4">
                     {/* Main Image */}
                     <div className="aspect-square rounded-lg overflow-hidden border">
-                        <img
+                        <SmartImage
                             src={imageUrl}
                             alt={item.name}
-                            className="w-full h-full object-cover"
+                            className="w-full aspect-square"
+                            rounded="rounded-lg"
                         />
                     </div>
 
@@ -106,10 +108,11 @@ const ItemDetailPage = () => {
                                         : "border-gray-200 hover:border-gray-400"
                                         }`}
                                 >
-                                    <img
+                                    <SmartImage
                                         src={buildImageSrc(getImageUrl(item, index))}
                                         alt={`${item.name} thumbnail ${index + 1}`}
-                                        className="w-full h-full object-cover"
+                                        className="w-20 h-20"
+                                        rounded="rounded-none"
                                     />
                                 </button>
                             ))}

@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import AdminOrderTable from '@/components/admin/order/AdminOrderTable';
-import AdminOrderStats from '@/components/admin/order/AdminOrderStats';
-import AdminUsersPlaceholder from '@/components/admin/order/AdminUsersPlaceholder';
+import AdminOrderTable from '@/components/admin/dashboard/AdminOrderTable';
+import AdminOrderStats from '@/components/admin/dashboard/AdminOrderStats';
+import AdminUsersPlaceholder from '@/components/admin/dashboard/AdminUsersPlaceholder';
 import { useAdminOrders, useOrderStats } from '@/hooks/useOrders';
 import type { OrderStatus } from '@/types/order';
 
@@ -14,9 +14,8 @@ const OrderDashboardPage = () => {
     return (
         <div className="space-y-6">
             <div>
-                <p className="text-sm uppercase tracking-[0.3em] text-gray-500">Dashboard</p>
-                <h1 className="text-3xl font-bold text-gray-900">Orders & Numbers</h1>
-                <p className="text-gray-600">Monitor Rs. performance, update statuses, and keep fulfilment tidy.</p>
+                <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
+                <p className="text-gray-600">Monitor performance, update statuses, and keep fulfillment tidy.</p>
             </div>
 
             <Tabs defaultValue="orders" className="space-y-6">

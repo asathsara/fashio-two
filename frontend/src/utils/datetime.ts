@@ -6,3 +6,11 @@ export const formatDateTime = (value: string | Date) =>
     hour: '2-digit',
     minute: '2-digit',
   });
+
+
+export const formatDate = (value: string) =>
+  new Date(value).toLocaleDateString('en-LK', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric'
+  });

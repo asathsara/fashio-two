@@ -320,3 +320,13 @@
 .dark [data-sonner-toast][data-type="info"] [data-icon] {
   @apply text-sky-400;
 }
+
+/* Shimmer animation for skeleton loader */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
