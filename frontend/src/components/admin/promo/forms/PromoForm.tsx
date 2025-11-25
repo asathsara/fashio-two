@@ -4,7 +4,6 @@ import { promoSchema, type PromoFormData } from "@/schemas/promoSchema";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Percent } from "lucide-react";
 import { PromoDateTimePicker } from "./PromoDateTimePicker";
 import { PromoItemSelect } from "./PromoItemSelect";
 import type { PromoFormProps } from "@/types/promo";
@@ -50,7 +49,7 @@ export const PromoForm = ({ onSubmit }: PromoFormProps) => {
 
         <div className="space-y-2">
           <label className="flex items-center gap-2 text-sm font-medium">
-            <Percent className="w-4 h-4" /> Discount %
+             Discount %
           </label>
           <Input type="number" {...register("discount", { valueAsNumber: true })} />
           {errors.discount && (
