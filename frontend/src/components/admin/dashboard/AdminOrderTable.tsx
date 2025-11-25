@@ -4,7 +4,7 @@ import { OrderStatusBadge, PaymentStatusBadge } from '@/components/admin/dashboa
 import type { Order, OrderStatus } from '@/types/order';
 import { Spinner } from '@/components/common/Spinner';
 import { ChevronDown, ChevronRight } from "lucide-react";
-import OrderItemsTable from './order/OrderItemsTable ';
+import OrderItemsTable from './order/OrderItemsTable';
 import { useUpdateOrderStatus } from '@/hooks/useOrders';
 
 
