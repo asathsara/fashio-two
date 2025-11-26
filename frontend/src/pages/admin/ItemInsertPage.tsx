@@ -14,7 +14,9 @@ import {
 import CategorySelector from "@/components/admin/CategorySelector"
 import SizeSelector from "@/components/admin/SizeSelector"
 import ImageUploaderGroup from "@/components/admin/ImageUploaderGroup"
+import { AIGenerateButton } from "@/components/admin/AIGenerateButton"
 import { useItemForm } from "@/hooks/admin/useItemForm"
+import { useAIDescription } from "@/hooks/admin/useAIDescription"
 import { useParams, useNavigate } from "react-router-dom"
 import { Spinner } from "@/components/common/Spinner"
 import { useEffect, useState } from "react"
@@ -25,7 +27,6 @@ const ItemInsertPage = () => {
   const navigate = useNavigate()
   const isEditMode = Boolean(id)
   const [formKey, setFormKey] = useState(0)
-
 
   // Fetch item data if in edit mode
   const { data: item, isLoading } = useGetItem(id || "", isEditMode)
@@ -51,6 +52,13 @@ const ItemInsertPage = () => {
   } = useItemForm({ item, isEditMode })
 
   const mutation = isEditMode ? updateMutation : insertMutation
+
+  // AI Description Generation
+  const { isGenerating, generateDescription } = useAIDescription({
+    watch,
+    setValue: (name, value, options) => setValue(name as never, value as never, options),
+    newImages,
+  })
 
   // Navigate back after successful update
   useEffect(() => {
@@ -123,8 +131,15 @@ const ItemInsertPage = () => {
             </Field>
 
             <Field>
-              <FieldLabel>Description</FieldLabel>
-              <Textarea {...register("description")} />
+              <div className="flex items-center justify-between mb-2">
+                <FieldLabel>Description</FieldLabel>
+                <AIGenerateButton
+                  onClick={generateDescription}
+                  isGenerating={isGenerating}
+                  isDisabled={mutation.isPending}
+                />
+              </div>
+              <Textarea {...register("description")} rows={5} />
               <FieldError>{errors.description?.message}</FieldError>
             </Field>
 

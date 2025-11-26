@@ -34,6 +34,8 @@ const API_ENDPOINTS = {
   ORDER_STATUS: (id: Id) => `/orders/${id}/status`,
   ORDER_CANCEL: (id: Id) => `/orders/cancel/${id}`,
 
+  AI_GENERATE_DESCRIPTION: '/ai/generate-description',
+
 };
 
 export const AUTH_ENDPOINTS = {
