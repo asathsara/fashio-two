@@ -38,10 +38,11 @@ class PromoService {
     }
 
     // Check if a promo is currently active
+    // Treats stored dates as UTC to ensure consistent timezone handling
     isPromoActive(promo) {
         const now = new Date();
-        const startDateTime = new Date(`${promo.startDate}T${promo.startTime}`);
-        const endDateTime = new Date(`${promo.endDate}T${promo.endTime}`);
+        const startDateTime = new Date(`${promo.startDate}T${promo.startTime}Z`);
+        const endDateTime = new Date(`${promo.endDate}T${promo.endTime}Z`);
 
         return now >= startDateTime && now <= endDateTime;
     }

@@ -6,7 +6,6 @@ export interface PromoContextValue {
   items: PromoSelectableItem[];
   promos: PromoWithItem[];
   isLoading: boolean;
-  getActivePromoForItem: (itemId: string) => PromoWithItem | null;
   calculateDiscountedPrice: (originalPrice: number, discountPercentage: string) => number;
   getItemPricing: (item: Item) => {
     originalPrice: number;
@@ -15,7 +14,6 @@ export interface PromoContextValue {
     hasPromo: boolean;
     discountPercentage?: string;
   };
-  isPromoActive: (promo: PromoWithItem) => boolean;
 }
 
 export const PromoContext = createContext<PromoContextValue | undefined>(undefined);
