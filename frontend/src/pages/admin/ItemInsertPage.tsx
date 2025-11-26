@@ -19,12 +19,16 @@ import { useParams, useNavigate } from "react-router-dom"
 import { Spinner } from "@/components/common/Spinner"
 import { useEffect, useState } from "react"
 import { useGetItem } from "@/hooks/useItems"
+import aiService from "@/services/aiService"
+import { Wand2 } from "lucide-react"
+import { toast } from "sonner"
 
 const ItemInsertPage = () => {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const isEditMode = Boolean(id)
   const [formKey, setFormKey] = useState(0)
+  const [isGenerating, setIsGenerating] = useState(false)
 
 
   // Fetch item data if in edit mode
@@ -65,6 +69,62 @@ const ItemInsertPage = () => {
       setFormKey(prev => prev + 1)
     }
   }, [insertMutation.isSuccess, isEditMode])
+
+  // AI Description Generator
+  const handleGenerateDescription = async () => {
+    try {
+      // Get current form values
+      const title = watch("name")
+      const price = watch("price")
+      const categoryId = watch("category")
+      const subCategoryId = watch("subCategory")
+
+      // Validate required fields
+      if (!title || !title.trim()) {
+        toast.error("Please enter a product name first")
+        return
+      }
+      if (!price || price <= 0) {
+        toast.error("Please enter a valid price first")
+        return
+      }
+      if (!categoryId) {
+        toast.error("Please select a category first")
+        return
+      }
+      if (!subCategoryId) {
+        toast.error("Please select a subcategory first")
+        return
+      }
+
+      // Get the first image
+      let firstImage: File | undefined
+      if (newImages.length > 0) {
+        firstImage = newImages[0]
+      }
+
+      setIsGenerating(true)
+      toast.loading("Generating description with AI...")
+
+      const description = await aiService.generateDescription({
+        title,
+        price,
+        categoryId,
+        subCategoryId,
+        image: firstImage,
+      })
+
+      setValue("description", description, { shouldValidate: true })
+      toast.dismiss()
+      toast.success("Description generated successfully!")
+    } catch (error) {
+      toast.dismiss()
+      console.error("Failed to generate description:", error)
+      toast.error("Failed to generate description. Please try again.")
+    } finally {
+      setIsGenerating(false)
+    }
+  }
 
   if (isEditMode && isLoading) {
     return <Spinner fullHeight />
@@ -123,8 +183,21 @@ const ItemInsertPage = () => {
             </Field>
 
             <Field>
-              <FieldLabel>Description</FieldLabel>
-              <Textarea {...register("description")} />
+              <div className="flex items-center justify-between mb-2">
+                <FieldLabel>Description</FieldLabel>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={handleGenerateDescription}
+                  disabled={isGenerating || mutation.isPending}
+                  className="gap-2"
+                >
+                  <Wand2 className="h-4 w-4" />
+                  {isGenerating ? "Generating..." : "Generate with AI"}
+                </Button>
+              </div>
+              <Textarea {...register("description")} rows={5} />
               <FieldError>{errors.description?.message}</FieldError>
             </Field>
 
