@@ -121,7 +121,7 @@ export const AdminOrderTable = ({ orders = [], loading, statusFilter, onStatusFi
                                         <td className="px-6 py-4 font-semibold text-gray-900">
                                             <div className="flex flex-col gap-1">
                                                 <span>Rs. {order.total.toFixed(2)}</span>
-                                                { order.totalDiscount > 0 && (
+                                                { (order.totalDiscount ?? 0) > 0 && (
                                                     <Badge className="bg-green-500 hover:bg-green-600 text-white text-xs w-fit">
                                                         -Rs. {order.totalDiscount.toFixed(2)}
                                                     </Badge>
