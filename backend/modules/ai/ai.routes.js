@@ -5,6 +5,7 @@ import aiController from './ai.controller.js';
 const router = Router();
 import authMiddleware from '../../middleware/auth.js';
 const { protect, admin } = authMiddleware;
+const { aiLimiter } = require('../../middleware/rateLimiter.js');
 
 // Configure Multer for single image upload
 const storage = memoryStorage();
@@ -25,6 +26,7 @@ const upload = multer({
 // Accepts optional single image and required body fields
 router.post(
     '/generate-description',
+    aiLimiter,
     protect,
     admin,
     upload.single('image'),
