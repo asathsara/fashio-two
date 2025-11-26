@@ -25,7 +25,7 @@ const ItemCard = ({ item }: ItemCardProps) => {
       className={`rounded-md border-1 border-x-gray-100 md:w-64 mr-10 mt-10 w-56 cursor-pointer hover:shadow-lg transition-shadow relative`}
     >
       {pricing.hasPromo && pricing.discountPercentage && (
-        <Badge className="absolute top-2 right-2 z-2 bg-red-500 hover:bg-red-600 text-white">
+        <Badge className="absolute top-2 right-2 z-10 bg-red-500 hover:bg-red-600 text-white">
           -{pricing.discountPercentage}%
         </Badge>
       )}
