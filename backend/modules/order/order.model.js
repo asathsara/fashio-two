@@ -23,6 +23,19 @@ const orderItemSchema = new Schema({
         type: Number,
         required: true
     },
+    originalPrice: {
+        type: Number,
+        required: true
+    },
+    discount: {
+        type: Number,
+        default: 0
+    },
+    promoId: {
+        type: Schema.Types.ObjectId,
+        ref: 'Promo',
+        default: null
+    },
     selectedImageIndex: {
         type: Number,
         default: 0
@@ -59,6 +72,10 @@ const orderSchema = new Schema({
     subtotal: {
         type: Number,
         required: true
+    },
+    totalDiscount: {
+        type: Number,
+        default: 0
     },
     total: {
         type: Number,

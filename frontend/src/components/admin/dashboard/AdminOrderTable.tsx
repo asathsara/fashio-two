@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { OrderStatusBadge, PaymentStatusBadge } from '@/components/admin/dashboard/OrderStatusBadge';
+import { Badge } from '@/components/ui/badge';
 import type { Order, OrderStatus } from '@/types/order';
 import { Spinner } from '@/components/common/Spinner';
 import { ChevronDown, ChevronRight } from "lucide-react";
@@ -118,7 +119,14 @@ export const AdminOrderTable = ({ orders = [], loading, statusFilter, onStatusFi
                                         </td>
 
                                         <td className="px-6 py-4 font-semibold text-gray-900">
-                                            Rs. {order.total.toFixed(2)}
+                                            <div className="flex flex-col gap-1">
+                                                <span>Rs. {order.total.toFixed(2)}</span>
+                                                { (order.totalDiscount ?? 0) > 0 && (
+                                                    <Badge className="bg-green-500 hover:bg-green-600 text-white text-xs w-fit">
+                                                        -Rs. {order.totalDiscount.toFixed(2)}
+                                                    </Badge>
+                                                )}
+                                            </div>
                                         </td>
 
                                         <td className="px-6 py-4">

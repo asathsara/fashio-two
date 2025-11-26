@@ -11,6 +11,9 @@ export interface OrderItem {
     size: string;
     quantity: number;
     price: number;
+    originalPrice: number;
+    discount: number;
+    promoId?: string | null;
     selectedImageIndex: number;
 }
 
@@ -24,6 +27,7 @@ export interface Order {
     items: OrderItem[];
     shippingAddress: Address;
     subtotal: number;
+    totalDiscount: number;
     total: number;
     status: OrderStatus;
     paymentStatus: PaymentStatus;

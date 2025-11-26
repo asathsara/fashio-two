@@ -3,9 +3,10 @@ import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
 import { CalendarIcon, ClockIcon } from "lucide-react";
+import { formatDisplayDateTime, padZero } from "@/utils/datetime";
 
 interface Props<T extends FieldValues> {
-  name: Path<T>; 
+  name: Path<T>;
   label: string;
   control: Control<T>;
 }
@@ -15,12 +16,17 @@ export const PromoDateTimePicker = <T extends FieldValues>({
   label,
   control,
 }: Props<T>) => (
-  
   <Controller
     name={name}
     control={control}
     render={({ field, fieldState }) => {
-      const date = field.value ?? new Date();
+      const date = field.value ? new Date(field.value) : new Date();
+
+      const updateDate = (d: Date) => {
+        const newDate = new Date(d);
+        newDate.setSeconds(0, 0); // reset seconds and milliseconds
+        field.onChange(newDate);
+      };
 
       return (
         <div className="space-y-2">
@@ -28,7 +34,7 @@ export const PromoDateTimePicker = <T extends FieldValues>({
           <Popover>
             <PopoverTrigger asChild>
               <Button variant="outline" className="justify-between w-full">
-                {date.toLocaleString()}
+                {formatDisplayDateTime(date)}
                 <CalendarIcon className="w-4 h-4 opacity-50" />
               </Button>
             </PopoverTrigger>
@@ -40,7 +46,7 @@ export const PromoDateTimePicker = <T extends FieldValues>({
                   if (!d) return;
                   const newDate = new Date(date);
                   newDate.setFullYear(d.getFullYear(), d.getMonth(), d.getDate());
-                  field.onChange(newDate);
+                  updateDate(newDate);
                 }}
                 disabled={(d) => d < new Date()}
               />
@@ -50,26 +56,26 @@ export const PromoDateTimePicker = <T extends FieldValues>({
                   type="number"
                   min={0}
                   max={23}
-                  value={date.getHours()}
+                  value={padZero(date.getHours())}
                   onChange={(e) => {
                     const newDate = new Date(date);
                     newDate.setHours(Number(e.target.value));
-                    field.onChange(newDate);
+                    updateDate(newDate);
                   }}
-                  className="w-12 border rounded px-1 py-0.5 text-sm"
+                  className="w-14 border rounded px-2 py-1 text-sm text-center"
                 />
-                :
+                <span className="font-semibold">:</span>
                 <input
                   type="number"
                   min={0}
                   max={59}
-                  value={date.getMinutes()}
+                  value={padZero(date.getMinutes())}
                   onChange={(e) => {
                     const newDate = new Date(date);
                     newDate.setMinutes(Number(e.target.value));
-                    field.onChange(newDate);
+                    updateDate(newDate);
                   }}
-                  className="w-12 border rounded px-1 py-0.5 text-sm"
+                  className="w-14 border rounded px-2 py-1 text-sm text-center"
                 />
               </div>
             </PopoverContent>

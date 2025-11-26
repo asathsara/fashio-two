@@ -50,19 +50,24 @@ class OrderService {
             name: cartItem.item.name,
             size: cartItem.size,
             quantity: cartItem.quantity,
-            price: cartItem.item.price,
+            price: cartItem.appliedPrice || cartItem.item.price,
+            originalPrice: cartItem.originalPrice || cartItem.item.price,
+            discount: cartItem.discount || 0,
+            promoId: cartItem.promoId || null,
             selectedImageIndex: cartItem.selectedImageIndex || 0
         }));
 
-        const subtotal = orderItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-        const total = Number(subtotal.toFixed(2));
+        const subtotal = orderItems.reduce((sum, item) => sum + (item.originalPrice * item.quantity), 0);
+        const totalDiscount = orderItems.reduce((sum, item) => sum + (item.discount * item.quantity), 0);
+        const total = orderItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
         const order = await Order.create({
             user: userId,
             items: orderItems,
             shippingAddress,
-            subtotal,
-            total,
+            subtotal: Math.round(subtotal * 100) / 100,
+            totalDiscount: Math.round(totalDiscount * 100) / 100,
+            total: Math.round(total * 100) / 100,
             paymentMethod,
             notes
         });
