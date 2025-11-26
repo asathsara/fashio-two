@@ -2,7 +2,6 @@ import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
-import path from 'path';
 import dotenv from 'dotenv';
 
 
@@ -16,6 +15,7 @@ import { promoRoutes } from './modules/promo/index.js';
 import { cartRoutes } from './modules/cart/index.js';
 import { orderRoutes } from './modules/order/index.js';
 import { aiRoutes } from './modules/ai/index.js';
+import { generalLimiter } from './middleware/rateLimiter.js';
 
 dotenv.config();
 
@@ -49,6 +49,8 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
+// Apply general rate limiting to all routes
+app.use(generalLimiter);
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/fashio-two')
