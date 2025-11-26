@@ -59,7 +59,7 @@ router.get('/google/callback', authController.googleCallback);
 // Protected Routes
 router.get('/me', protect, (req, res) => authController.getMe(req, res));
 router.post('/logout', protect, (req, res) => authController.logout(req, res));
-router.post('/resend-verification', emailLimiter, protect, (req, res) => authController.resendVerification(req, res));
+router.post('/resend-verification', protect, emailLimiter, (req, res) => authController.resendVerification(req, res));
 
 // Profile Management
 router.put('/profile', protect, updateProfileValidation, (req, res) => authController.updateProfile(req, res));
