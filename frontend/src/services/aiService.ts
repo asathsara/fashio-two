@@ -32,11 +32,6 @@ class AIService {
         const response = await api.post<GenerateDescriptionResponse>(
             API_ENDPOINTS.AI_GENERATE_DESCRIPTION,
             formData,
-            {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            }
         );
 
         return response.data.description;
