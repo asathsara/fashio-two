@@ -32,7 +32,7 @@ export const CheckoutItemsCard = ({ items }: CheckoutItemsCardProps) => {
                                         Save Rs. {totalSavings.toFixed(2)}
                                     </Badge>
                                 )}
-                                <div className='mt-2'>
+                                <div className="mt-2">
                                     <p className="font-semibold text-gray-900">{cartItem.item.name}</p>
                                     <p className="text-sm text-gray-500">
                                         Size {cartItem.size} • Qty {cartItem.quantity}
