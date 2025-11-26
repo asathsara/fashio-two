@@ -1,11 +1,12 @@
 import { Router } from 'express';
 import multer, { memoryStorage } from 'multer';
 import aiController from './ai.controller.js';
+import { aiLimiter } from '../../middleware/rateLimiter.js';
 
 const router = Router();
 import authMiddleware from '../../middleware/auth.js';
 const { protect, admin } = authMiddleware;
-const { aiLimiter } = require('../../middleware/rateLimiter.js');
+
 
 // Configure Multer for single image upload
 const storage = memoryStorage();

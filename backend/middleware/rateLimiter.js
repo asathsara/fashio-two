@@ -109,7 +109,7 @@ const generalLimiter = rateLimit({
     legacyHeaders: false,
 });
 
-module.exports = {
+export  {
     aiLimiter,
     authLimiter,
     emailLimiter,

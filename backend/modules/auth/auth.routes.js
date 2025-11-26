@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { body } from 'express-validator';
 import authController from './auth.controller.js';
 import authMiddleware from '../../middleware/auth.js';
-const { authLimiter, emailLimiter } = require('../../middleware/rateLimiter.js');
+import { authLimiter, emailLimiter } from '../../middleware/rateLimiter.js';
 
 const { protect } = authMiddleware;
 const { admin } = authMiddleware;

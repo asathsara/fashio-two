@@ -2,7 +2,6 @@ import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
-import path from 'path';
 import dotenv from 'dotenv';
 
 
@@ -16,7 +15,7 @@ import { promoRoutes } from './modules/promo/index.js';
 import { cartRoutes } from './modules/cart/index.js';
 import { orderRoutes } from './modules/order/index.js';
 import { aiRoutes } from './modules/ai/index.js';
-const { generalLimiter } = require('./middleware/rateLimiter.js');
+import { generalLimiter } from './middleware/rateLimiter.js';
 
 dotenv.config();
 
