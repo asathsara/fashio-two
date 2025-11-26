@@ -3,6 +3,8 @@ import multer, { memoryStorage } from 'multer';
 import aiController from './ai.controller.js';
 
 const router = Router();
+import authMiddleware from '../../middleware/auth.js';
+const { protect, admin } = authMiddleware;
 
 // Configure Multer for single image upload
 const storage = memoryStorage();
@@ -23,6 +25,8 @@ const upload = multer({
 // Accepts optional single image and required body fields
 router.post(
     '/generate-description',
+    protect,
+    admin,
     upload.single('image'),
     (req, res) => aiController.generateDescription(req, res)
 );
