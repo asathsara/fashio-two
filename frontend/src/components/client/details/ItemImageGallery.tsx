@@ -55,7 +55,7 @@ export const ItemImageGallery = ({
                                 src={buildImageSrc(getImageUrl(item, index))}
                                 alt={`${item.name} thumbnail ${index + 1}`}
                                 className="w-20 h-20"
-                                rounded='md'
+                                rounded='rounded-sm'
                             />
                         </button>
                     ))}
