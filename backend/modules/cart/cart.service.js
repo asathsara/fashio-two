@@ -198,21 +198,45 @@ class CartService {
     }
 
     // Helper method to update cart prices based on current promos
+    // Optimized to prevent N+1 query problem by batching promo lookups
     async updateCartPrices(cart) {
         let hasChanges = false;
 
+        // 1 Collect all item IDs
+        const itemIds = cart.items
+            .map(ci => ci.item?._id?.toString() || ci.item?.toString())
+            .filter(Boolean);
+
+        if (itemIds.length === 0) {
+            return cart;
+        }
+
+        // 2 Fetch ALL promos for these items in ONE query
+        const promos = await this.promoService.getPromosForItems(itemIds);
+
+        // 3 Create a fast lookup map (O(1) access)
+        const promoMap = new Map();
+        for (const promo of promos) {
+            promoMap.set(promo.itemId.toString(), promo);
+        }
+
+        // 4 Loop through cart items, but use in-memory promo lookup
         for (let i = 0; i < cart.items.length; i++) {
             const cartItem = cart.items[i];
             const item = cartItem.item;
 
             if (!item) continue;
 
-            const pricingInfo = await this.promoService.getItemPricing(
-                item._id || item,
-                item.price
+            const itemId = item._id.toString();
+            const promo = promoMap.get(itemId);
+
+            // 5 Compute pricing in-memory (no DB query)
+            const pricingInfo = this.promoService.calculatePricing(
+                item.price,
+                promo
             );
 
-            // Check if pricing has changed (promo started/ended)
+            // 6 Apply if changed
             if (
                 cartItem.originalPrice !== pricingInfo.originalPrice ||
                 cartItem.appliedPrice !== pricingInfo.appliedPrice ||

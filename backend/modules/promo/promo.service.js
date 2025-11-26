@@ -103,6 +103,54 @@ class PromoService {
             discountPercentage: activePromo.discount
         };
     }
+
+    // Batch fetch promos for multiple items (optimized for N+1 query prevention)
+    async getPromosForItems(itemIds) {
+        const promos = await Promo.find({ item: { $in: itemIds } });
+
+        // Filter only active promos and map to include itemId for easy lookup
+        const activePromos = [];
+        for (const promo of promos) {
+            if (this.isPromoActive(promo)) {
+                activePromos.push({
+                    itemId: promo.item,
+                    _id: promo._id,
+                    discount: promo.discount,
+                    startDate: promo.startDate,
+                    startTime: promo.startTime,
+                    endDate: promo.endDate,
+                    endTime: promo.endTime
+                });
+            }
+        }
+
+        return activePromos;
+    }
+
+    // Calculate pricing in-memory (no database query)
+    calculatePricing(originalPrice, promo = null) {
+        if (!promo) {
+            return {
+                originalPrice,
+                appliedPrice: originalPrice,
+                discount: 0,
+                promoId: null,
+                hasPromo: false
+            };
+        }
+
+        const appliedPrice = this.calculateDiscountedPrice(originalPrice, promo.discount);
+        const discountAmount = originalPrice - appliedPrice;
+
+        return {
+            originalPrice,
+            appliedPrice: Math.round(appliedPrice * 100) / 100,
+            discount: Math.round(discountAmount * 100) / 100,
+            promoId: promo._id,
+            hasPromo: true,
+            discountPercentage: promo.discount
+        };
+    }
 }
 
 export default PromoService;
