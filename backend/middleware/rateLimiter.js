@@ -1,120 +1,77 @@
-import rateLimit from 'express-rate-limit';
+import rateLimit, { ipKeyGenerator } from "express-rate-limit";
 
+const userOrIpKeyGen = (req) => req.user?.id || ipKeyGenerator(req);
 
-// Rate limiter for AI generation endpoints
-// Very strict limit due to external API costs and processing time
-const aiLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 5, // 5 requests per window per user
-    message: {
-        success: false,
-        message: 'Too many AI generation requests. Please try again in 15 minutes.',
-    },
-    standardHeaders: true,
-    legacyHeaders: false, 
-    keyGenerator: (req) => {
-        return req.user?.id || req.ip;
-    },
-});
-
-
-// Rate limiter for authentication endpoints (login, register, password reset)
-// Prevents brute force attacks and account enumeration
-const authLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 5, // 5 requests per window per IP
-    message: {
-        success: false,
-        message: 'Too many authentication attempts. Please try again in 15 minutes.',
-    },
+const createLimiter = (options) =>
+  rateLimit({
     standardHeaders: true,
     legacyHeaders: false,
-    skipSuccessfulRequests: false, // Count successful requests
+    ...options,
+  });
+
+export const aiLimiter = createLimiter({
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  keyGenerator: userOrIpKeyGen,
+  message: {
+    success: false,
+    message: "Too many AI requests. Please try again in 15 minutes.",
+  },
 });
 
-
-// Rate limiter for email-related endpoints (verification, resend)
-// Prevents email spam and abuse
-const emailLimiter = rateLimit({
-    windowMs: 60 * 60 * 1000, // 1 hour
-    max: 3, // 3 requests per hour
-    message: {
-        success: false,
-        message: 'Too many email requests. Please try again in an hour.',
-    },
-    standardHeaders: true,
-    legacyHeaders: false,
-    keyGenerator: (req) => {
-        return req.user?.id || req.ip;
-    },
+export const authLimiter = createLimiter({
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  message: {
+    success: false,
+    message: "Too many login attempts. Try again in 15 minutes.",
+  },
 });
 
-
-// Rate limiter for file upload endpoints
-// Prevents storage abuse and excessive bandwidth usage
-const uploadLimiter = rateLimit({
-    windowMs: 60 * 60 * 1000, // 1 hour
-    max: 20, // 20 uploads per hour
-    message: {
-        success: false,
-        message: 'Too many upload requests. Please try again in an hour.',
-    },
-    standardHeaders: true,
-    legacyHeaders: false,
-    keyGenerator: (req) => {
-        return req.user?.id || req.ip;
-    },
+export const emailLimiter = createLimiter({
+  windowMs: 60 * 60 * 1000,
+  max: 3,
+  keyGenerator: userOrIpKeyGen,
+  message: {
+    success: false,
+    message: "Too many email actions. Try again in 1 hour.",
+  },
 });
 
-// Rate limiter for public API endpoints (GET requests)
-// Prevents excessive data scraping while allowing normal usage
-const publicApiLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100, // 100 requests per window per IP
-    message: {
-        success: false,
-        message: 'Too many requests. Please try again in 15 minutes.',
-    },
-    standardHeaders: true,
-    legacyHeaders: false,
+export const uploadLimiter = createLimiter({
+  windowMs: 60 * 60 * 1000,
+  max: 20,
+  keyGenerator: userOrIpKeyGen,
+  message: {
+    success: false,
+    message: "Too many uploads. Please retry in 1 hour.",
+  },
 });
 
-
-// Rate limiter for admin API endpoints (write operations)
-// Protects admin operations while allowing reasonable usage
-const adminApiLimiter = rateLimit({
-    windowMs: 60 * 60 * 1000, // 1 hour
-    max: 30, // 30 requests per hour
-    message: {
-        success: false,
-        message: 'Too many admin requests. Please try again in an hour.',
-    },
-    standardHeaders: true,
-    legacyHeaders: false,
-    keyGenerator: (req) => {
-        return req.user?.id || req.ip;
-    },
+export const publicApiLimiter = createLimiter({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  message: {
+    success: false,
+    message: "Too many requests. Try again in 15 minutes.",
+  },
 });
 
-// General rate limiter for all endpoints
-// Acts as a baseline protection against DoS attacks
-const generalLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100, // 100 requests per window per IP
-    message: {
-        success: false,
-        message: 'Too many requests from this IP. Please try again in 15 minutes.',
-    },
-    standardHeaders: true,
-    legacyHeaders: false,
+export const adminApiLimiter = createLimiter({
+  windowMs: 60 * 60 * 1000,
+  max: 30,
+  keyGenerator: userOrIpKeyGen,
+  message: {
+    success: false,
+    message: "Too many admin actions. Try again in 1 hour.",
+  },
 });
 
-export  {
-    aiLimiter,
-    authLimiter,
-    emailLimiter,
-    uploadLimiter,
-    publicApiLimiter,
-    adminApiLimiter,
-    generalLimiter,
-};
+export const generalLimiter = createLimiter({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  message: {
+    success: false,
+    message: "Too many requests from this IP. Retry in 15 minutes.",
+  },
+});
