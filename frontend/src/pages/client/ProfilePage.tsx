@@ -1,7 +1,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
-import { ProfileHeader } from "@/components/client/profile/ProfileHeader";
+import ProfileHeader from "@/components/client/profile/ProfileHeader";
 import { useProfile } from "@/hooks/useProfile";
 import { useLocation } from "react-router-dom";
 import { useEffect, useState, lazy, Suspense } from "react";
