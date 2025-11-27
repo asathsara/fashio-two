@@ -11,7 +11,7 @@ const createLimiter = (options) =>
 
 export const aiLimiter = createLimiter({
   windowMs: 15 * 60 * 1000,
-  max: 5,
+  max: 10,
   keyGenerator: userOrIpKeyGen,
   message: {
     success: false,
@@ -50,7 +50,7 @@ export const uploadLimiter = createLimiter({
 
 export const publicApiLimiter = createLimiter({
   windowMs: 15 * 60 * 1000,
-  max: 100,
+  max: 300,
   message: {
     success: false,
     message: "Too many requests. Try again in 15 minutes.",
@@ -69,7 +69,7 @@ export const adminApiLimiter = createLimiter({
 
 export const generalLimiter = createLimiter({
   windowMs: 15 * 60 * 1000,
-  max: 100,
+  max: 500,
   message: {
     success: false,
     message: "Too many requests from this IP. Retry in 15 minutes.",
