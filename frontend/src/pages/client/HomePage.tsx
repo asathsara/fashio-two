@@ -1,5 +1,4 @@
 import { motion, AnimatePresence } from "framer-motion";
-import ItemCategory from "../../components/client/ItemCategory";
 import DetailsBar from "../../components/client/detailsbar/Detailsbar";
 import { Spinner } from "@/components/common/Spinner";
 import { ErrorMessage } from "@/components/common/ErrorMessage";
@@ -8,6 +7,11 @@ import { useCategories } from "@/hooks/useCategories";
 import { useItems } from "@/hooks/useItems";
 import { useImageCarousel } from "@/hooks/useImageCarousel";
 import type { Image } from "@/types/image";
+import { lazy, Suspense } from "react";
+import { ComponentLoadingFallback } from "@/components/common/LazyLoadingFallback";
+
+// Lazy load heavy ItemCategory component
+const ItemCategory = lazy(() => import("../../components/client/ItemCategory"));
 
 const HomePage = () => {
 
@@ -64,20 +68,22 @@ const HomePage = () => {
         ) : error ? (
           <ErrorMessage message={error.message} />
         ) : (
-          categories.map((category, index) => {
-            // Filter items belonging to the current category
-            const categoryItems = items.filter(
-              (item) => item.category._id === category._id
-            );
+          <Suspense fallback={<ComponentLoadingFallback />}>
+            {categories.map((category, index) => {
+              // Filter items belonging to the current category
+              const categoryItems = items.filter(
+                (item) => item.category._id === category._id
+              );
 
-            return (
-              <ItemCategory
-                key={index}
-                categoryName={category.name}
-                items={categoryItems}
-              />
-            );
-          })
+              return (
+                <ItemCategory
+                  key={index}
+                  categoryName={category.name}
+                  items={categoryItems}
+                />
+              );
+            })}
+          </Suspense>
         )}
       </div>
 

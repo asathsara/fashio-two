@@ -11,16 +11,19 @@ import {
   FieldDescription,
   FieldSeparator,
 } from "@/components/ui/field"
-import CategorySelector from "@/components/admin/CategorySelector"
-import SizeSelector from "@/components/admin/SizeSelector"
-import ImageUploaderGroup from "@/components/admin/ImageUploaderGroup"
-import { AIGenerateButton } from "@/components/admin/AIGenerateButton"
 import { useItemForm } from "@/hooks/admin/useItemForm"
 import { useAIDescription } from "@/hooks/admin/useAIDescription"
 import { useParams, useNavigate } from "react-router-dom"
 import { Spinner } from "@/components/common/Spinner"
-import { useEffect, useState } from "react"
+import { useEffect, useState, lazy, Suspense } from "react"
 import { useGetItem } from "@/hooks/useItems"
+import { ComponentLoadingFallback } from "@/components/common/LazyLoadingFallback"
+
+// Lazy load heavy admin components
+const CategorySelector = lazy(() => import("@/components/admin/CategorySelector"));
+const SizeSelector = lazy(() => import("@/components/admin/SizeSelector"));
+const ImageUploaderGroup = lazy(() => import("@/components/admin/ImageUploaderGroup"));
+const AIGenerateButton = lazy(() => import("@/components/admin/AIGenerateButton").then(m => ({ default: m.AIGenerateButton })));
 
 const ItemInsertPage = () => {
   const { id } = useParams<{ id: string }>()
@@ -107,14 +110,16 @@ const ItemInsertPage = () => {
               </div>
             )}
 
-            <ImageUploaderGroup
-              key={formKey}
-              existingImages={existingImages}
-              newImages={newImages}
-              onImageChange={handleImageChange}
-              onRemoveExisting={handleRemoveExistingImage}
-              onRemoveNew={handleRemoveNewImage}
-            />
+            <Suspense fallback={<ComponentLoadingFallback />}>
+              <ImageUploaderGroup
+                key={formKey}
+                existingImages={existingImages}
+                newImages={newImages}
+                onImageChange={handleImageChange}
+                onRemoveExisting={handleRemoveExistingImage}
+                onRemoveNew={handleRemoveNewImage}
+              />
+            </Suspense>
 
             {!isEditMode && errors.images && <FieldError>{errors.images.message}</FieldError>}
             {isEditMode && !hasMinimumImages && (
@@ -133,26 +138,30 @@ const ItemInsertPage = () => {
             <Field>
               <div className="flex items-center justify-between mb-2">
                 <FieldLabel>Description</FieldLabel>
-                <AIGenerateButton
-                  onClick={generateDescription}
-                  isGenerating={isGenerating}
-                  isDisabled={mutation.isPending}
-                />
+                <Suspense fallback={<div className="h-9 w-32 bg-gray-100 animate-pulse rounded" />}>
+                  <AIGenerateButton
+                    onClick={generateDescription}
+                    isGenerating={isGenerating}
+                    isDisabled={mutation.isPending}
+                  />
+                </Suspense>
               </div>
               <Textarea {...register("description")} rows={5} />
               <FieldError>{errors.description?.message}</FieldError>
             </Field>
 
-            <CategorySelector
-              categories={categories}
-              categoryId={watch("category")}
-              subCategoryId={watch("subCategory")}
-              onCategoryChange={(val) =>
-                setValue("category", val, { shouldValidate: true })
-              }
-              onSubCategoryChange={(val) =>
-                setValue("subCategory", val, { shouldValidate: true })}
-            />
+            <Suspense fallback={<ComponentLoadingFallback />}>
+              <CategorySelector
+                categories={categories}
+                categoryId={watch("category")}
+                subCategoryId={watch("subCategory")}
+                onCategoryChange={(val) =>
+                  setValue("category", val, { shouldValidate: true })
+                }
+                onSubCategoryChange={(val) =>
+                  setValue("subCategory", val, { shouldValidate: true })}
+              />
+            </Suspense>
             {errors.category && <FieldError>{errors.category.message}</FieldError>}
             {errors.subCategory && <FieldError>{errors.subCategory.message}</FieldError>}
 
@@ -178,7 +187,9 @@ const ItemInsertPage = () => {
 
           <FieldSet>
             <FieldLegend>Sizes</FieldLegend>
-            <SizeSelector selectedSizes={watchedSizes} onSizeToggle={handleSizeToggle} />
+            <Suspense fallback={<ComponentLoadingFallback />}>
+              <SizeSelector selectedSizes={watchedSizes} onSizeToggle={handleSizeToggle} />
+            </Suspense>
             {errors.selectedSizes && <FieldError>{errors.selectedSizes.message}</FieldError>}
           </FieldSet>
 

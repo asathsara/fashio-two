@@ -3,9 +3,13 @@ import { Spinner } from '@/components/common/Spinner';
 import { ErrorMessage } from '@/components/common/ErrorMessage';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
-import { ItemImageGallery } from '@/components/client/details/ItemImageGallery';
-import { ItemDetailsContent } from '@/components/client/details/ItemDetailsContent';
 import { useItemDetails } from '@/hooks/useItemDetails';
+import { lazy, Suspense } from 'react';
+import { ComponentLoadingFallback } from '@/components/common/LazyLoadingFallback';
+
+// Lazy load heavy detail components
+const ItemImageGallery = lazy(() => import('@/components/client/details/ItemImageGallery').then(m => ({ default: m.ItemImageGallery })));
+const ItemDetailsContent = lazy(() => import('@/components/client/details/ItemDetailsContent').then(m => ({ default: m.ItemDetailsContent })));
 
 const ItemDetailPage = () => {
     const { id } = useParams<{ id: string }>();
@@ -54,23 +58,27 @@ const ItemDetailPage = () => {
 
             <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
                 {/* Image Gallery */}
-                <ItemImageGallery
-                    item={item}
-                    selectedImageIndex={selectedImageIndex}
-                    onImageSelect={setSelectedImageIndex}
-                    discountPercentage={pricing.discountPercentage}
-                />
+                <Suspense fallback={<ComponentLoadingFallback />}>
+                    <ItemImageGallery
+                        item={item}
+                        selectedImageIndex={selectedImageIndex}
+                        onImageSelect={setSelectedImageIndex}
+                        discountPercentage={pricing.discountPercentage}
+                    />
+                </Suspense>
 
                 {/* Details Content */}
-                <ItemDetailsContent
-                    item={item}
-                    pricing={pricing}
-                    selectedSize={selectedSize}
-                    onSizeSelect={setSelectedSize}
-                    isAuthenticated={isAuthenticated}
-                    cartLoading={cartLoading}
-                    onAddToCart={handleAddToCart}
-                />
+                <Suspense fallback={<ComponentLoadingFallback />}>
+                    <ItemDetailsContent
+                        item={item}
+                        pricing={pricing}
+                        selectedSize={selectedSize}
+                        onSizeSelect={setSelectedSize}
+                        isAuthenticated={isAuthenticated}
+                        cartLoading={cartLoading}
+                        onAddToCart={handleAddToCart}
+                    />
+                </Suspense>
             </div>
         </div>
     );

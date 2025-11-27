@@ -1,7 +1,9 @@
 import type { NavItem } from "@/types/nav";
 import { lazy } from "react";
 
-// Client Pages
+
+// Client Pages - Lazy loaded for code splitting
+
 const HomePage = lazy(() => import("@/pages/client/HomePage"));
 const PromoPage = lazy(() => import("@/pages/client/PromoPage"));
 const HelpPage = lazy(() => import("@/pages/client/HelpPage"));
@@ -9,18 +11,20 @@ const ProfilePage = lazy(() => import("@/pages/client/ProfilePage"));
 const ItemDetailPage = lazy(() => import("@/pages/client/ItemDetailPage"));
 const CartPage = lazy(() => import("@/pages/client/CartPage"));
 const CheckoutPage = lazy(() => import("@/pages/client/CheckoutPage"));
+const LoginPage = lazy(() => import("@/pages/client/LoginPage"));
+
+// Auth Pages
 const VerifyEmailPage = lazy(() => import("@/pages/client/auth/VerifyEmailPage"));
 const ResetPasswordPage = lazy(() => import("@/pages/client/auth/ResetPasswordPage"));
 const ForgotPasswordPage = lazy(() => import("@/pages/client/auth/ForgotPasswordPage"));
-const LoginPage = lazy(() => import("@/pages/client/LoginPage"));
+// Admin Pages - Lazy loaded for code splitting
 
-// Admin Pages
+const OrderDashboardPage = lazy(() => import("@/pages/admin/OrderDashboardPage"));
 const ImageSliderManagerPage = lazy(() => import("@/pages/admin/ImageSliderManagerPage"));
 const ItemInsertPage = lazy(() => import("@/pages/admin/ItemInsertPage"));
 const ItemListPage = lazy(() => import("@/pages/admin/ItemListPage"));
 const CategoriesInsertPage = lazy(() => import("@/pages/admin/CategoriesInsertPage"));
 const PromoAddPage = lazy(() => import("@/pages/admin/PromoAddPge"));
-const OrderDashboardPage = lazy(() => import("@/pages/admin/OrderDashboardPage"));
 
 
 
