@@ -18,12 +18,12 @@ import { Spinner } from "@/components/common/Spinner"
 import { useEffect, useState, lazy, Suspense } from "react"
 import { useGetItem } from "@/hooks/useItems"
 import { ComponentLoadingFallback } from "@/components/common/LazyLoadingFallback"
+import AIGenerateButton from "@/components/admin/AIGenerateButton"
 
 // Lazy load heavy admin components
 const CategorySelector = lazy(() => import("@/components/admin/CategorySelector"));
 const SizeSelector = lazy(() => import("@/components/admin/SizeSelector"));
 const ImageUploaderGroup = lazy(() => import("@/components/admin/ImageUploaderGroup"));
-const AIGenerateButton = lazy(() => import("@/components/admin/AIGenerateButton").then(m => ({ default: m.AIGenerateButton })));
 
 const ItemInsertPage = () => {
   const { id } = useParams<{ id: string }>()
@@ -138,13 +138,11 @@ const ItemInsertPage = () => {
             <Field>
               <div className="flex items-center justify-between mb-2">
                 <FieldLabel>Description</FieldLabel>
-                <Suspense fallback={<div className="h-9 w-32 bg-gray-100 animate-pulse rounded" />}>
-                  <AIGenerateButton
-                    onClick={generateDescription}
-                    isGenerating={isGenerating}
-                    isDisabled={mutation.isPending}
-                  />
-                </Suspense>
+                <AIGenerateButton
+                  onClick={generateDescription}
+                  isGenerating={isGenerating}
+                  isDisabled={mutation.isPending}
+                />
               </div>
               <Textarea {...register("description")} rows={5} />
               <FieldError>{errors.description?.message}</FieldError>
