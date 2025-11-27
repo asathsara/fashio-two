@@ -1,14 +1,16 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
-import { ProfileHeader } from "@/components/client/profile/ProfileHeader";
-import { PersonalInfoTab } from "@/components/client/profile/PersonalInfoTab";
-import { OrderHistoryTab } from "@/components/client/profile/OrderHistoryTab";
-import { SecurityTab } from "@/components/client/profile/SecurityTab";
-
+import ProfileHeader from "@/components/client/profile/ProfileHeader";
 import { useProfile } from "@/hooks/useProfile";
 import { useLocation } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, lazy, Suspense } from "react";
+import { ComponentLoadingFallback } from "@/components/common/LazyLoadingFallback";
+
+// Lazy load heavy tab components for better code splitting
+const PersonalInfoTab = lazy(() => import("@/components/client/profile/PersonalInfoTab"));
+const OrderHistoryTab = lazy(() => import("@/components/client/profile/OrderHistoryTab"));
+const SecurityTab = lazy(() => import("@/components/client/profile/SecurityTab"));
 
 const ProfilePage = () => {
   type ProfileTab = 'personal' | 'orders' | 'security';
@@ -93,15 +95,21 @@ const ProfilePage = () => {
           </TabsList>
 
           <TabsContent value="personal">
-            <PersonalInfoTab form={form} isEditing={isEditing} />
+            <Suspense fallback={<ComponentLoadingFallback />}>
+              <PersonalInfoTab form={form} isEditing={isEditing} />
+            </Suspense>
           </TabsContent>
 
           <TabsContent value="orders">
-            <OrderHistoryTab />
+            <Suspense fallback={<ComponentLoadingFallback />}>
+              <OrderHistoryTab />
+            </Suspense>
           </TabsContent>
 
           <TabsContent value="security">
-            <SecurityTab onLogout={handleLogout} />
+            <Suspense fallback={<ComponentLoadingFallback />}>
+              <SecurityTab onLogout={handleLogout} />
+            </Suspense>
           </TabsContent>
         </Tabs>
       </div>

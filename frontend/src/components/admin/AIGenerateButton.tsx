@@ -7,7 +7,7 @@ interface AIGenerateButtonProps {
     isDisabled?: boolean
 }
 
-export const AIGenerateButton = ({
+const AIGenerateButton = ({
     onClick,
     isGenerating,
     isDisabled = false
@@ -26,3 +26,5 @@ export const AIGenerateButton = ({
         </Button>
     )
 }
+
+export default AIGenerateButton;

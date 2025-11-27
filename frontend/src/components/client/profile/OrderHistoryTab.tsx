@@ -5,7 +5,7 @@ import { useMyOrders } from '@/hooks/useOrders';
 import { Spinner } from '@/components/common/Spinner';
 import ProfileOrderCard from '@/components/client/profile/ProfileOrderCard';
 
-export const OrderHistoryTab = () => {
+const OrderHistoryTab = () => {
     const navigate = useNavigate();
     const { data: orders, isLoading } = useMyOrders();
 
@@ -55,3 +55,5 @@ export const OrderHistoryTab = () => {
         </div>
     );
 };
+
+export default OrderHistoryTab;

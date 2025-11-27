@@ -14,7 +14,7 @@ interface SecurityTabProps {
     onLogout: () => void;
 }
 
-export const SecurityTab = ({ onLogout }: SecurityTabProps) => {
+const SecurityTab = ({ onLogout }: SecurityTabProps) => {
     const [success, setSuccess] = useState('');
     const [error, setError] = useState('');
 
@@ -147,3 +147,5 @@ export const SecurityTab = ({ onLogout }: SecurityTabProps) => {
         </Card>
     );
 };
+
+export default SecurityTab;

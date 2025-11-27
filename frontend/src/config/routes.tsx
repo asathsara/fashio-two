@@ -1,24 +1,31 @@
-// Admin Pages
-import ImageSliderManagerPage from "@/pages/admin/ImageSliderManagerPage";
-import ItemInsertPage from "@/pages/admin/ItemInsertPage";
-import ItemListPage from "@/pages/admin/ItemListPage";
-import CategoriesInsertPage from "@/pages/admin/CategoriesInsertPage";
-import PromoAddPage from "@/pages/admin/PromoAddPge";
-import OrderDashboardPage from "@/pages/admin/OrderDashboardPage";
-
-// Client Pages
-import HomePage from "@/pages/client/HomePage";
-import PromoPage from "@/pages/client/PromoPage";
-import HelpPage from "@/pages/client/HelpPage";
-import ProfilePage from "@/pages/client/ProfilePage";
-import ItemDetailPage from "@/pages/client/ItemDetailPage";
-import CartPage from "@/pages/client/CartPage";
-import CheckoutPage from "@/pages/client/CheckoutPage";
-import VerifyEmailPage from "@/pages/client/auth/VerifyEmailPage";
-import ResetPasswordPage from "@/pages/client/auth/ResetPasswordPage";
-import ForgotPasswordPage from "@/pages/client/auth/ForgotPasswordPage";
-import LoginPage from "@/pages/client/LoginPage";
 import type { NavItem } from "@/types/nav";
+import { lazy } from "react";
+
+
+// Client Pages - Lazy loaded for code splitting
+
+const HomePage = lazy(() => import("@/pages/client/HomePage"));
+const PromoPage = lazy(() => import("@/pages/client/PromoPage"));
+const HelpPage = lazy(() => import("@/pages/client/HelpPage"));
+const ProfilePage = lazy(() => import("@/pages/client/ProfilePage"));
+const ItemDetailPage = lazy(() => import("@/pages/client/ItemDetailPage"));
+const CartPage = lazy(() => import("@/pages/client/CartPage"));
+const CheckoutPage = lazy(() => import("@/pages/client/CheckoutPage"));
+const LoginPage = lazy(() => import("@/pages/client/LoginPage"));
+
+// Auth Pages
+const VerifyEmailPage = lazy(() => import("@/pages/client/auth/VerifyEmailPage"));
+const ResetPasswordPage = lazy(() => import("@/pages/client/auth/ResetPasswordPage"));
+const ForgotPasswordPage = lazy(() => import("@/pages/client/auth/ForgotPasswordPage"));
+// Admin Pages - Lazy loaded for code splitting
+
+const OrderDashboardPage = lazy(() => import("@/pages/admin/OrderDashboardPage"));
+const ImageSliderManagerPage = lazy(() => import("@/pages/admin/ImageSliderManagerPage"));
+const ItemInsertPage = lazy(() => import("@/pages/admin/ItemInsertPage"));
+const ItemListPage = lazy(() => import("@/pages/admin/ItemListPage"));
+const CategoriesInsertPage = lazy(() => import("@/pages/admin/CategoriesInsertPage"));
+const PromoAddPage = lazy(() => import("@/pages/admin/PromoAddPge"));
+
 
 
 export const publicRoutes: NavItem[] = [
