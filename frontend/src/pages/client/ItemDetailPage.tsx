@@ -8,8 +8,8 @@ import { lazy, Suspense } from 'react';
 import { ComponentLoadingFallback } from '@/components/common/LazyLoadingFallback';
 
 // Lazy load heavy detail components
-const ItemImageGallery = lazy(() => import('@/components/client/details/ItemImageGallery').then(m => ({ default: m.ItemImageGallery })));
-const ItemDetailsContent = lazy(() => import('@/components/client/details/ItemDetailsContent').then(m => ({ default: m.ItemDetailsContent })));
+const ItemImageGallery = lazy(() => import('@/components/client/details/ItemImageGallery'))
+const ItemDetailsContent = lazy(() => import('@/components/client/details/ItemDetailsContent'))
 
 const ItemDetailPage = () => {
     const { id } = useParams<{ id: string }>();

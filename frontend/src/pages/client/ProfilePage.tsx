@@ -8,9 +8,9 @@ import { useEffect, useState, lazy, Suspense } from "react";
 import { ComponentLoadingFallback } from "@/components/common/LazyLoadingFallback";
 
 // Lazy load heavy tab components for better code splitting
-const PersonalInfoTab = lazy(() => import("@/components/client/profile/PersonalInfoTab").then(m => ({ default: m.PersonalInfoTab })));
-const OrderHistoryTab = lazy(() => import("@/components/client/profile/OrderHistoryTab").then(m => ({ default: m.OrderHistoryTab })));
-const SecurityTab = lazy(() => import("@/components/client/profile/SecurityTab").then(m => ({ default: m.SecurityTab })));
+const PersonalInfoTab = lazy(() => import("@/components/client/profile/PersonalInfoTab"));
+const OrderHistoryTab = lazy(() => import("@/components/client/profile/OrderHistoryTab"));
+const SecurityTab = lazy(() => import("@/components/client/profile/SecurityTab"));
 
 const ProfilePage = () => {
   type ProfileTab = 'personal' | 'orders' | 'security';
