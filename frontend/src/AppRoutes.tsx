@@ -25,14 +25,13 @@ export const AppRoutes = () => {
           {publicRoutes.map((route) => {
             if (route.requiredRole === "admin") return null; // skip admin
             const Element = (
-              <Suspense fallback={<Spinner />}>
-                <ProtectedRoute
-                  requireAuth={!!route.protected}
-                  requireAdmin={false}
-                >
+              <ProtectedRoute
+                requireAuth={!!route.protected}
+                requireAdmin={false}>
+                <Suspense fallback={<Spinner />}>
                   {route.element}
-                </ProtectedRoute>
-              </Suspense>
+                </Suspense>
+              </ProtectedRoute>
             );
             return <Route key={route.path} path={route.path} element={Element} />;
           })}
