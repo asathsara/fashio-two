@@ -68,22 +68,21 @@ const HomePage = () => {
         ) : error ? (
           <ErrorMessage message={error.message} />
         ) : (
-          <Suspense fallback={<ComponentLoadingFallback />}>
-            {categories.map((category, index) => {
-              // Filter items belonging to the current category
-              const categoryItems = items.filter(
-                (item) => item.category._id === category._id
-              );
+          categories.map((category, index) => {
+            // Filter items belonging to the current category
+            const categoryItems = items.filter(
+              (item) => item.category._id === category._id
+            );
 
-              return (
+            return (
+              <Suspense key={index} fallback={<ComponentLoadingFallback />}>
                 <ItemCategory
-                  key={index}
                   categoryName={category.name}
                   items={categoryItems}
                 />
-              );
-            })}
-          </Suspense>
+              </Suspense>
+            );
+          })
         )}
       </div>
 
