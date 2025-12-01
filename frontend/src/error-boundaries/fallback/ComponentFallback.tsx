@@ -55,7 +55,8 @@ export const ComponentFallback = ({ error, onRetry, boundaryName, compact = fals
 
             {onRetry && (
                 <div className="flex flex-wrap gap-3">
-                    <Button type="button" variant="outline" size="sm" onClick={onRetry}>
+                    <Button type="button" variant="outline" size="sm" onClick={onRetry}
+                    aria-label={`Retry loading ${boundaryName ?? "content"}`}>
                         <RotateCcw className="size-4" aria-hidden="true" />
                         Try again
                     </Button>

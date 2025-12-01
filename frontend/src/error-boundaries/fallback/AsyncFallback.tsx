@@ -32,7 +32,12 @@ export const AsyncFallback = ({ error, isPending = false, onRetry, label }: Asyn
                 {error?.message ?? "An unexpected async error occurred."}
             </p>
             {onRetry && (
-                <Button type="button" variant="outline" size="sm" onClick={onRetry}>
+                <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={onRetry}
+                    aria-label={`Retry loading ${label ?? "content"}`}>
                     <RotateCcw className="size-4" aria-hidden="true" />
                     Retry
                 </Button>

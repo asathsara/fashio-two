@@ -26,12 +26,19 @@ export const RouteFallback = ({ routeName, error, onRetry }: RouteFallbackProps)
             </div>
 
             <div className="flex flex-wrap items-center justify-center gap-3">
-                <Button type="button" onClick={handleNavigateHome}>
+                <Button
+                    type="button"
+                    onClick={handleNavigateHome}>
                     <Home className="size-4" aria-hidden="true" />
                     Go home
                 </Button>
                 {onRetry && (
-                    <Button type="button" variant="outline" onClick={onRetry}>
+                    <Button
+                        type="button"
+                        variant="outline"
+                        onClick={onRetry}
+                        aria-label={`Retry loading ${routeName ?? "page"}`}
+                    >
                         <RefreshCw className="size-4" aria-hidden="true" />
                         Retry page
                     </Button>
