@@ -111,18 +111,18 @@ const ItemInsertPage = () => {
               </div>
             )}
 
-            <Suspense fallback={<ComponentLoadingFallback />}>
-              <ComponentErrorBoundary
-                name="ImageUploaderGroup"
-                fallbackRender={({ error, resetErrorBoundary }) => (
-                  <ComponentFallback
-                    boundaryName="Image Uploader"
-                    error={error}
-                    onRetry={resetErrorBoundary}
-                    compact
-                  />
-                )}
-              >
+            <ComponentErrorBoundary
+              name="ImageUploaderGroup"
+              fallbackRender={({ error, resetErrorBoundary }) => (
+                <ComponentFallback
+                  boundaryName="Image Uploader"
+                  error={error}
+                  onRetry={resetErrorBoundary}
+                  compact
+                />
+              )}
+            >
+              <Suspense fallback={<ComponentLoadingFallback />}>
                 <ImageUploaderGroup
                   key={formKey}
                   existingImages={existingImages}
@@ -131,8 +131,8 @@ const ItemInsertPage = () => {
                   onRemoveExisting={handleRemoveExistingImage}
                   onRemoveNew={handleRemoveNewImage}
                 />
-              </ComponentErrorBoundary>
-            </Suspense>
+              </Suspense>
+            </ComponentErrorBoundary>
 
             {!isEditMode && errors.images && <FieldError>{errors.images.message}</FieldError>}
             {isEditMode && !hasMinimumImages && (
@@ -161,18 +161,18 @@ const ItemInsertPage = () => {
               <FieldError>{errors.description?.message}</FieldError>
             </Field>
 
-            <Suspense fallback={<ComponentLoadingFallback />}>
-              <ComponentErrorBoundary
-                name="CategorySelector"
-                fallbackRender={({ error, resetErrorBoundary }) => (
-                  <ComponentFallback
-                    boundaryName="Category Selector"
-                    error={error}
-                    onRetry={resetErrorBoundary}
-                    compact
-                  />
-                )}
-              >
+            <ComponentErrorBoundary
+              name="CategorySelector"
+              fallbackRender={({ error, resetErrorBoundary }) => (
+                <ComponentFallback
+                  boundaryName="Category Selector"
+                  error={error}
+                  onRetry={resetErrorBoundary}
+                  compact
+                />
+              )}
+            >
+              <Suspense fallback={<ComponentLoadingFallback />}>
                 <CategorySelector
                   categories={categories}
                   categoryId={watch("category")}
@@ -183,8 +183,8 @@ const ItemInsertPage = () => {
                   onSubCategoryChange={(val) =>
                     setValue("subCategory", val, { shouldValidate: true })}
                 />
-              </ComponentErrorBoundary>
-            </Suspense>
+              </Suspense>
+            </ComponentErrorBoundary>
             {errors.category && <FieldError>{errors.category.message}</FieldError>}
             {errors.subCategory && <FieldError>{errors.subCategory.message}</FieldError>}
 
@@ -210,21 +210,21 @@ const ItemInsertPage = () => {
 
           <FieldSet>
             <FieldLegend>Sizes</FieldLegend>
-            <Suspense fallback={<ComponentLoadingFallback />}>
-              <ComponentErrorBoundary
-                name="SizeSelector"
-                fallbackRender={({ error, resetErrorBoundary }) => (
-                  <ComponentFallback
-                    boundaryName="Size Selector"
-                    error={error}
-                    onRetry={resetErrorBoundary}
-                    compact
-                  />
-                )}
-              >
+            <ComponentErrorBoundary
+              name="SizeSelector"
+              fallbackRender={({ error, resetErrorBoundary }) => (
+                <ComponentFallback
+                  boundaryName="Size Selector"
+                  error={error}
+                  onRetry={resetErrorBoundary}
+                  compact
+                />
+              )}
+            >
+              <Suspense fallback={<ComponentLoadingFallback />}>
                 <SizeSelector selectedSizes={watchedSizes} onSizeToggle={handleSizeToggle} />
-              </ComponentErrorBoundary>
-            </Suspense>
+              </Suspense>
+            </ComponentErrorBoundary>
             {errors.selectedSizes && <FieldError>{errors.selectedSizes.message}</FieldError>}
           </FieldSet>
 

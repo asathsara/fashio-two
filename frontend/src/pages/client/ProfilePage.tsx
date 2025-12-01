@@ -107,36 +107,36 @@ const ProfilePage = () => {
           </TabsList>
 
           <TabsContent value="personal">
-            <Suspense fallback={<ComponentLoadingFallback />}>
-              <ComponentErrorBoundary
-                name="PersonalInfoTab"
-                fallbackRender={buildTabFallback("Personal Info")}
-              >
+            <ComponentErrorBoundary
+              name="PersonalInfoTab"
+              fallbackRender={buildTabFallback("Personal Info")}
+            >
+              <Suspense fallback={<ComponentLoadingFallback />}>
                 <PersonalInfoTab form={form} isEditing={isEditing} />
-              </ComponentErrorBoundary>
-            </Suspense>
+              </Suspense>
+            </ComponentErrorBoundary>
           </TabsContent>
 
           <TabsContent value="orders">
-            <Suspense fallback={<ComponentLoadingFallback />}>
-              <ComponentErrorBoundary
-                name="OrderHistoryTab"
-                fallbackRender={buildTabFallback("Order History")}
-              >
+            <ComponentErrorBoundary
+              name="OrderHistoryTab"
+              fallbackRender={buildTabFallback("Order History")}
+            >
+              <Suspense fallback={<ComponentLoadingFallback />}>
                 <OrderHistoryTab />
-              </ComponentErrorBoundary>
-            </Suspense>
+              </Suspense>
+            </ComponentErrorBoundary>
           </TabsContent>
 
           <TabsContent value="security">
-            <Suspense fallback={<ComponentLoadingFallback />}>
-              <ComponentErrorBoundary
-                name="SecurityTab"
-                fallbackRender={buildTabFallback("Security")}
-              >
+            <ComponentErrorBoundary
+              name="SecurityTab"
+              fallbackRender={buildTabFallback("Security")}
+            >
+              <Suspense fallback={<ComponentLoadingFallback />}>
                 <SecurityTab onLogout={handleLogout} />
-              </ComponentErrorBoundary>
-            </Suspense>
+              </Suspense>
+            </ComponentErrorBoundary>
           </TabsContent>
         </Tabs>
       </div>
