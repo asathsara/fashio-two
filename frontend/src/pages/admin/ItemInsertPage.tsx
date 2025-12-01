@@ -19,6 +19,7 @@ import { useEffect, useState, lazy, Suspense } from "react"
 import { useGetItem } from "@/hooks/useItems"
 import { ComponentLoadingFallback } from "@/components/common/LazyLoadingFallback"
 import AIGenerateButton from "@/components/admin/AIGenerateButton"
+import { ComponentErrorBoundary, ComponentFallback } from "@/error-boundaries"
 
 // Lazy load heavy admin components
 const CategorySelector = lazy(() => import("@/components/admin/CategorySelector"));
@@ -110,16 +111,28 @@ const ItemInsertPage = () => {
               </div>
             )}
 
-            <Suspense fallback={<ComponentLoadingFallback />}>
-              <ImageUploaderGroup
-                key={formKey}
-                existingImages={existingImages}
-                newImages={newImages}
-                onImageChange={handleImageChange}
-                onRemoveExisting={handleRemoveExistingImage}
-                onRemoveNew={handleRemoveNewImage}
-              />
-            </Suspense>
+            <ComponentErrorBoundary
+              name="ImageUploaderGroup"
+              fallbackRender={({ error, resetErrorBoundary }) => (
+                <ComponentFallback
+                  boundaryName="Image Uploader"
+                  error={error}
+                  onRetry={resetErrorBoundary}
+                  compact
+                />
+              )}
+            >
+              <Suspense fallback={<ComponentLoadingFallback />}>
+                <ImageUploaderGroup
+                  key={formKey}
+                  existingImages={existingImages}
+                  newImages={newImages}
+                  onImageChange={handleImageChange}
+                  onRemoveExisting={handleRemoveExistingImage}
+                  onRemoveNew={handleRemoveNewImage}
+                />
+              </Suspense>
+            </ComponentErrorBoundary>
 
             {!isEditMode && errors.images && <FieldError>{errors.images.message}</FieldError>}
             {isEditMode && !hasMinimumImages && (
@@ -148,18 +161,30 @@ const ItemInsertPage = () => {
               <FieldError>{errors.description?.message}</FieldError>
             </Field>
 
-            <Suspense fallback={<ComponentLoadingFallback />}>
-              <CategorySelector
-                categories={categories}
-                categoryId={watch("category")}
-                subCategoryId={watch("subCategory")}
-                onCategoryChange={(val) =>
-                  setValue("category", val, { shouldValidate: true })
-                }
-                onSubCategoryChange={(val) =>
-                  setValue("subCategory", val, { shouldValidate: true })}
-              />
-            </Suspense>
+            <ComponentErrorBoundary
+              name="CategorySelector"
+              fallbackRender={({ error, resetErrorBoundary }) => (
+                <ComponentFallback
+                  boundaryName="Category Selector"
+                  error={error}
+                  onRetry={resetErrorBoundary}
+                  compact
+                />
+              )}
+            >
+              <Suspense fallback={<ComponentLoadingFallback />}>
+                <CategorySelector
+                  categories={categories}
+                  categoryId={watch("category")}
+                  subCategoryId={watch("subCategory")}
+                  onCategoryChange={(val) =>
+                    setValue("category", val, { shouldValidate: true })
+                  }
+                  onSubCategoryChange={(val) =>
+                    setValue("subCategory", val, { shouldValidate: true })}
+                />
+              </Suspense>
+            </ComponentErrorBoundary>
             {errors.category && <FieldError>{errors.category.message}</FieldError>}
             {errors.subCategory && <FieldError>{errors.subCategory.message}</FieldError>}
 
@@ -185,9 +210,21 @@ const ItemInsertPage = () => {
 
           <FieldSet>
             <FieldLegend>Sizes</FieldLegend>
-            <Suspense fallback={<ComponentLoadingFallback />}>
-              <SizeSelector selectedSizes={watchedSizes} onSizeToggle={handleSizeToggle} />
-            </Suspense>
+            <ComponentErrorBoundary
+              name="SizeSelector"
+              fallbackRender={({ error, resetErrorBoundary }) => (
+                <ComponentFallback
+                  boundaryName="Size Selector"
+                  error={error}
+                  onRetry={resetErrorBoundary}
+                  compact
+                />
+              )}
+            >
+              <Suspense fallback={<ComponentLoadingFallback />}>
+                <SizeSelector selectedSizes={watchedSizes} onSizeToggle={handleSizeToggle} />
+              </Suspense>
+            </ComponentErrorBoundary>
             {errors.selectedSizes && <FieldError>{errors.selectedSizes.message}</FieldError>}
           </FieldSet>
 

@@ -1,7 +1,8 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { publicRoutes, adminRoutes, DEFAULT_ADMIN_ROUTE } from "@/config/routes";
 import { Suspense, lazy } from "react";
 import { Spinner } from "./components/common/Spinner";
+import { AsyncErrorBoundary, RouteErrorBoundary } from "@/error-boundaries";
 
 // Lazy load components for better code splitting
 const ProtectedRoute = lazy(() => import("@/components/auth/ProtectedRoute").then(module => ({ default: module.ProtectedRoute })));
@@ -17,50 +18,114 @@ const PageLoader = () => (
 );
 
 export const AppRoutes = () => {
+  const location = useLocation();
+  const resetKeys = [location.pathname];
+  const sharedPageSpinner = <Spinner fullHeight label="Loading page..." />;
+
   return (
-    <Suspense fallback={<PageLoader />}>
-      <Routes>
-        {/* Public Routes */}
-        <Route element={<PublicLayout />}>
-          {publicRoutes.map((route) => {
-            if (route.requiredRole === "admin") return null; // skip admin
-            const Element = (
-              <ProtectedRoute
-                requireAuth={!!route.protected}
-                requireAdmin={false}>
-                <Suspense fallback={<Spinner />}>
-                  {route.element}
-                </Suspense>
-              </ProtectedRoute>
-            );
-            return <Route key={route.path} path={route.path} element={Element} />;
-          })}
-        </Route>
+    <RouteErrorBoundary routeName="AppRoutes" resetKeys={resetKeys}>
+      <Suspense fallback={<PageLoader />}>
+        <Routes>
+          {/* Public Routes */}
+          <Route
+            element={(
+              <RouteErrorBoundary routeName="PublicLayout" resetKeys={resetKeys}>
+                <AsyncErrorBoundary
+                  label="Loading layout"
+                  suspenseFallback={<PageLoader />}
+                  resetKeys={resetKeys}
+                  name="PublicLayoutAsync"
+                >
+                  <PublicLayout />
+                </AsyncErrorBoundary>
+              </RouteErrorBoundary>
+            )}
+          >
+            {publicRoutes.map((route) => {
+              if (route.requiredRole === "admin") return null;
+              const label = route.label ?? route.path;
+              const element = (
+                <RouteErrorBoundary routeName={label} resetKeys={resetKeys}>
+                  <ProtectedRoute
+                    requireAuth={Boolean(route.protected)}
+                    requireAdmin={false}
+                  >
+                    <AsyncErrorBoundary
+                      label={`Loading ${label}`}
+                      suspenseFallback={sharedPageSpinner}
+                      resetKeys={resetKeys}
+                      name={`${label}-async`}
+                    >
+                      {route.element}
+                    </AsyncErrorBoundary>
+                  </ProtectedRoute>
+                </RouteErrorBoundary>
+              );
 
-        {/* Admin Routes */}
-        <Route
-          path="/admin"
-          element={(
-            <Suspense fallback={<PageLoader />}>
-              <ProtectedRoute requireAdmin>
-                <AdminLayout />
-              </ProtectedRoute>
-            </Suspense>
-          )}
-        >
-          <Route index element={<Navigate to={DEFAULT_ADMIN_ROUTE} replace />} />
-          {adminRoutes.map((route) => (
-            <Route
-              key={route.path}
-              path={route.path.replace("/admin/", "")}
-              element={<Suspense fallback={<Spinner />}>{route.element}</Suspense>}
-            />
-          ))}
-        </Route>
+              return <Route key={route.path} path={route.path} element={element} />;
+            })}
+          </Route>
 
-        {/* Fallback */}
-        <Route path="*" element={<Suspense fallback={<PageLoader />}><NotFoundPage /></Suspense>} />
-      </Routes>
-    </Suspense>
+          {/* Admin Routes */}
+          <Route
+            path="/admin"
+            element={(
+              <RouteErrorBoundary routeName="AdminLayout" resetKeys={resetKeys}>
+                <ProtectedRoute requireAdmin>
+                  <AsyncErrorBoundary
+                    label="Loading admin layout"
+                    suspenseFallback={<PageLoader />}
+                    resetKeys={resetKeys}
+                    name="AdminLayoutAsync"
+                  >
+                    <AdminLayout />
+                  </AsyncErrorBoundary>
+                </ProtectedRoute>
+              </RouteErrorBoundary>
+            )}
+          >
+            <Route index element={<Navigate to={DEFAULT_ADMIN_ROUTE} replace />} />
+            {adminRoutes.map((route) => {
+              const label = route.label ?? route.path;
+              return (
+                <Route
+                  key={route.path}
+                  path={route.path.replace("/admin/", "")}
+                  element={(
+                    <RouteErrorBoundary routeName={label} resetKeys={resetKeys}>
+                      <AsyncErrorBoundary
+                        label={`Loading ${label}`}
+                        suspenseFallback={sharedPageSpinner}
+                        resetKeys={resetKeys}
+                        name={`${label}-async`}
+                      >
+                        {route.element}
+                      </AsyncErrorBoundary>
+                    </RouteErrorBoundary>
+                  )}
+                />
+              );
+            })}
+          </Route>
+
+          {/* Fallback */}
+          <Route
+            path="*"
+            element={(
+              <RouteErrorBoundary routeName="NotFound" resetKeys={resetKeys}>
+                <AsyncErrorBoundary
+                  label="Loading fallback"
+                  suspenseFallback={<PageLoader />}
+                  resetKeys={resetKeys}
+                  name="NotFoundAsync"
+                >
+                  <NotFoundPage />
+                </AsyncErrorBoundary>
+              </RouteErrorBoundary>
+            )}
+          />
+        </Routes>
+      </Suspense>
+    </RouteErrorBoundary>
   );
 };
