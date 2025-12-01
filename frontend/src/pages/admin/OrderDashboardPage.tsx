@@ -5,6 +5,7 @@ import AdminOrderStats from '@/components/admin/dashboard/AdminOrderStats';
 import AdminUsersPlaceholder from '@/components/admin/dashboard/AdminUsersPlaceholder';
 import { useAdminOrders, useOrderStats } from '@/hooks/useOrders';
 import type { OrderStatus } from '@/types/order';
+import { ComponentErrorBoundary, ComponentFallback } from '@/error-boundaries';
 
 const OrderDashboardPage = () => {
     const [statusFilter, setStatusFilter] = useState<OrderStatus | 'all'>('all');
@@ -26,16 +27,40 @@ const OrderDashboardPage = () => {
                 </TabsList>
 
                 <TabsContent value="orders">
-                    <AdminOrderTable
-                        orders={orders}
-                        loading={isLoading}
-                        statusFilter={statusFilter}
-                        onStatusFilterChange={setStatusFilter}
-                    />
+                    <ComponentErrorBoundary
+                        name="AdminOrderTable"
+                        fallbackRender={({ error, resetErrorBoundary }) => (
+                            <ComponentFallback
+                                boundaryName="Orders Table"
+                                error={error}
+                                onRetry={resetErrorBoundary}
+                                compact
+                            />
+                        )}
+                    >
+                        <AdminOrderTable
+                            orders={orders}
+                            loading={isLoading}
+                            statusFilter={statusFilter}
+                            onStatusFilterChange={setStatusFilter}
+                        />
+                    </ComponentErrorBoundary>
                 </TabsContent>
 
                 <TabsContent value="stats">
-                    <AdminOrderStats stats={statsQuery.data} loading={statsQuery.isLoading} />
+                    <ComponentErrorBoundary
+                        name="AdminOrderStats"
+                        fallbackRender={({ error, resetErrorBoundary }) => (
+                            <ComponentFallback
+                                boundaryName="Statistics"
+                                error={error}
+                                onRetry={resetErrorBoundary}
+                                compact
+                            />
+                        )}
+                    >
+                        <AdminOrderStats stats={statsQuery.data} loading={statsQuery.isLoading} />
+                    </ComponentErrorBoundary>
                 </TabsContent>
 
                 <TabsContent value="users">

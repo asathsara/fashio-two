@@ -5,9 +5,36 @@ interface ComponentFallbackProps {
     error?: Error;
     onRetry?: () => void;
     boundaryName?: string;
+    compact?: boolean;
 }
 
-export const ComponentFallback = ({ error, onRetry, boundaryName }: ComponentFallbackProps) => {
+export const ComponentFallback = ({ error, onRetry, boundaryName, compact = false }: ComponentFallbackProps) => {
+    // Compact mode for inline/small components
+    if (compact) {
+        return (
+            <div
+                role="alert"
+                aria-live="assertive"
+                className="flex flex-col gap-3 rounded-lg border border-border/60 bg-background/80 p-4 text-sm shadow-sm"
+            >
+                <div className="flex items-center gap-2 text-left">
+                    <AlertTriangle className="size-4 text-amber-500" aria-hidden="true" />
+                    <span className="text-sm font-semibold text-foreground">
+                        {boundaryName ? `${boundaryName} ` : "Component "}failed to load
+                    </span>
+                </div>
+
+                {onRetry && (
+                    <Button type="button" variant="outline" size="sm" onClick={onRetry} className="w-full">
+                        <RotateCcw className="size-3" aria-hidden="true" />
+                        Retry
+                    </Button>
+                )}
+            </div>
+        );
+    }
+
+    // Full mode for major sections
     return (
         <div
             role="alert"

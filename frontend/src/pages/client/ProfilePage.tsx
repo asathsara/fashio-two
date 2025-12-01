@@ -6,11 +6,23 @@ import { useProfile } from "@/hooks/useProfile";
 import { useLocation } from "react-router-dom";
 import { useEffect, useState, lazy, Suspense } from "react";
 import { ComponentLoadingFallback } from "@/components/common/LazyLoadingFallback";
+import { ComponentErrorBoundary, ComponentFallback } from "@/error-boundaries";
+import type { ErrorBoundaryFallbackRender } from "@/error-boundaries";
 
 // Lazy load heavy tab components for better code splitting
 const PersonalInfoTab = lazy(() => import("@/components/client/profile/PersonalInfoTab"));
 const OrderHistoryTab = lazy(() => import("@/components/client/profile/OrderHistoryTab"));
 const SecurityTab = lazy(() => import("@/components/client/profile/SecurityTab"));
+
+const buildTabFallback = (tabName: string): ErrorBoundaryFallbackRender =>
+  ({ error, resetErrorBoundary }) => (
+    <ComponentFallback
+      boundaryName={tabName}
+      error={error}
+      onRetry={resetErrorBoundary}
+      compact
+    />
+  );
 
 const ProfilePage = () => {
   type ProfileTab = 'personal' | 'orders' | 'security';
@@ -96,19 +108,34 @@ const ProfilePage = () => {
 
           <TabsContent value="personal">
             <Suspense fallback={<ComponentLoadingFallback />}>
-              <PersonalInfoTab form={form} isEditing={isEditing} />
+              <ComponentErrorBoundary
+                name="PersonalInfoTab"
+                fallbackRender={buildTabFallback("Personal Info")}
+              >
+                <PersonalInfoTab form={form} isEditing={isEditing} />
+              </ComponentErrorBoundary>
             </Suspense>
           </TabsContent>
 
           <TabsContent value="orders">
             <Suspense fallback={<ComponentLoadingFallback />}>
-              <OrderHistoryTab />
+              <ComponentErrorBoundary
+                name="OrderHistoryTab"
+                fallbackRender={buildTabFallback("Order History")}
+              >
+                <OrderHistoryTab />
+              </ComponentErrorBoundary>
             </Suspense>
           </TabsContent>
 
           <TabsContent value="security">
             <Suspense fallback={<ComponentLoadingFallback />}>
-              <SecurityTab onLogout={handleLogout} />
+              <ComponentErrorBoundary
+                name="SecurityTab"
+                fallbackRender={buildTabFallback("Security")}
+              >
+                <SecurityTab onLogout={handleLogout} />
+              </ComponentErrorBoundary>
             </Suspense>
           </TabsContent>
         </Tabs>

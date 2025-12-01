@@ -6,6 +6,7 @@ import { ArrowLeft } from 'lucide-react';
 import { useItemDetails } from '@/hooks/useItemDetails';
 import { lazy, Suspense } from 'react';
 import { ComponentLoadingFallback } from '@/components/common/LazyLoadingFallback';
+import { ComponentErrorBoundary, ComponentFallback } from '@/error-boundaries';
 
 // Lazy load heavy detail components
 const ItemImageGallery = lazy(() => import('@/components/client/details/ItemImageGallery'))
@@ -58,27 +59,51 @@ const ItemDetailPage = () => {
 
             <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
                 {/* Image Gallery */}
-                <Suspense fallback={<ComponentLoadingFallback />}>
-                    <ItemImageGallery
-                        item={item}
-                        selectedImageIndex={selectedImageIndex}
-                        onImageSelect={setSelectedImageIndex}
-                        discountPercentage={pricing.discountPercentage}
-                    />
-                </Suspense>
+                <ComponentErrorBoundary
+                    name="ItemImageGallery"
+                    fallbackRender={({ error, resetErrorBoundary }) => (
+                        <ComponentFallback
+                            boundaryName="Image Gallery"
+                            error={error}
+                            onRetry={resetErrorBoundary}
+                            compact
+                        />
+                    )}
+                >
+                    <Suspense fallback={<ComponentLoadingFallback />}>
+                        <ItemImageGallery
+                            item={item}
+                            selectedImageIndex={selectedImageIndex}
+                            onImageSelect={setSelectedImageIndex}
+                            discountPercentage={pricing.discountPercentage}
+                        />
+                    </Suspense>
+                </ComponentErrorBoundary>
 
                 {/* Details Content */}
-                <Suspense fallback={<ComponentLoadingFallback />}>
-                    <ItemDetailsContent
-                        item={item}
-                        pricing={pricing}
-                        selectedSize={selectedSize}
-                        onSizeSelect={setSelectedSize}
-                        isAuthenticated={isAuthenticated}
-                        cartLoading={cartLoading}
-                        onAddToCart={handleAddToCart}
-                    />
-                </Suspense>
+                <ComponentErrorBoundary
+                    name="ItemDetailsContent"
+                    fallbackRender={({ error, resetErrorBoundary }) => (
+                        <ComponentFallback
+                            boundaryName="Item Details"
+                            error={error}
+                            onRetry={resetErrorBoundary}
+                            compact
+                        />
+                    )}
+                >
+                    <Suspense fallback={<ComponentLoadingFallback />}>
+                        <ItemDetailsContent
+                            item={item}
+                            pricing={pricing}
+                            selectedSize={selectedSize}
+                            onSizeSelect={setSelectedSize}
+                            isAuthenticated={isAuthenticated}
+                            cartLoading={cartLoading}
+                            onAddToCart={handleAddToCart}
+                        />
+                    </Suspense>
+                </ComponentErrorBoundary>
             </div>
         </div>
     );
