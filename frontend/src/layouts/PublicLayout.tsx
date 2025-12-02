@@ -5,6 +5,7 @@ import Navbar from '../components/client/Navbar';
 import { publicNavRoutes } from '../config/routes';
 import { useState } from 'react';
 import NavigationDrawer from '../components/common/NavigationDrawer';
+import { SearchProvider } from '@/contexts/search/SearchProvider';
 
 const PublicLayout = () => {
 
@@ -15,19 +16,21 @@ const PublicLayout = () => {
     };
 
     return (
-        <div className="flex flex-col min-h-screen">
-            <Navbar onOpenDrawer={toggleDrawer} />
-            <NavigationDrawer
-                routes={publicNavRoutes}
-                navbarOpen={isDrawerOpen}
-                closeNav={() => setIsDrawerOpen(false)}
-            />
-            <main className="flex-grow pt-20">
-                <Outlet />
-            </main>
-            <Footer footerItems={publicNavRoutes} />
-            <FloatingUpButton />
-        </div>
+        <SearchProvider>
+            <div className="flex flex-col min-h-screen">
+                <Navbar onOpenDrawer={toggleDrawer} />
+                <NavigationDrawer
+                    routes={publicNavRoutes}
+                    navbarOpen={isDrawerOpen}
+                    closeNav={() => setIsDrawerOpen(false)}
+                />
+                <main className="flex-grow pt-20">
+                    <Outlet />
+                </main>
+                <Footer footerItems={publicNavRoutes} />
+                <FloatingUpButton />
+            </div>
+        </SearchProvider>
     );
 };
 
