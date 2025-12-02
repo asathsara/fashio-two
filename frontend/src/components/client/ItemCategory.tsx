@@ -30,9 +30,9 @@ const ItemCategory = ({ categoryName, subcategories }: ItemCategoryProps) => {
                 {subCategory.name}
               </h3>
               <div className="h-px flex-1 bg-gray-200" aria-hidden="true" />
-              <span className="text-sm text-gray-500">
+              {/* <span className="text-sm text-gray-500">
                 {subCategory.items.length} item{subCategory.items.length !== 1 ? "s" : ""}
-              </span>
+              </span> */}
             </div>
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {subCategory.items.map((item) => (
