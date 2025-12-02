@@ -10,6 +10,9 @@ import type { Image } from "@/types/image";
 import { lazy, Suspense } from "react";
 import { ComponentLoadingFallback } from "@/components/common/LazyLoadingFallback";
 import { ComponentErrorBoundary, ComponentFallback } from "@/error-boundaries";
+import { useNavbarSearch } from "@/hooks/useNavbarSearch";
+import { useCategorySections } from "@/hooks/useCategorySections";
+import { CategoryPill } from "@/components/client/CategoryPill";
 
 // Lazy load heavy ItemCategory component
 const ItemCategory = lazy(() => import("../../components/client/ItemCategory"));
@@ -18,9 +21,17 @@ const HomePage = () => {
 
   const { data: images = [] } = useImages();
   const { data: categories = [] } = useCategories();
-  const { data: items = [], isLoading: loading, error } = useItems()
-
+  const { data: items = [], isLoading: loading, error } = useItems();
+  const { query } = useNavbarSearch();
   const { currentImage, index } = useImageCarousel<Image>(images, 5000);
+
+  const { selectedCategoryId, categorySections, noResults, handleCategoryClick } = useCategorySections({
+    categories,
+    items,
+    query,
+    isLoading: loading,
+    error,
+  });
 
   return (
     <div className="flex flex-col w-full">
@@ -47,17 +58,20 @@ const HomePage = () => {
 
       <DetailsBar className={"mt-8"} />
 
-      <div className="flex flex-row items-center mt-16 justify-center w-full ">
-        {categories.map((category) => {
-          return (
-            <p
-              key={category._id}
-              className="md:text-xl sm:text-lg font-bold font-poppins md:mx-8 mx-2 border-navbar-gray border-2 md:px-8 md:py-4 px-6 py-3 rounded-lg cursor-pointer text-navbar-gray"
-            >
-              {category.name}
-            </p>
-          );
-        })}
+      <div className="flex flex-wrap items-center gap-3 mt-16 justify-center w-full px-4">
+        <CategoryPill
+          label="All"
+          active={!selectedCategoryId}
+          onClick={() => handleCategoryClick(null)}
+        />
+        {categories.map((category) => (
+          <CategoryPill
+            key={category._id}
+            label={category.name}
+            active={selectedCategoryId === category._id}
+            onClick={() => handleCategoryClick(category._id)}
+          />
+        ))}
       </div>
 
 
@@ -68,35 +82,29 @@ const HomePage = () => {
           </div>
         ) : error ? (
           <ErrorMessage message={error.message} />
+        ) : noResults ? (
+          <p className="text-center text-lg text-gray-500 py-16">
+            No items match your filters. Try clearing the search or selecting another category.
+          </p>
         ) : (
-          categories.map((category) => {
-            // Filter items belonging to the current category
-            const categoryItems = items.filter(
-              (item) => item.category._id === category._id
-            );
-
-            return (
-              <ComponentErrorBoundary
-                key={category._id}
-                name={`ItemCategory-${category.name}`}
-                fallbackRender={({ error, resetErrorBoundary }) => (
-                  <ComponentFallback
-                    boundaryName={`${category.name} section`}
-                    error={error}
-                    onRetry={resetErrorBoundary}
-                    compact
-                  />
-                )}
-              >
-                <Suspense fallback={<ComponentLoadingFallback />}>
-                  <ItemCategory
-                    categoryName={category.name}
-                    items={categoryItems}
-                  />
-                </Suspense>
-              </ComponentErrorBoundary>
-            );
-          })
+          categorySections.map(({ categoryId, categoryName, subcategories }) => (
+            <ComponentErrorBoundary
+              key={categoryId}
+              name={`ItemCategory-${categoryName}`}
+              fallbackRender={({ error, resetErrorBoundary }) => (
+                <ComponentFallback
+                  boundaryName={`${categoryName} section`}
+                  error={error}
+                  onRetry={resetErrorBoundary}
+                  compact
+                />
+              )}
+            >
+              <Suspense fallback={<ComponentLoadingFallback />}>
+                <ItemCategory categoryName={categoryName} subcategories={subcategories} />
+              </Suspense>
+            </ComponentErrorBoundary>
+          ))
         )}
       </div>
 
