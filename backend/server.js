@@ -34,7 +34,6 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use(httpLogger);
 
 app.use(
   session({
@@ -52,6 +51,8 @@ app.use(
 
 app.use(passport.initialize());
 app.use(passport.session());
+
+app.use(httpLogger);
 
 // Apply general rate limiting to all routes
 app.use(generalLimiter);
