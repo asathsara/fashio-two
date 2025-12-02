@@ -1,21 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { Category } from "@/types/category";
 import type { Item } from "@/types/item";
+import type { CategorySection, SubCategoryGroup } from "@/types/categorySection";
 
 const FALLBACK_SUBCATEGORY_ID = "uncategorized";
 const FALLBACK_SUBCATEGORY_NAME = "Other";
-
-export type SubCategoryGroup = {
-    _id: string;
-    name: string;
-    items: Item[];
-};
-
-export type CategorySection = {
-    categoryId: string;
-    categoryName: string;
-    subcategories: SubCategoryGroup[];
-};
 
 interface UseCategorySectionsOptions {
     categories: Category[];

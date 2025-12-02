@@ -1,11 +1,5 @@
-import { type Item as ItemType } from "../../types/item";
 import ItemCard from "./Item";
-
-type SubCategoryGroup = {
-  _id: string;
-  name: string;
-  items: ItemType[];
-};
+import type { SubCategoryGroup } from "@/types/categorySection";
 
 type ItemCategoryProps = {
   categoryName: string;
