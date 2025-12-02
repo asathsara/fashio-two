@@ -95,7 +95,10 @@ export function useItemForm({ item, isEditMode = false }: UseItemFormProps = {})
 
     const handleImageChange = (file: File | null) => {
         if (!file) return
-        setNewImages(prev => [...prev, file])
+        const updatedImages = [...newImages, file]
+        setNewImages(updatedImages)
+        // Update the form's images field for validation
+        setValue("images", updatedImages as never, { shouldValidate: true })
     }
 
     const handleRemoveExistingImage = (index: number) => {
@@ -103,7 +106,10 @@ export function useItemForm({ item, isEditMode = false }: UseItemFormProps = {})
     }
 
     const handleRemoveNewImage = (index: number) => {
-        setNewImages(prev => prev.filter((_, i) => i !== index))
+        const updatedImages = newImages.filter((_, i) => i !== index)
+        setNewImages(updatedImages)
+        // Update the form's images field for validation
+        setValue("images", updatedImages as never, { shouldValidate: true })
     }
 
     const handleSizeToggle = (size: string) => {
@@ -153,6 +159,7 @@ export function useItemForm({ item, isEditMode = false }: UseItemFormProps = {})
                 onSuccess: () => {
                     reset();
                     setNewImages([])
+                    setValue("images", [] as never, { shouldValidate: false })
                 }
             })
         }

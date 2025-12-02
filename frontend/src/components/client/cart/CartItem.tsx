@@ -1,9 +1,12 @@
 import { Link } from 'react-router-dom';
-import { Trash2, Plus, Minus } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Trash2 } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 import type { CartItem as CartItemType } from '@/types/cart';
 import { buildImageSrc, getImageUrl } from '@/utils/image';
 import { SmartImage } from '@/components/common/SmartImage';
+import { QuantityController } from '@/components/common/QuantityController';
+import { ConfirmDialog } from '@/components/common/ConfirmDialog';
+import { useState } from 'react';
 
 interface CartItemProps {
     item: CartItemType;
@@ -13,85 +16,116 @@ interface CartItemProps {
 
 export const CartItem = ({ item, onUpdateQuantity, onRemove }: CartItemProps) => {
 
+    const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+    const [itemToDelete, setItemToDelete] = useState<CartItemType | null>(null);
     const imageUrl = getImageUrl(item.item, item.selectedImageIndex);
-    
-    const subtotal = item.item.price * item.quantity;
-    const itemId = item.item._id || '';
+
+    const hasDiscount = item.discount > 0;
+    const itemTotal = item.appliedPrice * item.quantity;
+    const totalSavings = item.discount * item.quantity;
+    const itemId = item.item._id || "";
 
     const handleIncrease = () => {
-        if (item.quantity < item.item.stock) {
-            onUpdateQuantity(itemId, item.size, item.quantity + 1);
-        }
+        onUpdateQuantity(itemId, item.size, item.quantity + 1);
     };
 
     const handleDecrease = () => {
-        if (item.quantity > 1) {
-            onUpdateQuantity(itemId, item.size, item.quantity - 1);
-        }
+        onUpdateQuantity(itemId, item.size, item.quantity - 1);
     };
 
     return (
         <div className="flex gap-4 p-4 border rounded-lg bg-white">
-            {/* Image */}
-            <Link to={`/items/${item.item._id}`} className="flex-shrink-0 pt-4">
-                <SmartImage
-                    src={buildImageSrc(imageUrl)}
-                    alt={item.item.name}
-                    className="w-24 h-24"
-                    rounded="rounded-md"
-                />
-            </Link>
 
-            {/* Details */}
-            <div className="flex-1 pt-4">
-                <Link to={`/items/${item.item._id}`} className="hover:underline">
-                    <h3 className="font-semibold text-lg">{item.item.name}</h3>
+            {/* LEFT COLUMN: Trash button + Image */}
+            <div className="flex flex-col items-center gap-3 flex-shrink-0 mt-2">
+
+                <Link to={`/items/${item.item._id}`}>
+                    <SmartImage
+                        src={buildImageSrc(imageUrl)}
+                        alt={item.item.name}
+                        className="w-24 h-24"
+                        rounded="rounded-md"
+                    />
                 </Link>
-                <p className="text-sm text-gray-600 mt-1">Size: {item.size}</p>
-                <p className="text-sm text-gray-600">Price: Rs. {item.item.price.toFixed(2)}</p>
+            </div>
 
-                {/* Stock warning */}
+            {/* MIDDLE: Item info */}
+            <div className="flex-1 min-w-0 mt-2">
+                <Link to={`/items/${item.item._id}`} className="hover:underline">
+                    <h3 className="font-semibold text-lg truncate">{item.item.name}</h3>
+                </Link>
+
+                <p className="text-sm text-gray-600 mt-1">Size: {item.size}</p>
+
+                {hasDiscount ? (
+                    <div className="space-y-1 mt-2">
+                        <div className="flex items-center gap-2">
+                            <span className="text-sm font-semibold text-red-600 my-1">
+                                Rs. {item.appliedPrice.toFixed(2)}
+                            </span>
+                            <span className="text-xs text-gray-500 line-through">
+                                Rs. {item.originalPrice.toFixed(2)}
+                            </span>
+                        </div>
+
+                        <Badge className="bg-green-500 hover:bg-green-600 text-white text-xs w-fit">
+                            Save Rs. {totalSavings.toFixed(2)}
+                        </Badge>
+                    </div>
+                ) : (
+                    <p className="text-sm text-gray-700 mt-2">
+                        Rs. {item.appliedPrice.toFixed(2)}
+                    </p>
+                )}
+
                 {item.quantity >= item.item.stock && (
-                    <p className="text-sm text-red-600 mt-1">Max stock reached</p>
+                    <p className="text-sm text-red-600 mt-2">Max stock reached</p>
                 )}
             </div>
 
-            {/* Quantity Controls */}
-            <div className="flex flex-col items-end justify-between">
+
+            {/* Quantity Controls and Total */}
+            <div className="relative flex flex-col items-end justify-between gap-4 flex-shrink-0 mt-5">
+
                 <button
-                    onClick={() => onRemove(itemId, item.size)}
-                    className="text-red-500 hover:text-red-700 p-1 pb-4"
+                    onClick={() => {
+                        setItemToDelete(item);
+                        setIsDeleteDialogOpen(true);
+                    }}
+                    className="absolute -top-3 -right-3 text-red-500 hover:text-red-700 p-1 mr-2 cursor-pointer"
                     aria-label="Remove item"
                 >
                     <Trash2 size={18} />
                 </button>
 
-                <div className="flex items-center gap-2">
-                    <Button
-                        variant="outline"
-                        size="icon"
-                        className="h-8 w-8"
-                        onClick={handleDecrease}
-                        disabled={item.quantity <= 1}
-                    >
-                        <Minus size={14} />
-                    </Button>
-                    <span className="w-8 text-center font-medium">{item.quantity}</span>
-                    <Button
-                        variant="outline"
-                        size="icon"
-                        className="h-8 w-8"
-                        onClick={handleIncrease}
-                        disabled={item.quantity >= item.item.stock}
-                    >
-                        <Plus size={14} />
-                    </Button>
+                <div className="mt-6">
+                    <QuantityController
+                        quantity={item.quantity}
+                        maxQuantity={item.item.stock}
+                        onIncrease={handleIncrease}
+                        onDecrease={handleDecrease}
+                    />
                 </div>
 
-                <p className="font-semibold text-lg mt-2">Rs. {subtotal.toFixed(2)}</p>
+                <p className="font-semibold text-lg">Rs. {itemTotal.toFixed(2)}</p>
             </div>
+
+            <ConfirmDialog
+                open={isDeleteDialogOpen}
+                onOpenChange={setIsDeleteDialogOpen}
+                title="Delete Item"
+                description={`Are you sure you want to delete "${itemToDelete?.item.name}" from the cart?`}
+                onConfirm={() => {
+                    if (itemToDelete) {
+                        onRemove(itemToDelete.item._id || "", itemToDelete.size);
+                    }
+                }}
+                confirmLabel="Delete"
+            />
+
         </div>
     );
 };
+
 
 export default CartItem;

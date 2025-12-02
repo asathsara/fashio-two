@@ -2,12 +2,13 @@ import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
-import path from 'path';
 import dotenv from 'dotenv';
 
 
 import passport from './config/passport.js';
 import session from 'express-session';
+import httpLogger from './config/httpLogger.js';
+import logger from './config/logger.js';
 import { authRoutes } from './modules/auth/index.js';
 import { categoryRoutes } from './modules/category/index.js';
 import { itemRoutes } from './modules/item/index.js';
@@ -15,6 +16,9 @@ import { imageRoutes } from './modules/image/index.js';
 import { promoRoutes } from './modules/promo/index.js';
 import { cartRoutes } from './modules/cart/index.js';
 import { orderRoutes } from './modules/order/index.js';
+import { aiRoutes } from './modules/ai/index.js';
+import { generalLimiter } from './middleware/rateLimiter.js';
+import { errorHandler } from './middleware/errorHandler.js';
 
 dotenv.config();
 
@@ -48,11 +52,15 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.use(httpLogger);
+
+// Apply general rate limiting to all routes
+app.use(generalLimiter);
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/fashio-two')
-  .then(() => console.log('MongoDB connected successfully'))
-  .catch((err) => console.error('MongoDB connection error:', err));
+  .then(() => logger.info('MongoDB connected successfully'))
+  .catch((err) => logger.error({ err }, 'MongoDB connection error'));
 
 // Routes
 app.use('/api/auth', authRoutes);
@@ -62,6 +70,7 @@ app.use('/api/images', imageRoutes);
 app.use('/api/promos', promoRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/orders', orderRoutes);
+app.use('/api/ai', aiRoutes);
 
 // Health check
 app.get('/health', (req, res) => {
@@ -69,13 +78,7 @@ app.get('/health', (req, res) => {
 });
 
 // Error handling middleware
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(err.status || 500).json({
-    message: err.message || 'Something went wrong!',
-    error: process.env.NODE_ENV === 'development' ? err : {}
-  });
-});
+app.use(errorHandler);
 
 // 404 handler
 app.use((req, res) => {
@@ -84,5 +87,5 @@ app.use((req, res) => {
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  logger.info(`Server running on port ${PORT}`);
 });

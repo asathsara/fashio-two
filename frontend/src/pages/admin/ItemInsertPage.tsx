@@ -11,21 +11,26 @@ import {
   FieldDescription,
   FieldSeparator,
 } from "@/components/ui/field"
-import CategorySelector from "@/components/admin/CategorySelector"
-import SizeSelector from "@/components/admin/SizeSelector"
-import ImageUploaderGroup from "@/components/admin/ImageUploaderGroup"
 import { useItemForm } from "@/hooks/admin/useItemForm"
+import { useAIDescription } from "@/hooks/admin/useAIDescription"
 import { useParams, useNavigate } from "react-router-dom"
 import { Spinner } from "@/components/common/Spinner"
-import { useEffect, useState } from "react"
+import { useEffect, useState, lazy, Suspense } from "react"
 import { useGetItem } from "@/hooks/useItems"
+import { ComponentLoadingFallback } from "@/components/common/LazyLoadingFallback"
+import AIGenerateButton from "@/components/admin/AIGenerateButton"
+import { ComponentErrorBoundary, ComponentFallback } from "@/error-boundaries"
+
+// Lazy load heavy admin components
+const CategorySelector = lazy(() => import("@/components/admin/CategorySelector"));
+const SizeSelector = lazy(() => import("@/components/admin/SizeSelector"));
+const ImageUploaderGroup = lazy(() => import("@/components/admin/ImageUploaderGroup"));
 
 const ItemInsertPage = () => {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const isEditMode = Boolean(id)
   const [formKey, setFormKey] = useState(0)
-
 
   // Fetch item data if in edit mode
   const { data: item, isLoading } = useGetItem(id || "", isEditMode)
@@ -51,6 +56,13 @@ const ItemInsertPage = () => {
   } = useItemForm({ item, isEditMode })
 
   const mutation = isEditMode ? updateMutation : insertMutation
+
+  // AI Description Generation
+  const { isGenerating, generateDescription } = useAIDescription({
+    watch,
+    setValue: (name, value, options) => setValue(name as never, value as never, options),
+    newImages,
+  })
 
   // Navigate back after successful update
   useEffect(() => {
@@ -99,14 +111,28 @@ const ItemInsertPage = () => {
               </div>
             )}
 
-            <ImageUploaderGroup
-              key={formKey}
-              existingImages={existingImages}
-              newImages={newImages}
-              onImageChange={handleImageChange}
-              onRemoveExisting={handleRemoveExistingImage}
-              onRemoveNew={handleRemoveNewImage}
-            />
+            <ComponentErrorBoundary
+              name="ImageUploaderGroup"
+              fallbackRender={({ error, resetErrorBoundary }) => (
+                <ComponentFallback
+                  boundaryName="Image Uploader"
+                  error={error}
+                  onRetry={resetErrorBoundary}
+                  compact
+                />
+              )}
+            >
+              <Suspense fallback={<ComponentLoadingFallback />}>
+                <ImageUploaderGroup
+                  key={formKey}
+                  existingImages={existingImages}
+                  newImages={newImages}
+                  onImageChange={handleImageChange}
+                  onRemoveExisting={handleRemoveExistingImage}
+                  onRemoveNew={handleRemoveNewImage}
+                />
+              </Suspense>
+            </ComponentErrorBoundary>
 
             {!isEditMode && errors.images && <FieldError>{errors.images.message}</FieldError>}
             {isEditMode && !hasMinimumImages && (
@@ -123,21 +149,42 @@ const ItemInsertPage = () => {
             </Field>
 
             <Field>
-              <FieldLabel>Description</FieldLabel>
-              <Textarea {...register("description")} />
+              <div className="flex items-center justify-between mb-2">
+                <FieldLabel>Description</FieldLabel>
+                <AIGenerateButton
+                  onClick={generateDescription}
+                  isGenerating={isGenerating}
+                  isDisabled={mutation.isPending}
+                />
+              </div>
+              <Textarea {...register("description")} rows={5} />
               <FieldError>{errors.description?.message}</FieldError>
             </Field>
 
-            <CategorySelector
-              categories={categories}
-              categoryId={watch("category")}
-              subCategoryId={watch("subCategory")}
-              onCategoryChange={(val) =>
-                setValue("category", val, { shouldValidate: true })
-              }
-              onSubCategoryChange={(val) =>
-                setValue("subCategory", val, { shouldValidate: true })}
-            />
+            <ComponentErrorBoundary
+              name="CategorySelector"
+              fallbackRender={({ error, resetErrorBoundary }) => (
+                <ComponentFallback
+                  boundaryName="Category Selector"
+                  error={error}
+                  onRetry={resetErrorBoundary}
+                  compact
+                />
+              )}
+            >
+              <Suspense fallback={<ComponentLoadingFallback />}>
+                <CategorySelector
+                  categories={categories}
+                  categoryId={watch("category")}
+                  subCategoryId={watch("subCategory")}
+                  onCategoryChange={(val) =>
+                    setValue("category", val, { shouldValidate: true })
+                  }
+                  onSubCategoryChange={(val) =>
+                    setValue("subCategory", val, { shouldValidate: true })}
+                />
+              </Suspense>
+            </ComponentErrorBoundary>
             {errors.category && <FieldError>{errors.category.message}</FieldError>}
             {errors.subCategory && <FieldError>{errors.subCategory.message}</FieldError>}
 
@@ -163,7 +210,21 @@ const ItemInsertPage = () => {
 
           <FieldSet>
             <FieldLegend>Sizes</FieldLegend>
-            <SizeSelector selectedSizes={watchedSizes} onSizeToggle={handleSizeToggle} />
+            <ComponentErrorBoundary
+              name="SizeSelector"
+              fallbackRender={({ error, resetErrorBoundary }) => (
+                <ComponentFallback
+                  boundaryName="Size Selector"
+                  error={error}
+                  onRetry={resetErrorBoundary}
+                  compact
+                />
+              )}
+            >
+              <Suspense fallback={<ComponentLoadingFallback />}>
+                <SizeSelector selectedSizes={watchedSizes} onSizeToggle={handleSizeToggle} />
+              </Suspense>
+            </ComponentErrorBoundary>
             {errors.selectedSizes && <FieldError>{errors.selectedSizes.message}</FieldError>}
           </FieldSet>
 

@@ -40,7 +40,7 @@ const Navbar = ({ onOpenDrawer }: NavbarProps) => {
   };
 
   return (
-    <nav className="fixed top-0 left-0 w-full z-10 bg-navbar-gray h-20 shadow-md">
+    <nav className="fixed top-0 left-0 w-full z-30 bg-navbar-gray h-20 shadow-md">
       <div className="flex p-4 items-center justify-between">
         {/* Logo */}
         <div className="flex font-pacifico text-3xl font-semibold pl-4 cursor-pointer text-background-gray">

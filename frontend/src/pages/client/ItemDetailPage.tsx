@@ -1,63 +1,40 @@
-import { useParams, useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { fetchItemById } from "@/services/itemService";
-import { Spinner } from "@/components/common/Spinner";
-import { ErrorMessage } from "@/components/common/ErrorMessage";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, ShoppingCart } from "lucide-react";
-import { useState } from "react";
-import { useCart } from "@/hooks/useCart";
-import { useAuth } from "@/hooks/UseAuth";
-import type { Image } from "@/types/image";
-import { buildImageSrc, getImageUrl } from "@/utils/image";
-import { SmartImage } from "@/components/common/SmartImage";
+import { useParams, useNavigate } from 'react-router-dom';
+import { Spinner } from '@/components/common/Spinner';
+import { ErrorMessage } from '@/components/common/ErrorMessage';
+import { Button } from '@/components/ui/button';
+import { ArrowLeft } from 'lucide-react';
+import { useItemDetails } from '@/hooks/useItemDetails';
+import { lazy, Suspense } from 'react';
+import { ComponentLoadingFallback } from '@/components/common/LazyLoadingFallback';
+import { ComponentErrorBoundary, ComponentFallback } from '@/error-boundaries';
+
+// Lazy load heavy detail components
+const ItemImageGallery = lazy(() => import('@/components/client/details/ItemImageGallery'))
+const ItemDetailsContent = lazy(() => import('@/components/client/details/ItemDetailsContent'))
 
 const ItemDetailPage = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
-    const [selectedSize, setSelectedSize] = useState<string>("");
-    const [selectedImageIndex, setSelectedImageIndex] = useState(0);
-    const [quantity] = useState(1);
-    const { addToCart, loading: cartLoading } = useCart();
-    const { isAuthenticated } = useAuth();
 
-    const { data: item, isLoading, error } = useQuery({
-        queryKey: ["item", id],
-        queryFn: () => fetchItemById(id!),
-        enabled: !!id,
-    });
-
-    const handleAddToCart = async () => {
-        if (!isAuthenticated) {
-            navigate('/login');
-            return;
-        }
-
-        if (!id || !selectedSize) {
-            return;
-        }
-
-        try {
-            await addToCart({
-                itemId: id,
-                quantity,
-                size: selectedSize,
-                selectedImageIndex
-            });
-        } catch (error) {
-            console.error('Failed to add to cart:', error);
-        }
-    };
+    const {
+        item,
+        isLoading,
+        error,
+        selectedSize,
+        setSelectedSize,
+        selectedImageIndex,
+        setSelectedImageIndex,
+        handleAddToCart,
+        cartLoading,
+        isAuthenticated,
+        pricing,
+    } = useItemDetails(id);
 
     if (isLoading) {
-        return (
-            <Spinner fullHeight />
-
-        );
+        return <Spinner fullHeight />;
     }
 
-    if (error || !item) {
+    if (error || !item || !pricing) {
         return (
             <div className="container mx-auto px-4 py-8">
                 <ErrorMessage message="Failed to load item details" />
@@ -67,8 +44,6 @@ const ItemDetailPage = () => {
             </div>
         );
     }
-
-    const imageUrl = buildImageSrc(getImageUrl(item, selectedImageIndex));
 
     return (
         <div className="container mx-auto px-4 py-8">
@@ -82,133 +57,53 @@ const ItemDetailPage = () => {
                 Back
             </Button>
 
-            {/* Main Content */}
             <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
-                {/* Image Section */}
-                <div className="space-y-4">
-                    {/* Main Image */}
-                    <div className="aspect-square rounded-lg overflow-hidden border">
-                        <SmartImage
-                            src={imageUrl}
-                            alt={item.name}
-                            className="w-full aspect-square"
-                            rounded="rounded-lg"
+                {/* Image Gallery */}
+                <ComponentErrorBoundary
+                    name="ItemImageGallery"
+                    fallbackRender={({ error, resetErrorBoundary }) => (
+                        <ComponentFallback
+                            boundaryName="Image Gallery"
+                            error={error}
+                            onRetry={resetErrorBoundary}
+                            compact
                         />
-                    </div>
-
-                    {/* Thumbnail Images */}
-                    {item.images && item.images.length > 1 && (
-                        <div className="flex gap-2 overflow-x-auto">
-                            {item.images.map((_image: Image, index: number) => (
-                                <button
-                                    key={index}
-                                    onClick={() => setSelectedImageIndex(index)}
-                                    className={`flex-shrink-0 w-20 h-20 rounded-md overflow-hidden border-2 transition-all ${selectedImageIndex === index
-                                        ? "border-black"
-                                        : "border-gray-200 hover:border-gray-400"
-                                        }`}
-                                >
-                                    <SmartImage
-                                        src={buildImageSrc(getImageUrl(item, index))}
-                                        alt={`${item.name} thumbnail ${index + 1}`}
-                                        className="w-20 h-20"
-                                        rounded="rounded-none"
-                                    />
-                                </button>
-                            ))}
-                        </div>
                     )}
-                </div>
+                >
+                    <Suspense fallback={<ComponentLoadingFallback />}>
+                        <ItemImageGallery
+                            item={item}
+                            selectedImageIndex={selectedImageIndex}
+                            onImageSelect={setSelectedImageIndex}
+                            discountPercentage={pricing.discountPercentage}
+                        />
+                    </Suspense>
+                </ComponentErrorBoundary>
 
-                {/* Details Section */}
-                <div className="space-y-6">
-                    {/* Category Badge */}
-                    <Badge variant="secondary" className="text-sm">
-                        {item.category.name} - {item.category.subCategory?.name || 'N/A'}
-                    </Badge>
-
-                    {/* Item Name */}
-                    <h1 className="text-3xl md:text-4xl font-bold text-gray-900">
-                        {item.name}
-                    </h1>
-
-                    {/* Price */}
-                    <div className="flex items-baseline gap-2">
-                        <span className="text-3xl font-bold text-gray-900">
-                            Rs. {(Math.round(item.price * 100) / 100).toFixed(2)}
-                        </span>
-                    </div>
-
-                    {/* Stock Status */}
-                    <div className="flex items-center gap-2">
-                        <span className="text-sm text-gray-600">Availability:</span>
-                        {item.stock > 0 ? (
-                            <Badge variant="default" className="bg-green-600">
-                                In Stock ({item.stock} available)
-                            </Badge>
-                        ) : (
-                            <Badge variant="destructive">Out of Stock</Badge>
-                        )}
-                    </div>
-
-                    {/* Size Selector */}
-                    {item.sizes && item.sizes.length > 0 && (
-                        <div className="space-y-3">
-                            <label className="text-sm font-medium text-gray-700">
-                                Select Size
-                            </label>
-                            <div className="flex flex-wrap gap-2">
-                                {item.sizes.map((size: string) => (
-                                    <button
-                                        key={size}
-                                        onClick={() => setSelectedSize(size)}
-                                        className={`px-4 py-2 border rounded-md font-medium transition-all ${selectedSize === size
-                                            ? "bg-black text-white border-black"
-                                            : "bg-white text-gray-900 border-gray-300 hover:border-gray-900"
-                                            }`}
-                                    >
-                                        {size}
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
+                {/* Details Content */}
+                <ComponentErrorBoundary
+                    name="ItemDetailsContent"
+                    fallbackRender={({ error, resetErrorBoundary }) => (
+                        <ComponentFallback
+                            boundaryName="Item Details"
+                            error={error}
+                            onRetry={resetErrorBoundary}
+                            compact
+                        />
                     )}
-
-                    {/* Description */}
-                    {item.description && (
-                        <div className="space-y-2">
-                            <h3 className="text-lg font-semibold text-gray-900">
-                                Description
-                            </h3>
-                            <p className="text-gray-600 leading-relaxed">
-                                {item.description}
-                            </p>
-                        </div>
-                    )}
-
-                    {/* Add to Cart Button */}
-                    <div className="pt-4">
-                        <Button
-                            size="lg"
-                            className="w-full md:w-auto flex items-center gap-2"
-                            disabled={item.stock === 0 || (item.sizes.length > 0 && !selectedSize) || cartLoading}
-                            onClick={handleAddToCart}
-                        >
-                            <ShoppingCart size={20} />
-                            {cartLoading ? 'Adding...' : 'Add to Cart'}
-                        </Button>
-                        {item.sizes.length > 0 && !selectedSize && (
-                            <p className="text-sm text-gray-500 mt-2">
-                                Please select a size
-                            </p>
-                        )}
-                        {!isAuthenticated && (
-                            <p className="text-sm text-gray-500 mt-2">
-                                Please login to add items to cart
-                            </p>
-                        )}
-                    </div>
-                </div>
+                >
+                    <Suspense fallback={<ComponentLoadingFallback />}>
+                        <ItemDetailsContent
+                            item={item}
+                            pricing={pricing}
+                            selectedSize={selectedSize}
+                            onSizeSelect={setSelectedSize}
+                            isAuthenticated={isAuthenticated}
+                            cartLoading={cartLoading}
+                            onAddToCart={handleAddToCart}
+                        />
+                    </Suspense>
+                </ComponentErrorBoundary>
             </div>
         </div>
     );

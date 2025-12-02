@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { body } from 'express-validator';
 import authController from './auth.controller.js';
 import authMiddleware from '../../middleware/auth.js';
+import { authLimiter, emailLimiter } from '../../middleware/rateLimiter.js';
 
 const { protect } = authMiddleware;
 const { admin } = authMiddleware;
@@ -36,15 +37,16 @@ const changePasswordValidation = [
 
 // Public Routes 
 // Registration & Login
-router.post('/register', registerValidation, (req, res) => authController.register(req, res));
-router.post('/login', loginValidation, (req, res) => authController.login(req, res));
+router.post('/register', authLimiter, registerValidation, (req, res) => authController.register(req, res));
+router.post('/login', authLimiter, loginValidation, (req, res) => authController.login(req, res));
 
 // Email Verification
 router.post('/verify-email', (req, res) => authController.verifyEmail(req, res));
 
 // Password Reset
-router.post('/forgot-password', body('email').isEmail(), (req, res) => authController.forgotPassword(req, res));
+router.post('/forgot-password', authLimiter, body('email').isEmail(), (req, res) => authController.forgotPassword(req, res));
 router.post('/reset-password',
+    authLimiter,
     body('token').notEmpty(),
     body('newPassword').isLength({ min: 6 }),
     (req, res) => authController.resetPassword(req, res)
@@ -57,7 +59,7 @@ router.get('/google/callback', authController.googleCallback);
 // Protected Routes
 router.get('/me', protect, (req, res) => authController.getMe(req, res));
 router.post('/logout', protect, (req, res) => authController.logout(req, res));
-router.post('/resend-verification', protect, (req, res) => authController.resendVerification(req, res));
+router.post('/resend-verification', protect, emailLimiter, (req, res) => authController.resendVerification(req, res));
 
 // Profile Management
 router.put('/profile', protect, updateProfileValidation, (req, res) => authController.updateProfile(req, res));

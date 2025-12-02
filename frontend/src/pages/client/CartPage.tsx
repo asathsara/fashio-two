@@ -6,6 +6,7 @@ import { Spinner } from '@/components/common/Spinner';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { ConfirmDialog } from '@/components/common/ConfirmDialog';
+import { ComponentErrorBoundary, ComponentFallback } from '@/error-boundaries';
 
 export const CartPage = () => {
     const { cart, loading, updateCartItem, removeFromCart, clearCart } = useCart();
@@ -55,7 +56,17 @@ export const CartPage = () => {
     }
 
     const subtotal = cart.items.reduce(
-        (sum, item) => sum + item.item.price * item.quantity,
+        (sum, item) => sum + item.originalPrice * item.quantity,
+        0
+    );
+
+    const totalDiscount = cart.items.reduce(
+        (sum, item) => sum + item.discount * item.quantity,
+        0
+    );
+
+    const total = cart.items.reduce(
+        (sum, item) => sum + item.appliedPrice * item.quantity,
         0
     );
 
@@ -66,28 +77,54 @@ export const CartPage = () => {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Cart Items */}
                 <div className="lg:col-span-2 space-y-4">
-                    {cart.items.map((item) => (
-                        <CartItem
-                            key={`${item.item._id}-${item.size}`}
-                            item={item}
-                            onUpdateQuantity={handleUpdateQuantity}
-                            onRemove={handleRemoveItem}
-                        />
-                    ))}
+                    <ComponentErrorBoundary
+                        name="CartItemsList"
+                        fallbackRender={({ error, resetErrorBoundary }) => (
+                            <ComponentFallback
+                                boundaryName="Cart Items"
+                                error={error}
+                                onRetry={resetErrorBoundary}
+                                compact
+                            />
+                        )}
+                    >
+                        {cart.items.map((item) => (
+                            <CartItem
+                                key={`${item.item._id}-${item.size}`}
+                                item={item}
+                                onUpdateQuantity={handleUpdateQuantity}
+                                onRemove={handleRemoveItem}
+                            />
+                        ))}
+                    </ComponentErrorBoundary>
                 </div>
 
                 {/* Cart Summary */}
                 <div className="lg:col-span-1">
-                    <CartSummary
-                        subtotal={subtotal}
-                        itemCount={cart.totalItems}
-                        onCheckout={handleCheckout}
-                        onClearCart={() => setShowClearDialog(true)}
-                    />
+                    <ComponentErrorBoundary
+                        name="CartSummary"
+                        fallbackRender={({ error, resetErrorBoundary }) => (
+                            <ComponentFallback
+                                boundaryName="Cart Summary"
+                                error={error}
+                                onRetry={resetErrorBoundary}
+                                compact
+                            />
+                        )}
+                    >
+                        <CartSummary
+                            subtotal={subtotal}
+                            totalDiscount={totalDiscount}
+                            total={total}
+                            itemCount={cart.totalItems}
+                            onCheckout={handleCheckout}
+                            onClearCart={() => setShowClearDialog(true)}
+                        />
+                    </ComponentErrorBoundary>
                 </div>
             </div>
 
-            
+
 
             <ConfirmDialog
                 open={showClearDialog}

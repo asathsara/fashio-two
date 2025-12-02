@@ -10,6 +10,7 @@ import CheckoutAddressCard from '@/components/client/checkout/CheckoutAddressCar
 import CheckoutItemsCard from '@/components/client/checkout/CheckoutItemsCard';
 import CheckoutSummaryCard from '@/components/client/checkout/CheckoutSummaryCard';
 import { useCreateOrder } from '@/hooks/useOrders';
+import { ComponentErrorBoundary, ComponentFallback } from '@/error-boundaries';
 
 export const CheckoutPage = () => {
     const { cart, loading } = useCart();
@@ -21,13 +22,15 @@ export const CheckoutPage = () => {
 
     const address = user?.addresses?.[0] ?? null;
 
-    const { subtotal, total, itemCount } = useMemo(() => {
-        const subtotalValue = cart?.items.reduce((sum, cartItem) => sum + cartItem.item.price * cartItem.quantity, 0) ?? 0;
-        const totalValue = subtotalValue;
+    const { subtotal, totalDiscount, total, itemCount } = useMemo(() => {
+        const subtotalValue = cart?.items.reduce((sum, cartItem) => sum + cartItem.originalPrice * cartItem.quantity, 0) ?? 0;
+        const discountValue = cart?.items.reduce((sum, cartItem) => sum + cartItem.discount * cartItem.quantity, 0) ?? 0;
+        const totalValue = cart?.items.reduce((sum, cartItem) => sum + cartItem.appliedPrice * cartItem.quantity, 0) ?? 0;
         const count = cart?.items.reduce((sum, cartItem) => sum + cartItem.quantity, 0) ?? 0;
 
         return {
             subtotal: subtotalValue,
+            totalDiscount: discountValue,
             total: totalValue,
             itemCount: count
         };
@@ -71,8 +74,32 @@ export const CheckoutPage = () => {
 
             <div className="grid gap-6 lg:grid-cols-3">
                 <div className="space-y-6 lg:col-span-2">
-                    <CheckoutAddressCard address={address} />
-                    <CheckoutItemsCard items={cart.items} />
+                    <ComponentErrorBoundary
+                        name="CheckoutAddress"
+                        fallbackRender={({ error, resetErrorBoundary }) => (
+                            <ComponentFallback
+                                boundaryName="Delivery Address"
+                                error={error}
+                                onRetry={resetErrorBoundary}
+                                compact
+                            />
+                        )}
+                    >
+                        <CheckoutAddressCard address={address} />
+                    </ComponentErrorBoundary>
+                    <ComponentErrorBoundary
+                        name="CheckoutItems"
+                        fallbackRender={({ error, resetErrorBoundary }) => (
+                            <ComponentFallback
+                                boundaryName="Order Items"
+                                error={error}
+                                onRetry={resetErrorBoundary}
+                                compact
+                            />
+                        )}
+                    >
+                        <CheckoutItemsCard items={cart.items} />
+                    </ComponentErrorBoundary>
 
                     <Alert className="bg-gray-900 text-white">
                         <ShieldCheck className="mr-2 h-5 w-5" />
@@ -83,18 +110,31 @@ export const CheckoutPage = () => {
                 </div>
 
                 <div className="lg:col-span-1">
-                    <CheckoutSummaryCard
-                        subtotal={subtotal}
-                        total={total}
-                        itemCount={itemCount}
-                        paymentMethod={paymentMethod}
-                        notes={notes}
-                        disabled={!address}
-                        loading={createOrder.isPending}
-                        onNotesChange={setNotes}
-                        onPaymentMethodChange={setPaymentMethod}
-                        onPlaceOrder={handlePlaceOrder}
-                    />
+                    <ComponentErrorBoundary
+                        name="CheckoutSummary"
+                        fallbackRender={({ error, resetErrorBoundary }) => (
+                            <ComponentFallback
+                                boundaryName="Order Summary"
+                                error={error}
+                                onRetry={resetErrorBoundary}
+                                compact
+                            />
+                        )}
+                    >
+                        <CheckoutSummaryCard
+                            subtotal={subtotal}
+                            totalDiscount={totalDiscount}
+                            total={total}
+                            itemCount={itemCount}
+                            paymentMethod={paymentMethod}
+                            notes={notes}
+                            disabled={!address}
+                            loading={createOrder.isPending}
+                            onNotesChange={setNotes}
+                            onPaymentMethodChange={setPaymentMethod}
+                            onPlaceOrder={handlePlaceOrder}
+                        />
+                    </ComponentErrorBoundary>
                 </div>
             </div>
         </div>

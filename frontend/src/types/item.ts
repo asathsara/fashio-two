@@ -10,4 +10,11 @@ export interface Item {
   sizes: string[];
   images?: Image[];
   description?: string;
+  // Promo fields
+  originalPrice?: number;
+  appliedPrice?: number;
+  discount?: number;
+  promoId?: string | null;
+  hasPromo?: boolean;
+  discountPercentage?: string;
 }

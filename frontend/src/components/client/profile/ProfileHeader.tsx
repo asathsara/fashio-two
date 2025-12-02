@@ -19,7 +19,7 @@ interface ProfileHeaderProps {
     onCancel: () => void;
 }
 
-export const ProfileHeader = ({
+const ProfileHeader = ({
     user,
     isEditing,
     loading,
@@ -118,3 +118,5 @@ export const ProfileHeader = ({
         </Card>
     );
 };
+
+export default ProfileHeader;

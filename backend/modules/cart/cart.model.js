@@ -19,6 +19,23 @@ const cartItemSchema = new Schema({
     selectedImageIndex: {
         type: Number,
         default: 0
+    },
+    originalPrice: {
+        type: Number,
+        required: true
+    },
+    appliedPrice: {
+        type: Number,
+        required: true
+    },
+    discount: {
+        type: Number,
+        default: 0
+    },
+    promoId: {
+        type: Schema.Types.ObjectId,
+        ref: 'Promo',
+        default: null
     }
 }, { _id: false });
 

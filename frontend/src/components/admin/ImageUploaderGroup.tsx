@@ -24,7 +24,7 @@ const ImageUploaderGroup = ({
 }: ImageUploaderGroupProps) => {
 
   const totalImages = existingImages.length + newImages.length;
-  const emptySlots = Math.max(0, maxImages - totalImages);
+  const canAddMore = totalImages < maxImages;
 
   // Create array for all slots
   type SlotType =
@@ -50,15 +50,15 @@ const ImageUploaderGroup = ({
     });
   });
 
-  // Add empty slots
-  for (let i = 0; i < emptySlots; i++) {
+  // Add ONE empty slot at the end if we can add more images
+  if (canAddMore) {
     allSlots.push({
       type: 'empty',
       data: null,
     });
   }
 
-  const renderSlot = (slot: SlotType, slotIndex: number) => {
+  const renderSlot = (slot: SlotType) => {
     if (slot.type === 'existing') {
       const img = slot.data as ExistingImage;
       return (
@@ -86,10 +86,10 @@ const ImageUploaderGroup = ({
       );
     }
 
-    // Empty slot
+    // Empty slot - only one will exist at the end
     return (
       <ImageUploaderSolid
-        key={`empty-${slotIndex}`}
+        key="empty-slot"
         onImageChange={(file) => {
           if (file) onImageChange(file);
         }}
@@ -97,25 +97,26 @@ const ImageUploaderGroup = ({
     );
   };
 
-  // First slot
-  const firstSlot = allSlots[0];
-
-  // Remaining slots (3 slots in a row)
-  const remainingSlots = allSlots.slice(1, 4);
+  // If we have at least one slot, show first one separately
+  const hasFirstSlot = allSlots.length > 0;
+  const firstSlot = hasFirstSlot ? allSlots[0] : null;
+  const remainingSlots = allSlots.slice(1);
 
   return (
     <div className="flex flex-col mr-4">
-      {/* First Image Uploader */}
-      {firstSlot && renderSlot(firstSlot, 0)}
+      {/* First Image Uploader - always show if we have any slots */}
+      {firstSlot && renderSlot(firstSlot)}
 
-      {/* Row of Three Image Uploaders */}
-      <div className="flex flex-row mt-4">
-        {remainingSlots.map((slot, index) => (
-          <div key={index} className={`flex-1 ${index > 0 ? "ml-4" : ""}`}>
-            {renderSlot(slot, index + 1)}
-          </div>
-        ))}
-      </div>
+      {/* Row of remaining Image Uploaders - up to 3 */}
+      {remainingSlots.length > 0 && (
+        <div className="flex flex-row mt-4 gap-4">
+          {remainingSlots.map((slot, index) => (
+            <div key={index} className="flex-1">
+              {renderSlot(slot)}
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

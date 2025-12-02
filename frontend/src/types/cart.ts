@@ -5,6 +5,10 @@ export interface CartItem {
     quantity: number;
     size: string;
     selectedImageIndex: number;
+    originalPrice: number;
+    appliedPrice: number;
+    discount: number;
+    promoId?: string | null;
 }
 
 export interface Cart {
@@ -19,6 +23,8 @@ export interface Cart {
 export interface CartSummary {
     items: CartItem[];
     subtotal: number;
+    totalDiscount: number;
+    total: number;
     totalItems: number;
 }
 

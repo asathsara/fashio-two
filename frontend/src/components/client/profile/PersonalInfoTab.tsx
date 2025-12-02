@@ -10,7 +10,7 @@ interface PersonalInfoTabProps {
     isEditing: boolean;
 }
 
-export const PersonalInfoTab = ({ form, isEditing }: PersonalInfoTabProps) => {
+const PersonalInfoTab = ({ form, isEditing }: PersonalInfoTabProps) => {
     const {
         register,
         formState: { errors },
@@ -158,3 +158,5 @@ export const PersonalInfoTab = ({ form, isEditing }: PersonalInfoTabProps) => {
         </Card>
     );
 };
+
+export default PersonalInfoTab;
