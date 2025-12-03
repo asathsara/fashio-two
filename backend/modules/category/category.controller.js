@@ -1,4 +1,5 @@
 import CategoryService from './category.service.js';
+import { validationResult } from 'express-validator';
 
 const categoryService = new CategoryService();
 
@@ -7,6 +8,11 @@ class CategoryController {
     // Create 
     async addCategory(req, res) {
         try {
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                return res.status(400).json({ errors: errors.array() });
+            }
+
             const category = await categoryService.createCategory(req.body.name);
             res.status(201).json(category);
         } catch (error) {
@@ -17,6 +23,11 @@ class CategoryController {
 
     async addSubCategory(req, res) {
         try {
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                return res.status(400).json({ errors: errors.array() });
+            }
+
             const newSubItem = await categoryService.addSubCategory(req.params.id, req.body.name);
             res.status(201).json(newSubItem);
         } catch (error) {

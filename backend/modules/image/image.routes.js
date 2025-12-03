@@ -8,8 +8,16 @@ const router = Router();
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
+// Validation middleware for file upload
+const validateImageUpload = (req, res, next) => {
+    if (!req.file) {
+        return res.status(400).json({ message: 'Image file is required' });
+    }
+    next();
+};
+
 // Create
-router.post("/uploads", upload.single("image"), (req, res) => imageController.uploadImage(req, res));
+router.post("/uploads", upload.single("image"), validateImageUpload, (req, res) => imageController.uploadImage(req, res));
 
 // Read
 router.get("/", (req, res) => imageController.getAllImages(req, res));

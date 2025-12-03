@@ -1,4 +1,5 @@
 import PromoService from './promo.service.js';
+import { validationResult } from 'express-validator';
 
 const promoService = new PromoService();
 
@@ -7,6 +8,11 @@ class PromoController {
     // Create
     async addPromo(req, res) {
         try {
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                return res.status(400).json({ errors: errors.array() });
+            }
+
             const promo = await promoService.createPromo(req.body);
             res.status(201).send(promo);
         } catch (error) {
@@ -17,6 +23,11 @@ class PromoController {
 
     async updatePromo(req, res) {
         try {
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                return res.status(400).json({ errors: errors.array() });
+            }
+
             const promo = await promoService.updatePromo(req.params.id, req.body);
             res.status(200).json(promo);
         } catch (error) {
