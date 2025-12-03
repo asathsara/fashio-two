@@ -1,5 +1,5 @@
-import { useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useRef, type ChangeEvent, type KeyboardEvent } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { FaSearch } from "react-icons/fa";
 import { MdOutlineShoppingBag } from "react-icons/md";
 import { Button } from "@/components/ui/button";
@@ -13,9 +13,10 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { publicNavRoutes } from "@/config/routes"; 
+import { publicNavRoutes } from "@/config/routes";
 import { useAuth } from "@/hooks/UseAuth";
 import { useCart } from "@/hooks/useCart";
+import { useNavbarSearch } from "@/hooks/useNavbarSearch";
 
 type NavbarProps = {
   onOpenDrawer: () => void;
@@ -24,8 +25,10 @@ type NavbarProps = {
 const Navbar = ({ onOpenDrawer }: NavbarProps) => {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const navigate = useNavigate();
+  const location = useLocation();
   const { user, isAuthenticated, logout } = useAuth();
   const { itemCount } = useCart();
+  const { query, setQuery, clearQuery } = useNavbarSearch();
 
   const handleLogout = async () => {
     await logout();
@@ -36,6 +39,30 @@ const Navbar = ({ onOpenDrawer }: NavbarProps) => {
       navigate('/cart');
     } else {
       navigate('/login');
+    }
+  };
+
+  const focusInput = () => {
+    inputRef.current?.focus();
+  };
+
+  const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setQuery(event.target.value);
+  };
+
+  const handleSearchSubmit = () => {
+    if (location.pathname !== '/') {
+      navigate('/');
+    }
+    focusInput();
+  };
+
+  const handleSearchKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      handleSearchSubmit();
+    } else if (event.key === 'Escape') {
+      clearQuery();
     }
   };
 
@@ -68,12 +95,23 @@ const Navbar = ({ onOpenDrawer }: NavbarProps) => {
           {/* Search Bar */}
           <div className="flex rounded-full p-3 md:min-w-72 min-w-64 bg-dark-gray justify-between">
             <div className="flex flex-[5] items-center">
-              <FaSearch className="mx-3 text-background-gray cursor-pointer" />
+              <button
+                type="button"
+                onClick={handleSearchSubmit}
+                className="mx-3 text-background-gray cursor-pointer bg-transparent border-0 outline-none flex items-center"
+                aria-label="Search products"
+              >
+                <FaSearch />
+              </button>
               <input
                 ref={inputRef}
-                type="text"
+                type="search"
+                value={query}
+                onChange={handleSearchChange}
+                onKeyDown={handleSearchKeyDown}
                 placeholder="Search"
                 className="bg-transparent border-0 outline-none flex-1 font-poppins text-background-gray"
+                aria-label="Search catalog"
               />
             </div>
             <div className="flex items-center ml-2 relative">
