@@ -6,8 +6,13 @@ import { useDeletePromo } from '@/hooks/usePromos';
 import { PromoCard } from './PromoCard';
 import { ConfirmDialog } from '@/components/common/ConfirmDialog';
 import { Spinner } from '@/components/common/Spinner';
+import type { PromoWithItem } from '@/types/promo';
 
-export const PromoList = () => {
+interface PromoListProps {
+  onEditPromo: (promo: PromoWithItem) => void;
+}
+
+export const PromoList = ({ onEditPromo }: PromoListProps) => {
   const { promos, isLoading } = usePromoData();
   const deleteMutation = useDeletePromo();
   const {
@@ -39,7 +44,7 @@ export const PromoList = () => {
         </CardHeader>
         <CardContent className="space-y-4">
           {isLoading ? (
-            <Spinner  label="Loading Promos..." />
+            <Spinner label="Loading Promos..." />
           ) : promos.length === 0 ? (
             <p className="text-center text-muted-foreground py-6">No promotions yet</p>
           ) : (
@@ -50,6 +55,7 @@ export const PromoList = () => {
                 status={getPromoStatus(promo)}
                 onDeleteClick={handleDeleteClick}
                 formatDateTime={formatDateTime}
+                onEditClick={onEditPromo}
               />
             ))
           )}

@@ -15,6 +15,27 @@ class PromoService {
         return promo;
     }
 
+    async updatePromo(promoId, promoData) {
+        const promo = await Promo.findByIdAndUpdate(
+            promoId,
+            {
+                item: promoData.item,
+                startDate: promoData.startDate,
+                startTime: promoData.startTime,
+                endDate: promoData.endDate,
+                endTime: promoData.endTime,
+                discount: promoData.discount,
+            },
+            { new: true }
+        );
+
+        if (!promo) {
+            throw new Error('Promo not found');
+        }
+
+        return promo;
+    }
+
     // Read
     async getAllPromos() {
         const promos = await Promo.find().populate("item");

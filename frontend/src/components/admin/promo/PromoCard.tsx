@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Calendar, Clock, Percent, Trash2 } from 'lucide-react';
+import { Calendar, Clock, Percent, Trash2, Pencil } from 'lucide-react';
 import type { PromoWithItem } from '@/types/promo';
 import type { PromoStatus } from '@/hooks/admin/usePromoList';
 
@@ -9,9 +9,10 @@ interface PromoCardProps {
     status: PromoStatus;
     onDeleteClick: (id: string) => void;
     formatDateTime: (date: string, time: string) => string;
+    onEditClick: (promo: PromoWithItem) => void;
 }
 
-export const PromoCard = ({ promo, status, onDeleteClick, formatDateTime }: PromoCardProps) => {
+export const PromoCard = ({ promo, status, onDeleteClick, formatDateTime, onEditClick }: PromoCardProps) => {
     const getStatusVariant = (status: PromoStatus) => {
         switch (status) {
             case 'active':
@@ -21,6 +22,13 @@ export const PromoCard = ({ promo, status, onDeleteClick, formatDateTime }: Prom
             case 'expired':
                 return 'outline';
         }
+    };
+
+    const promoId = promo._id ?? '';
+
+    const handleDelete = () => {
+        if (!promoId) return;
+        onDeleteClick(promoId);
     };
 
     return (
@@ -33,14 +41,26 @@ export const PromoCard = ({ promo, status, onDeleteClick, formatDateTime }: Prom
                         {status.charAt(0).toUpperCase() + status.slice(1)}
                     </Badge>
                 </div>
-                <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => onDeleteClick(promo._id!)}
-                    className="text-destructive hover:text-destructive hover:bg-destructive/10"
-                >
-                    <Trash2 className="w-4 h-4" />
-                </Button>
+                <div className="flex items-center gap-2">
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => onEditClick(promo)}
+                        className="text-muted-foreground hover:text-foreground"
+                        aria-label="Edit promotion"
+                    >
+                        <Pencil className="w-4 h-4" />
+                    </Button>
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={handleDelete}
+                        className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                        aria-label="Delete promotion"
+                    >
+                        <Trash2 className="w-4 h-4" />
+                    </Button>
+                </div>
             </div>
 
             {/* Promo details */}

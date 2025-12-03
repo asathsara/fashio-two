@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { fetchPromos, insertPromo, deletePromo } from '../services/promoService';
-import type { PromoWithItem } from '@/types/promo';
+import { fetchPromos, insertPromo, deletePromo, updatePromo } from '../services/promoService';
+import type { Promo, PromoWithItem } from '@/types/promo';
 import { toast } from 'sonner';
 import { getErrorMessage } from '@/utils/errorHandler';
 
@@ -37,6 +37,21 @@ export const useDeletePromo = () => {
         },
         onError: (error: unknown) => {
             toast.error(getErrorMessage(error, 'Failed to delete promo'));
+        },
+    });
+};
+
+export const useUpdatePromo = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: ({ id, promo }: { id: string; promo: Omit<Promo, "_id"> }) => updatePromo(id, promo),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['promos'] });
+            toast.success('Promo updated successfully');
+        },
+        onError: (error: unknown) => {
+            toast.error(getErrorMessage(error, 'Failed to update promo'));
         },
     });
 };

@@ -24,6 +24,7 @@ const API_ENDPOINTS = {
   PROMOS: '/promos',
   ADD_PROMOS: '/promos/add',
   DELETE_PROMO: (id: Id) => `/promos/${id}`,
+  UPDATE_PROMO: (id: Id) => `/promos/${id}`,
 
   ORDERS: '/orders',
   ORDER_CHECKOUT: '/orders/checkout',

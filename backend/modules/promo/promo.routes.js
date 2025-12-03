@@ -6,6 +6,9 @@ const router = Router();
 // Create
 router.post("/add", (req, res) => promoController.addPromo(req, res));
 
+// Update
+router.put("/:id", (req, res) => promoController.updatePromo(req, res));
+
 // Read
 router.get("/", (req, res) => promoController.getAllPromos(req, res));
 
