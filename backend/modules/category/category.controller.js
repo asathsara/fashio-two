@@ -50,6 +50,9 @@ class CategoryController {
             if (error.message === 'Category not found') {
                 return res.status(404).json({ message: error.message });
             }
+            if (error.statusCode) {
+                return res.status(error.statusCode).json({ message: error.message });
+            }
             res.status(500).json({ message: 'Error deleting category', error: error.message });
         }
     }
@@ -64,6 +67,9 @@ class CategoryController {
             console.error('Delete subcategory error:', error);
             if (error.message === 'Category not found' || error.message === 'Sub-item not found') {
                 return res.status(404).json({ error: error.message });
+            }
+            if (error.statusCode) {
+                return res.status(error.statusCode).json({ message: error.message });
             }
             res.status(500).json({ message: 'Error deleting subcategory', error: error.message });
         }
