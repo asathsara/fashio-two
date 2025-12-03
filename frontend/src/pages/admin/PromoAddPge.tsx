@@ -1,14 +1,35 @@
+import { useState } from "react";
 import { PromoForm } from "../../components/admin/promo/forms/PromoForm";
 import { PromoList } from "../../components/admin/promo/PromoList";
-import type { Promo } from "../../types/promo";
-import { useInsertPromo } from "@/hooks/usePromos";
+import type { Promo, PromoWithItem } from "../../types/promo";
+import { useInsertPromo, useUpdatePromo } from "@/hooks/usePromos";
 import { PromoProvider } from "@/contexts/PromoProvider";
 
 const PromoAddPage = () => {
   const insertMutation = useInsertPromo();
+  const updateMutation = useUpdatePromo();
+  const [editingPromo, setEditingPromo] = useState<PromoWithItem | null>(null);
 
-  const handleCreatePromo = async (promo: Promo) => {
+  const handleSubmitPromo = (promo: Omit<Promo, "_id">, promoId?: string) => {
+    if (promoId) {
+      updateMutation.mutate(
+        { id: promoId, promo },
+        {
+          onSuccess: () => setEditingPromo(null),
+        }
+      );
+      return;
+    }
+
     insertMutation.mutate(promo);
+  };
+
+  const handleEditPromo = (promo: PromoWithItem) => {
+    setEditingPromo(promo);
+  };
+
+  const handleCancelEdit = () => {
+    setEditingPromo(null);
   };
 
   return (
@@ -22,8 +43,14 @@ const PromoAddPage = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <PromoForm onSubmit={handleCreatePromo} />
-          <PromoList />
+          <PromoForm
+            onSubmit={handleSubmitPromo}
+            editingPromo={editingPromo}
+            onCancelEdit={handleCancelEdit}
+            isCreatePending={insertMutation.isPending}
+            isUpdatePending={updateMutation.isPending}
+          />
+          <PromoList onEditPromo={handleEditPromo} />
         </div>
       </div>
     </PromoProvider>

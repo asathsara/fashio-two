@@ -1,5 +1,5 @@
 import type { PromoFormData } from "@/schemas/promoSchema";
-import type { Promo,  } from "@/types/promo";
+import type { Promo, PromoWithItem } from "@/types/promo";
 
 // Map form data to Promo type expected by the backend
 export const mapFormToPromo = (data: PromoFormData): Omit<Promo, "_id"> => ({
@@ -9,4 +9,11 @@ export const mapFormToPromo = (data: PromoFormData): Omit<Promo, "_id"> => ({
   endDate: data.endDate.toISOString().split("T")[0],
   endTime: data.endDate.toISOString().split("T")[1].slice(0, 5),
   discount: data.discount.toString(),
+});
+
+export const mapPromoToFormValues = (promo: PromoWithItem): PromoFormData => ({
+  item: promo.item._id,
+  startDate: new Date(`${promo.startDate}T${promo.startTime}`),
+  endDate: new Date(`${promo.endDate}T${promo.endTime}`),
+  discount: Number(promo.discount),
 });

@@ -39,8 +39,8 @@ const CategoriesInsertPage = () => {
     deleteCategoryMutation.mutate(categoryId);
   };
 
-  const handleDeleteSubCategory = (categoryId: string, subCategoryName: string) => {
-    deleteSubCategoryMutation.mutate({ categoryId, subItemName: subCategoryName });
+  const handleDeleteSubCategory = (categoryId: string, subCategoryId: string) => {
+    deleteSubCategoryMutation.mutate({ categoryId, subItemName: subCategoryId });
   };
 
   if (isLoading) {

@@ -7,7 +7,7 @@ export const fetchPromos = async () => {
   return response.data;
 };
 
-export const insertPromo = async (promo: Promo): Promise<Promo> => {
+export const insertPromo = async (promo: Omit<Promo, "_id">): Promise<Promo> => {
   const response = await axiosInstance.post(API_ENDPOINTS.ADD_PROMOS, promo);
   return response.data;
 };
@@ -15,3 +15,8 @@ export const insertPromo = async (promo: Promo): Promise<Promo> => {
 export const deletePromo = async (id: string): Promise<void> => {
   await axiosInstance.delete(API_ENDPOINTS.DELETE_PROMO(id));
 }
+
+export const updatePromo = async (id: string, promo: Omit<Promo, "_id">): Promise<Promo> => {
+  const response = await axiosInstance.put(API_ENDPOINTS.UPDATE_PROMO(id), promo);
+  return response.data;
+};
