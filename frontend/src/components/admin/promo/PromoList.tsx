@@ -7,6 +7,7 @@ import type { PromoFilter } from '@/hooks/admin/usePromoList';
 import { Spinner } from '@/components/common/Spinner';
 import type { PromoWithItem } from '@/types/promo';
 import { PromoCard } from './PromoCard';
+import { ComponentErrorBoundary } from '@/error-boundaries';
 
 interface PromoListProps {
   onEditPromo: (promo: PromoWithItem) => void;
@@ -60,13 +61,16 @@ export const PromoList = ({ onEditPromo }: PromoListProps) => {
             <p className="text-center text-muted-foreground py-6">No promotions match this filter</p>
           ) : (
             filteredPromos.map((promo) => (
-              <PromoCard
-                key={promo._id}
-                promo={promo}
-                status={getPromoStatus(promo)}
-                formatDateTime={formatDateTime}
-                onEditClick={onEditPromo}
-              />
+              <ComponentErrorBoundary key={promo._id}>
+                <PromoCard
+                  key={promo._id}
+                  promo={promo}
+                  status={getPromoStatus(promo)}
+                  formatDateTime={formatDateTime}
+                  onEditClick={onEditPromo}
+
+                />
+              </ComponentErrorBoundary>
             ))
           )}
         </CardContent>

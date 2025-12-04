@@ -85,7 +85,7 @@ export const PromoCard = ({ promo, status, formatDateTime, onEditClick }: PromoC
                     <Percent className="w-4 h-4 mt-0.5" />
                     <div>
                         <p className="font-medium text-foreground">Discount</p>
-                        <p className="text-lg font-bold text-green-600">{promo.discount}%</p>
+                        <p className="text-lg font-bold text-gray-600">{promo.discount}%</p>
                     </div>
                 </div>
             </div>
