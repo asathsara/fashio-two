@@ -73,7 +73,7 @@ export const PromoCard = ({ promo, status, formatDateTime, onEditClick, onToggle
 
     const metadataPausedAt = formatMetadataTimestamp(promo.pausedAt ?? undefined);
     const metadataArchivedAt = formatMetadataTimestamp(promo.archivedAt ?? undefined);
-    const showStatusToggle = !promo.isArchived;
+    const showStatusToggle = !promo.isArchived && status !== 'expired';
 
     return (
         <div className="border rounded-lg p-4 space-y-3 hover:bg-muted/50 transition-colors">
