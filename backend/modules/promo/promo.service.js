@@ -227,6 +227,11 @@ class PromoService {
         promo.pausedReason = shouldPause ? 'Manually paused' : null;
         await promo.save();
         return promo;
+
+        
+        // Each pause/unpause cycle resets the pausedReason.
+        // When unpausing, pausedReason is set to null.
+        // When pausing again, the reason is set to "Manually paused" regardless of any previous reason.
     }
 
     // Calculate pricing in-memory (no database query)

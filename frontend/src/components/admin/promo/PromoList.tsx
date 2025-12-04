@@ -70,7 +70,6 @@ export const PromoList = ({ onEditPromo }: PromoListProps) => {
             filteredPromos.map((promo) => (
               <ComponentErrorBoundary key={promo._id}>
                 <PromoCard
-                  key={promo._id}
                   promo={promo}
                   status={getPromoStatus(promo)}
                   formatDateTime={formatDateTime}
