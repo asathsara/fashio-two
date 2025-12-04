@@ -95,10 +95,12 @@ class PromoService {
 
     // Get all active promos
     async getActivePromos() {
-        const allPromos = await Promo.find().populate("item");
-        return allPromos.filter(promo => promo.item && !promo.item.isDeleted && this.isPromoActive(promo));
+        const allPromos = await Promo.find().populate({
+            path: "item",
+            match: { isDeleted: { $ne: true } }
+        });
+        return allPromos.filter(promo => promo.item && this.isPromoActive(promo));
     }
-
     // Calculate discounted price
     calculateDiscountedPrice(originalPrice, discountPercentage) {
         const discount = parseFloat(discountPercentage);
