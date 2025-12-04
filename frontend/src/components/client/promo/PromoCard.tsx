@@ -11,6 +11,9 @@ interface PromoCardProps {
 export const PromoCard = ({ promo, status }: PromoCardProps) => {
     const isActive = status === "active";
     const imageUrl = getPromoImageUrl(promo);
+    const itemName = promo.item?.name ?? "Unavailable item";
+    const itemPrice = promo.item?.price;
+    const hasPrice = typeof itemPrice === "number";
 
     return (
         <div
@@ -22,7 +25,7 @@ export const PromoCard = ({ promo, status }: PromoCardProps) => {
                 {imageUrl ? (
                     <SmartImage
                         src={imageUrl}
-                        alt={promo.item.name}
+                        alt={itemName}
                         className="w-full h-56"
                         rounded="rounded-none"
                     />
@@ -47,17 +50,17 @@ export const PromoCard = ({ promo, status }: PromoCardProps) => {
             <div className="p-5">
                 <div className="mb-3">
                     <h3 className="text-xl font-semibold text-gray-900 mt-1">
-                        {promo.item.name}
+                        {itemName}
                     </h3>
                 </div>
                 {/* Price or Discount Info */}
-                {isActive ? (
+                {isActive && hasPrice ? (
                     <div className="flex items-baseline gap-2 mb-4">
                         <span className="text-2xl font-bold text-green-600">
-                            Rs.{calculateDiscountedPrice(promo.item.price, promo.discount)}
+                            Rs.{calculateDiscountedPrice(itemPrice!, promo.discount)}
                         </span>
                         <span className="text-lg text-gray-400 line-through">
-                            Rs.{promo.item.price}
+                            Rs.{itemPrice}
                         </span>
                     </div>
                 ) : (

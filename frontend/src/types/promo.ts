@@ -31,7 +31,7 @@ export interface PromoWithItem extends Omit<Promo, 'item'> {
     price: number;
     category: string;
     images: string[];
-  };
+  } | null;
 }
 
 export interface PromoContextValue {

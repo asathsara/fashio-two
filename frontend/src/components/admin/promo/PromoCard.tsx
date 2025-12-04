@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Calendar, Clock, Percent, Trash2, Pencil } from 'lucide-react';
+import { Calendar, Clock, Percent, Pencil } from 'lucide-react';
 import type { PromoWithItem } from '@/types/promo';
 import type { PromoStatus } from '@/hooks/admin/usePromoList';
 import { toast } from 'sonner';
@@ -8,12 +8,14 @@ import { toast } from 'sonner';
 interface PromoCardProps {
     promo: PromoWithItem;
     status: PromoStatus;
-    onDeleteClick: (id: string) => void;
     formatDateTime: (date: string, time: string) => string;
     onEditClick: (promo: PromoWithItem) => void;
 }
 
-export const PromoCard = ({ promo, status, onDeleteClick, formatDateTime, onEditClick }: PromoCardProps) => {
+export const PromoCard = ({ promo, status, formatDateTime, onEditClick }: PromoCardProps) => {
+    const itemName = promo.item?.name ?? 'Unavailable item';
+    const statusLabel = status.charAt(0).toUpperCase() + status.slice(1);
+
     const getStatusVariant = (status: PromoStatus) => {
         switch (status) {
             case 'active':
@@ -22,15 +24,12 @@ export const PromoCard = ({ promo, status, onDeleteClick, formatDateTime, onEdit
                 return 'secondary';
             case 'expired':
                 return 'outline';
+            case 'archived':
+                return 'destructive';
         }
     };
 
     const promoId = promo._id ?? '';
-
-    const handleDelete = () => {
-        if (!promoId) return;
-        onDeleteClick(promoId);
-    };
 
     const handleEdit = () => {
         if (!promoId) return;
@@ -45,11 +44,14 @@ export const PromoCard = ({ promo, status, onDeleteClick, formatDateTime, onEdit
         <div className="border rounded-lg p-4 space-y-3 hover:bg-muted/50 transition-colors">
             {/* Header with status and delete */}
             <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                    <h3 className="font-semibold text-lg">{promo.item.name}</h3>
+                <div className="flex items-center gap-2 flex-wrap">
+                    <h3 className="font-semibold text-lg">{itemName}</h3>
                     <Badge variant={getStatusVariant(status)}>
-                        {status.charAt(0).toUpperCase() + status.slice(1)}
+                        {statusLabel}
                     </Badge>
+                    {promo.isArchived && (
+                        <Badge variant="destructive">Archived</Badge>
+                    )}
                 </div>
                 <div className="flex items-center gap-2">
                     <Button
@@ -60,15 +62,6 @@ export const PromoCard = ({ promo, status, onDeleteClick, formatDateTime, onEdit
                         aria-label="Edit promotion"
                     >
                         <Pencil className="w-4 h-4" />
-                    </Button>
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={handleDelete}
-                        className="text-destructive hover:text-destructive hover:bg-destructive/10"
-                        aria-label="Delete promotion"
-                    >
-                        <Trash2 className="w-4 h-4" />
                     </Button>
                 </div>
             </div>
@@ -99,6 +92,12 @@ export const PromoCard = ({ promo, status, onDeleteClick, formatDateTime, onEdit
                     </div>
                 </div>
             </div>
+
+            {promo.isArchived && promo.archivedAt && (
+                <p className="text-xs text-muted-foreground">
+                    Archived on {new Date(promo.archivedAt).toLocaleString()}
+                </p>
+            )}
         </div>
     );
 };
