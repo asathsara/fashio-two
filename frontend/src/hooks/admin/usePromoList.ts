@@ -1,13 +1,21 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import type { PromoWithItem } from '@/types/promo';
 
-export type PromoStatus = 'active' | 'upcoming' | 'expired';
+export type PromoStatus = 'active' | 'upcoming' | 'expired' | 'archived' | 'paused';
+export type PromoFilter = 'all' | 'active' | 'upcoming' | 'archived' | 'not-active';
 
 export const usePromoList = () => {
-    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-    const [promoToDelete, setPromoToDelete] = useState<string | null>(null);
+    const [statusFilter, setStatusFilter] = useState<PromoFilter>('all');
 
-    const getPromoStatus = (promo: PromoWithItem): PromoStatus => {
+    const getPromoStatus = useCallback((promo: PromoWithItem): PromoStatus => {
+        if (promo.isArchived) {
+            return 'archived';
+        }
+
+        if (promo.isPaused) {
+            return 'paused';
+        }
+
         const now = new Date();
         const start = new Date(`${promo.startDate}T${promo.startTime}`);
         const end = new Date(`${promo.endDate}T${promo.endTime}`);
@@ -15,9 +23,9 @@ export const usePromoList = () => {
         if (now < start) return 'upcoming';
         if (now > end) return 'expired';
         return 'active';
-    };
+    }, []);
 
-    const formatDateTime = (date: string, time: string): string => {
+    const formatDateTime = useCallback((date: string, time: string): string => {
         const dateObj = new Date(`${date}T${time}`);
         return dateObj.toLocaleString('en-US', {
             month: 'short',
@@ -26,24 +34,28 @@ export const usePromoList = () => {
             hour: '2-digit',
             minute: '2-digit',
         });
-    };
+    }, []);
 
-    const handleDeleteClick = (id: string) => {
-        setPromoToDelete(id);
-        setDeleteDialogOpen(true);
-    };
+    const filterPromos = useCallback((promos: PromoWithItem[]) => {
+        return promos.filter((promo) => {
+            const status = getPromoStatus(promo);
 
-    const closeDeleteDialog = () => {
-        setDeleteDialogOpen(false);
-        setPromoToDelete(null);
-    };
+            switch (statusFilter) {
+                case 'all':
+                    return true;
+                case 'not-active':
+                    return status !== 'active';
+                default:
+                    return status === statusFilter;
+            }
+        });
+    }, [getPromoStatus, statusFilter]);
 
     return {
-        deleteDialogOpen,
-        promoToDelete,
+        statusFilter,
+        setStatusFilter,
         getPromoStatus,
         formatDateTime,
-        handleDeleteClick,
-        closeDeleteDialog,
+        filterPromos,
     };
 };

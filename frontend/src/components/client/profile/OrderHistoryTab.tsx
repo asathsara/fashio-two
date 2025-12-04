@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useMyOrders } from '@/hooks/useOrders';
 import { Spinner } from '@/components/common/Spinner';
 import ProfileOrderCard from '@/components/client/profile/ProfileOrderCard';
-
+import { ComponentErrorBoundary } from '@/error-boundaries/ComponentErrorBoundary';
 const OrderHistoryTab = () => {
     const navigate = useNavigate();
     const { data: orders, isLoading } = useMyOrders();
@@ -50,7 +50,12 @@ const OrderHistoryTab = () => {
     return (
         <div className="space-y-4">
             {orders.map((order) => (
-                <ProfileOrderCard key={order._id} order={order} />
+                <ComponentErrorBoundary
+                    key={order._id}
+                    name={`order ${order._id}`}
+                >
+                    <ProfileOrderCard key={order._id} order={order} />
+                </ComponentErrorBoundary>
             ))}
         </div>
     );

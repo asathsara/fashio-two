@@ -7,6 +7,35 @@ class CartService {
         this.promoService = new PromoService();
     }
 
+    async removeDeletedItems(cart) {
+        if (!cart || cart.items.length === 0) {
+            return cart;
+        }
+
+        const itemIds = cart.items
+            .map(ci => ci.item?._id?.toString() || ci.item?.toString())
+            .filter(Boolean);
+
+        if (itemIds.length === 0) {
+            return cart;
+        }
+
+        const deletedItems = await Item.find({ _id: { $in: itemIds }, isDeleted: true }).select('_id');
+        if (deletedItems.length === 0) {
+            return cart;
+        }
+
+        const deletedSet = new Set(deletedItems.map(item => item._id.toString()));
+        cart.items = cart.items.filter(cartItem => {
+            const currentId = cartItem.item?._id?.toString() || cartItem.item?.toString();
+            return currentId && !deletedSet.has(currentId);
+        });
+
+        await cart.save();
+        await cart.populate('items.item');
+        return cart;
+    }
+
     // Get user's cart with updated promo prices
     async getUserCart(userId) {
         let cart = await Cart.findOne({ user: userId }).populate('items.item');
@@ -14,6 +43,8 @@ class CartService {
         if (!cart) {
             cart = await Cart.create({ user: userId, items: [] });
         }
+
+        cart = await this.removeDeletedItems(cart);
 
         // Update cart items with current promo prices
         if (cart.items.length > 0) {
@@ -26,7 +57,7 @@ class CartService {
     // Add item to cart
     async addItemToCart(userId, itemId, quantity, size, selectedImageIndex = 0) {
         // Verify item exists
-        const item = await Item.findById(itemId);
+        const item = await Item.findOne({ _id: itemId, isDeleted: { $ne: true } });
         if (!item) {
             throw new Error('Item not found');
         }
@@ -104,7 +135,7 @@ class CartService {
         }
 
         // Verify stock
-        const item = await Item.findById(itemId);
+        const item = await Item.findOne({ _id: itemId, isDeleted: { $ne: true } });
         if (!item) {
             throw new Error('Item not found');
         }
@@ -164,6 +195,18 @@ class CartService {
         const cart = await Cart.findOne({ user: userId }).populate('items.item');
 
         if (!cart || cart.items.length === 0) {
+            return {
+                items: [],
+                subtotal: 0,
+                totalDiscount: 0,
+                total: 0,
+                totalItems: 0
+            };
+        }
+
+        await this.removeDeletedItems(cart);
+
+        if (cart.items.length === 0) {
             return {
                 items: [],
                 subtotal: 0,

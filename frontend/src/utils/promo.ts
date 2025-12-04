@@ -21,7 +21,13 @@ export const getPromoImageUrl = (promo: PromoWithItem): string | null => {
     return null;
 };
 
-export const getPromoStatus = (promo: PromoWithItem): "active" | "upcoming" | "expired" => {
+export type ClientPromoStatus = "active" | "upcoming" | "expired" | "paused";
+
+export const getPromoStatus = (promo: PromoWithItem): ClientPromoStatus => {
+    if (promo.isPaused) {
+        return "paused";
+    }
+
     const now = new Date();
     const start = new Date(`${promo.startDate}T${promo.startTime}`);
     const end = new Date(`${promo.endDate}T${promo.endTime}`);

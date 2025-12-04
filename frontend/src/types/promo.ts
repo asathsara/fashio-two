@@ -8,6 +8,12 @@ export interface Promo {
   endDate: string;
   endTime: string;
   discount: string;
+  isArchived?: boolean;
+  archivedAt?: string | null;
+  archivedReason?: string | null;
+  isPaused?: boolean;
+  pausedAt?: string | null;
+  pausedReason?: string | null;
 }
 
 
@@ -28,7 +34,7 @@ export interface PromoWithItem extends Omit<Promo, 'item'> {
     price: number;
     category: string;
     images: string[];
-  };
+  } | null;
 }
 
 export interface PromoContextValue {

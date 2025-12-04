@@ -11,6 +11,8 @@ const ItemSchema = new Schema({
     sizes: { type: [String], required: true },
     description: { type: String },
     createdAt: { type: Date, default: Date.now },
+    isDeleted: { type: Boolean, default: false, index: true },
+    deletedAt: { type: Date, default: null }
 });
 
 export default model("Item", ItemSchema);

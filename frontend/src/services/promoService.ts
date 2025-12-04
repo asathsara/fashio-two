@@ -20,3 +20,8 @@ export const updatePromo = async (id: string, promo: Omit<Promo, "_id">): Promis
   const response = await axiosInstance.put(API_ENDPOINTS.UPDATE_PROMO(id), promo);
   return response.data;
 };
+
+export const updatePromoStatus = async (id: string, isPaused: boolean): Promise<Promo> => {
+  const response = await axiosInstance.patch(API_ENDPOINTS.PROMO_STATUS(id), { isPaused });
+  return response.data;
+};
