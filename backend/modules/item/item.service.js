@@ -9,33 +9,47 @@ class ItemService {
     }
 
     async buildItemResponse(item) {
-        const itemObj = item.toObject();
-        if (itemObj.category && itemObj.category.subCategories) {
-            const subCat = itemObj.category.subCategories.find(
-                sub => sub._id.toString() === itemObj.subCategory.toString()
-            );
-            itemObj.category = {
-                _id: itemObj.category._id,
-                name: itemObj.category.name,
-                subCategory: subCat || { _id: itemObj.subCategory, name: 'Unknown' }
-            };
-        } else if (itemObj.category) {
-            itemObj.category = {
-                _id: itemObj.category._id,
-                name: itemObj.category.name,
-                subCategory: { _id: itemObj.subCategory, name: 'Unknown' }
-            };
+
+    try {
+        // Defensive: ensure toObject exists and works
+        let itemObj;
+        if (item && typeof item.toObject === 'function') {
+            itemObj = item.toObject();
+        } else if (item && typeof item === 'object') {
+            itemObj = { ...item };
         } else {
-            itemObj.category = null;
+            throw new Error('Invalid item provided');
         }
+
+        
+        const categoryObj = itemObj.category && typeof itemObj.category === 'object' ? itemObj.category : null;
+        const subCategories = Array.isArray(categoryObj?.subCategories) ? categoryObj.subCategories : [];
+
+        const subCat = subCategories.find(
+            sub => sub?._id && itemObj.subCategory && sub._id.toString() === itemObj.subCategory.toString()
+        );
+
+        itemObj.category = categoryObj
+            ? {
+                  _id: categoryObj._id,
+                  name: categoryObj.name,
+                  subCategory: subCat || (itemObj.subCategory ? { _id: itemObj.subCategory, name: 'Unknown' } : null)
+              }
+            : null;
+
         delete itemObj.subCategory;
 
         const pricingInfo = await this.promoService.getItemPricing(itemObj._id, itemObj.price);
+
         return {
             ...itemObj,
             ...pricingInfo
         };
+    } catch (err) {
+        throw new Error('Failed to build item response: ' + err.message);
     }
+}
+
 
     // Create
     async createItem(files, itemData) {
