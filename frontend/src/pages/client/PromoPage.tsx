@@ -10,7 +10,8 @@ const PromoPage = () => {
   const { data: promos = [], isLoading, error } = usePromos();
 
   // Exclude archived promos from public client listing
-  const visiblePromos = promos.filter(p => !p.isArchived);
+  // Also exclude promos with unavailable items because if item is deleted, promo should not show
+  const visiblePromos = promos.filter(p => !p.isArchived && p.item);
 
   const activePromos = visiblePromos.filter(p => getPromoStatus(p) === "active");
   const upcomingPromos = visiblePromos.filter(p => getPromoStatus(p) === "upcoming");
