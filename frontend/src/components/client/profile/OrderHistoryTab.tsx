@@ -51,6 +51,7 @@ const OrderHistoryTab = () => {
         <div className="space-y-4">
             {orders.map((order) => (
                 <ComponentErrorBoundary
+                    key={order._id}
                     name={`order ${order._id}`}
                 >
                     <ProfileOrderCard key={order._id} order={order} />
