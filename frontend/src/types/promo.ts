@@ -11,6 +11,9 @@ export interface Promo {
   isArchived?: boolean;
   archivedAt?: string | null;
   archivedReason?: string | null;
+  isPaused?: boolean;
+  pausedAt?: string | null;
+  pausedReason?: string | null;
 }
 
 

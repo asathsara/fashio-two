@@ -46,6 +46,15 @@ const updatePromoValidation = [
     })
 ];
 
+const promoStatusValidation = [
+    body('isPaused')
+        .not()
+        .isEmpty()
+        .withMessage('isPaused is required')
+        .isBoolean()
+        .withMessage('isPaused must be a boolean')
+];
+
 // Create
 router.post("/add", protect, admin, promoValidation, (req, res) => promoController.addPromo(req, res));
 
@@ -57,5 +66,8 @@ router.get("/", (req, res) => promoController.getAllPromos(req, res));
 
 // Delete
 router.delete("/:id", protect, admin, (req, res) => promoController.deletePromo(req, res));
+
+// Pause/Resume
+router.patch("/:id/status", protect, admin, promoStatusValidation, (req, res) => promoController.updatePromoStatus(req, res));
 
 export default router;

@@ -4,7 +4,7 @@ import { PromoCard } from "./PromoCard";
 interface PromoSectionProps {
     title: string;
     promos: PromoWithItem[];
-    status: "active" | "upcoming";
+    status: "active" | "upcoming" | "paused";
 }
 
 export const PromoSection = ({ title, promos, status }: PromoSectionProps) => {

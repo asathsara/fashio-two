@@ -19,7 +19,8 @@ class PromoService {
             endDate: promoData.endDate,
             endTime: promoData.endTime,
             discount: promoData.discount,
-            isArchived: false
+            isArchived: false,
+            isPaused: false
         });
         await promo.save();
         return promo;
@@ -75,7 +76,7 @@ class PromoService {
     // Check if a promo is currently active
     // Treats stored dates as UTC to ensure consistent timezone handling
     isPromoActive(promo) {
-        if (promo.isArchived) {
+        if (promo.isArchived || promo.isPaused) {
             return false;
         }
         const now = new Date();
@@ -92,7 +93,11 @@ class PromoService {
             return null;
         }
 
-        const promos = await Promo.find({ item: itemId, isArchived: { $ne: true } });
+        const promos = await Promo.find({
+            item: itemId,
+            isArchived: { $ne: true },
+            isPaused: { $ne: true }
+        });
 
         for (const promo of promos) {
             if (this.isPromoActive(promo)) {
@@ -105,7 +110,10 @@ class PromoService {
 
     // Get all active promos
     async getActivePromos() {
-        const allPromos = await Promo.find({ isArchived: { $ne: true } }).populate({
+        const allPromos = await Promo.find({
+            isArchived: { $ne: true },
+            isPaused: { $ne: true }
+        }).populate({
             path: "item",
             match: { isDeleted: { $ne: true } }
         });
@@ -151,7 +159,11 @@ class PromoService {
 
     // Batch fetch promos for multiple items (optimized for N+1 query prevention)
     async getPromosForItems(itemIds) {
-        const promos = await Promo.find({ item: { $in: itemIds }, isArchived: { $ne: true } });
+        const promos = await Promo.find({
+            item: { $in: itemIds },
+            isArchived: { $ne: true },
+            isPaused: { $ne: true }
+        });
 
         const activeItems = await Item.find({
             _id: { $in: itemIds },
@@ -197,10 +209,28 @@ class PromoService {
                 isArchived: true,
                 archivedAt: now,
                 archivedReason: 'Item deleted',
+                isPaused: true,
+                pausedAt: now,
                 endDate: datePart,
                 endTime: hhmm
             }
         );
+    }
+
+    async setPromoPauseState(promoId, shouldPause) {
+        const promo = await Promo.findById(promoId);
+        if (!promo) {
+            throw new Error('Promo not found');
+        }
+        if (promo.isArchived) {
+            throw new Error('Archived promos cannot be modified');
+        }
+
+        promo.isPaused = shouldPause;
+        promo.pausedAt = shouldPause ? new Date() : null;
+        promo.pausedReason = shouldPause ? 'Manually paused' : null;
+        await promo.save();
+        return promo;
     }
 
     // Calculate pricing in-memory (no database query)

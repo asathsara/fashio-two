@@ -5,11 +5,12 @@ import { SmartImage } from "@/components/common/SmartImage";
 
 interface PromoCardProps {
     promo: PromoWithItem;
-    status: "active" | "upcoming";
+    status: "active" | "upcoming" | "paused";
 }
 
 export const PromoCard = ({ promo, status }: PromoCardProps) => {
     const isActive = status === "active";
+    const isPaused = status === "paused";
     const imageUrl = getPromoImageUrl(promo);
     const itemName = promo.item?.name ?? "Unavailable item";
     const itemPrice = promo.item?.price;
@@ -39,6 +40,10 @@ export const PromoCard = ({ promo, status }: PromoCardProps) => {
                     <div className="absolute top-4 right-4 bg-red-500 text-white px-4 py-2 rounded-full font-bold text-lg shadow-lg">
                         {promo.discount}% OFF
                     </div>
+                ) : isPaused ? (
+                    <div className="absolute top-4 right-4 bg-gray-900 text-white px-4 py-2 rounded-full font-bold text-sm shadow-lg">
+                        NOT ACTIVE
+                    </div>
                 ) : (
                     <div className="absolute top-4 right-4 bg-gray-900 text-white px-4 py-2 rounded-full font-bold text-sm shadow-lg">
                         COMING SOON
@@ -63,6 +68,13 @@ export const PromoCard = ({ promo, status }: PromoCardProps) => {
                             Rs.{itemPrice}
                         </span>
                     </div>
+                ) : isPaused ? (
+                    <div className="flex items-center gap-2 mb-4 text-gray-600">
+                        <Percent className="w-5 h-5" />
+                        <span className="text-lg font-semibold">
+                            Temporarily unavailable
+                        </span>
+                    </div>
                 ) : (
                     <div className="flex items-center gap-2 mb-4">
                         <Percent className="w-5 h-5 text-gray-600" />
@@ -83,6 +95,17 @@ export const PromoCard = ({ promo, status }: PromoCardProps) => {
                             <div className="flex items-center gap-2">
                                 <Clock className="w-4 h-4" />
                                 <span>Ends at {promo.endTime}</span>
+                            </div>
+                        </>
+                    ) : isPaused ? (
+                        <>
+                            <div className="flex items-center gap-2">
+                                <Calendar className="w-4 h-4" />
+                                <span>Started {formatDate(promo.startDate)}</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <Clock className="w-4 h-4" />
+                                <span>Ends {formatDate(promo.endDate)} at {promo.endTime}</span>
                             </div>
                         </>
                     ) : (

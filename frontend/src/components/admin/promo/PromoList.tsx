@@ -8,6 +8,7 @@ import { Spinner } from '@/components/common/Spinner';
 import type { PromoWithItem } from '@/types/promo';
 import { PromoCard } from './PromoCard';
 import { ComponentErrorBoundary } from '@/error-boundaries';
+import { useTogglePromoStatus } from '@/hooks/usePromos';
 
 interface PromoListProps {
   onEditPromo: (promo: PromoWithItem) => void;
@@ -22,8 +23,14 @@ export const PromoList = ({ onEditPromo }: PromoListProps) => {
     formatDateTime,
     filterPromos,
   } = usePromoList();
+  const togglePromoStatus = useTogglePromoStatus();
 
   const filteredPromos = filterPromos(promos);
+
+  const handlePromoStatusToggle = (promo: PromoWithItem) => {
+    if (!promo._id) return;
+    togglePromoStatus.mutate({ id: promo._id, isPaused: !promo.isPaused });
+  };
 
   const filterOptions: { label: string; value: PromoFilter }[] = [
     { label: 'All', value: 'all' },
@@ -68,6 +75,8 @@ export const PromoList = ({ onEditPromo }: PromoListProps) => {
                   status={getPromoStatus(promo)}
                   formatDateTime={formatDateTime}
                   onEditClick={onEditPromo}
+                  onToggleStatus={handlePromoStatusToggle}
+                  isStatusUpdating={Boolean(togglePromoStatus.isPending && togglePromoStatus.variables?.id === promo._id)}
 
                 />
               </ComponentErrorBoundary>

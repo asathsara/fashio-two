@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import type { PromoWithItem } from '@/types/promo';
 
-export type PromoStatus = 'active' | 'upcoming' | 'expired' | 'archived';
+export type PromoStatus = 'active' | 'upcoming' | 'expired' | 'archived' | 'paused';
 export type PromoFilter = 'all' | 'active' | 'upcoming' | 'archived' | 'not-active';
 
 export const usePromoList = () => {
@@ -10,6 +10,10 @@ export const usePromoList = () => {
     const getPromoStatus = useCallback((promo: PromoWithItem): PromoStatus => {
         if (promo.isArchived) {
             return 'archived';
+        }
+
+        if (promo.isPaused) {
+            return 'paused';
         }
 
         const now = new Date();

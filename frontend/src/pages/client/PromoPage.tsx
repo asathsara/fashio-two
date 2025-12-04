@@ -14,6 +14,7 @@ const PromoPage = () => {
 
   const activePromos = visiblePromos.filter(p => getPromoStatus(p) === "active");
   const upcomingPromos = visiblePromos.filter(p => getPromoStatus(p) === "upcoming");
+  const pausedPromos = visiblePromos.filter(p => getPromoStatus(p) === "paused");
 
 
   return (
@@ -26,12 +27,13 @@ const PromoPage = () => {
         <ErrorMessage message={error.message} />
       ) : (
         <div className="container mx-auto px-4 py-12">
-          {activePromos.length === 0 && upcomingPromos.length === 0 ? (
+          {activePromos.length === 0 && upcomingPromos.length === 0 && pausedPromos.length === 0 ? (
             <EmptyPromos />
           ) : (
             <div className="space-y-12">
               <PromoSection title="Active Now" promos={activePromos} status="active" />
               <PromoSection title="Coming Soon" promos={upcomingPromos} status="upcoming" />
+              <PromoSection title="Temporarily Unavailable" promos={pausedPromos} status="paused" />
             </div>
           )}
         </div>
