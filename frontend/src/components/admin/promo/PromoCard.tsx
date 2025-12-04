@@ -3,6 +3,7 @@ import { Badge } from '@/components/ui/badge';
 import { Calendar, Clock, Percent, Trash2, Pencil } from 'lucide-react';
 import type { PromoWithItem } from '@/types/promo';
 import type { PromoStatus } from '@/hooks/admin/usePromoList';
+import { toast } from 'sonner';
 
 interface PromoCardProps {
     promo: PromoWithItem;
@@ -31,6 +32,15 @@ export const PromoCard = ({ promo, status, onDeleteClick, formatDateTime, onEdit
         onDeleteClick(promoId);
     };
 
+    const handleEdit = () => {
+        if (!promoId) return;
+        if (promo.isArchived) {
+            toast.error('Archived promos cannot be modified');
+            return;
+        }
+        onEditClick(promo);
+    };
+
     return (
         <div className="border rounded-lg p-4 space-y-3 hover:bg-muted/50 transition-colors">
             {/* Header with status and delete */}
@@ -45,7 +55,7 @@ export const PromoCard = ({ promo, status, onDeleteClick, formatDateTime, onEdit
                     <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() => onEditClick(promo)}
+                        onClick={handleEdit}
                         className="text-muted-foreground hover:text-foreground"
                         aria-label="Edit promotion"
                     >

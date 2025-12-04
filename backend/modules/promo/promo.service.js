@@ -53,13 +53,12 @@ class PromoService {
 
     // Read
     async getAllPromos() {
-        const promos = await Promo.find({ isArchived: { $ne: true } }).populate("item");
-        return promos.filter(promo => promo.item && promo.item.isDeleted !== true);
+        return Promo.find().populate('item');
     }
 
     async getPromoById(promoId) {
         const promo = await Promo.findById(promoId).populate("item");
-        if (!promo || !promo.item) {
+        if (!promo) {
             throw new Error('Promo not found');
         }
         return promo;

@@ -9,8 +9,11 @@ import { getPromoStatus } from "@/utils/promo";
 const PromoPage = () => {
   const { data: promos = [], isLoading, error } = usePromos();
 
-  const activePromos = promos.filter(p => getPromoStatus(p) === "active");
-  const upcomingPromos = promos.filter(p => getPromoStatus(p) === "upcoming");
+  // Exclude archived promos from public client listing
+  const visiblePromos = promos.filter(p => !p.isArchived);
+
+  const activePromos = visiblePromos.filter(p => getPromoStatus(p) === "active");
+  const upcomingPromos = visiblePromos.filter(p => getPromoStatus(p) === "upcoming");
 
 
   return (

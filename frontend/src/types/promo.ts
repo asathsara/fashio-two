@@ -8,6 +8,9 @@ export interface Promo {
   endDate: string;
   endTime: string;
   discount: string;
+  isArchived?: boolean;
+  archivedAt?: string | null;
+  archivedReason?: string | null;
 }
 
 
