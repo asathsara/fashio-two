@@ -49,9 +49,6 @@ export const PromoCard = ({ promo, status, formatDateTime, onEditClick }: PromoC
                     <Badge variant={getStatusVariant(status)}>
                         {statusLabel}
                     </Badge>
-                    {promo.isArchived && (
-                        <Badge variant="destructive">Archived</Badge>
-                    )}
                 </div>
                 <div className="flex items-center gap-2">
                     <Button
@@ -95,7 +92,7 @@ export const PromoCard = ({ promo, status, formatDateTime, onEditClick }: PromoC
 
             {promo.isArchived && promo.archivedAt && (
                 <p className="text-xs text-muted-foreground">
-                    Archived on {new Date(promo.archivedAt).toLocaleString()}
+                    Archived on {formatDateTime(promo.archivedAt.split('T')[0], promo.archivedAt.split('T')[1].split('.')[0])}
                 </p>
             )}
         </div>
