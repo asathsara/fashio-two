@@ -1,4 +1,5 @@
 import { useParams, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import { Spinner } from '@/components/common/Spinner';
 import { ErrorMessage } from '@/components/common/ErrorMessage';
 import { Button } from '@/components/ui/button';
@@ -32,6 +33,22 @@ const ItemDetailPage = () => {
 
     if (isLoading) {
         return <Spinner fullHeight />;
+    }
+
+    const isItemRemoved = axios.isAxiosError(error) && error.response?.status === 404;
+
+    if (isItemRemoved) {
+        return (
+            <div className="container mx-auto px-4 py-8">
+                <ErrorMessage message="This item is no longer available." />
+                <p className="mt-2 text-muted-foreground">
+                    It may have been removed from the catalog, but any past orders remain accessible.
+                </p>
+                <Button onClick={() => navigate('/')} className="mt-4">
+                    Back to shopping
+                </Button>
+            </div>
+        );
     }
 
     if (error || !item || !pricing) {

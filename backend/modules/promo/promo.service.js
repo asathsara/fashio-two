@@ -1,8 +1,17 @@
 import Promo from './promo.model.js';
+import Item from '../item/item.model.js';
 
 
 class PromoService {
+    async ensureItemIsActive(itemId) {
+        const itemExists = await Item.exists({ _id: itemId, isDeleted: { $ne: true } });
+        if (!itemExists) {
+            throw new Error('Item not found or unavailable for promotions');
+        }
+    }
+
     async createPromo(promoData) {
+        await this.ensureItemIsActive(promoData.item);
         const promo = new Promo({
             item: promoData.item,
             startDate: promoData.startDate,
@@ -16,6 +25,9 @@ class PromoService {
     }
 
     async updatePromo(promoId, promoData) {
+        if (promoData.item) {
+            await this.ensureItemIsActive(promoData.item);
+        }
         const promo = await Promo.findByIdAndUpdate(
             promoId,
             {
@@ -39,12 +51,12 @@ class PromoService {
     // Read
     async getAllPromos() {
         const promos = await Promo.find().populate("item");
-        return promos;
+        return promos.filter(promo => promo.item && promo.item.isDeleted !== true);
     }
 
     async getPromoById(promoId) {
         const promo = await Promo.findById(promoId).populate("item");
-        if (!promo) {
+        if (!promo || !promo.item || promo.item.isDeleted) {
             throw new Error('Promo not found');
         }
         return promo;
@@ -84,7 +96,7 @@ class PromoService {
     // Get all active promos
     async getActivePromos() {
         const allPromos = await Promo.find().populate("item");
-        return allPromos.filter(promo => this.isPromoActive(promo));
+        return allPromos.filter(promo => promo.item && !promo.item.isDeleted && this.isPromoActive(promo));
     }
 
     // Calculate discounted price
@@ -128,11 +140,13 @@ class PromoService {
     // Batch fetch promos for multiple items (optimized for N+1 query prevention)
     async getPromosForItems(itemIds) {
         const promos = await Promo.find({ item: { $in: itemIds } });
+        const activeItems = await Item.find({ _id: { $in: itemIds }, isDeleted: { $ne: true } }).select('_id');
+        const activeItemSet = new Set(activeItems.map(item => item._id.toString()));
 
         // Filter only active promos and map to include itemId for easy lookup
         const activePromos = [];
         for (const promo of promos) {
-            if (this.isPromoActive(promo)) {
+            if (activeItemSet.has(promo.item.toString()) && this.isPromoActive(promo)) {
                 activePromos.push({
                     itemId: promo.item,
                     _id: promo._id,
@@ -146,6 +160,10 @@ class PromoService {
         }
 
         return activePromos;
+    }
+
+    async removePromosForItem(itemId) {
+        await Promo.deleteMany({ item: itemId });
     }
 
     // Calculate pricing in-memory (no database query)

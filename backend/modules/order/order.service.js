@@ -35,7 +35,7 @@ class OrderService {
                 throw new Error('One or more items in your cart are no longer available');
             }
 
-            const freshItem = await Item.findById(cartItem.item._id);
+            const freshItem = await Item.findOne({ _id: cartItem.item._id, isDeleted: { $ne: true } });
             if (!freshItem) {
                 throw new Error(`${cartItem.item?.name || 'An item'} is no longer available`);
             }
@@ -74,7 +74,7 @@ class OrderService {
 
         // Deduct stock
         await Promise.all(orderItems.map(async (orderItem) => {
-            const item = await Item.findById(orderItem.item);
+            const item = await Item.findOne({ _id: orderItem.item, isDeleted: { $ne: true } });
             if (item) {
                 item.stock = Math.max(0, item.stock - orderItem.quantity);
                 await item.save();
@@ -277,7 +277,7 @@ class OrderService {
         await order.save();
         // Restore stock for cancelled items
         await Promise.all(order.items.map(async (orderItem) => {
-            const item = await Item.findById(orderItem.item);
+            const item = await Item.findOne({ _id: orderItem.item, isDeleted: { $ne: true } });
             if (item) {
                 item.stock += orderItem.quantity;
                 await item.save();

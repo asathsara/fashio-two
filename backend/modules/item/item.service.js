@@ -1,10 +1,40 @@
 import Item from './item.model.js';
 import Category from '../category/category.model.js';
 import PromoService from '../promo/promo.service.js';
+import Cart from '../cart/cart.model.js';
 
 class ItemService {
     constructor() {
         this.promoService = new PromoService();
+    }
+
+    async buildItemResponse(item) {
+        const itemObj = item.toObject();
+        if (itemObj.category && itemObj.category.subCategories) {
+            const subCat = itemObj.category.subCategories.find(
+                sub => sub._id.toString() === itemObj.subCategory.toString()
+            );
+            itemObj.category = {
+                _id: itemObj.category._id,
+                name: itemObj.category.name,
+                subCategory: subCat || { _id: itemObj.subCategory, name: 'Unknown' }
+            };
+        } else if (itemObj.category) {
+            itemObj.category = {
+                _id: itemObj.category._id,
+                name: itemObj.category.name,
+                subCategory: { _id: itemObj.subCategory, name: 'Unknown' }
+            };
+        } else {
+            itemObj.category = null;
+        }
+        delete itemObj.subCategory;
+
+        const pricingInfo = await this.promoService.getItemPricing(itemObj._id, itemObj.price);
+        return {
+            ...itemObj,
+            ...pricingInfo
+        };
     }
 
     // Create
@@ -46,64 +76,28 @@ class ItemService {
 
     // Read all items
     async getAllItems() {
-        const items = await Item.find()
+        const items = await Item.find({ isDeleted: { $ne: true } })
             .select('-images.data')
             .populate('category', 'name subCategories');
 
-        const itemsWithPromo = await Promise.all(items.map(async (item) => {
-            const itemObj = item.toObject();
-            const subCat = itemObj.category.subCategories.find(
-                sub => sub._id.toString() === itemObj.subCategory.toString()
-            );
-            itemObj.category = {
-                _id: itemObj.category._id,
-                name: itemObj.category.name,
-                subCategory: subCat || { _id: itemObj.subCategory, name: 'Unknown' }
-            };
-            delete itemObj.subCategory;
-
-            // Add promo pricing information
-            const pricingInfo = await this.promoService.getItemPricing(itemObj._id, itemObj.price);
-            return {
-                ...itemObj,
-                ...pricingInfo
-            };
-        }));
+        const itemsWithPromo = await Promise.all(items.map(async (item) => this.buildItemResponse(item)));
 
         return itemsWithPromo;
     }
 
     // Get one item
     async getItemById(itemId) {
-        const item = await Item.findById(itemId)
+        const item = await Item.findOne({ _id: itemId, isDeleted: { $ne: true } })
             .select('-images.data')
             .populate('category', 'name subCategories');
 
         if (!item) throw new Error('Item not found');
-
-        const itemObj = item.toObject();
-        const subCat = itemObj.category.subCategories.find(
-            sub => sub._id.toString() === itemObj.subCategory.toString()
-        );
-        itemObj.category = {
-            _id: itemObj.category._id,
-            name: itemObj.category.name,
-            subCategory: subCat || { _id: itemObj.subCategory, name: 'Unknown' }
-        };
-        delete itemObj.subCategory;
-
-        // Add promo pricing information
-        const pricingInfo = await this.promoService.getItemPricing(itemObj._id, itemObj.price);
-
-        return {
-            ...itemObj,
-            ...pricingInfo
-        };
+        return this.buildItemResponse(item);
     }
 
     // Get image
     async getItemImage(itemId, index) {
-        const item = await Item.findById(itemId);
+        const item = await Item.findOne({ _id: itemId, isDeleted: { $ne: true } });
         if (!item) throw new Error('Item not found');
 
         const image = item.images[index];
@@ -114,7 +108,7 @@ class ItemService {
 
     // Update
     async updateItem(itemId, files, itemData) {
-        const item = await Item.findById(itemId);
+        const item = await Item.findOne({ _id: itemId, isDeleted: { $ne: true } });
         if (!item) throw new Error('Item not found');
 
         if (itemData.category) {
@@ -170,8 +164,20 @@ class ItemService {
 
     // Delete
     async deleteItem(itemId) {
-        const item = await Item.findByIdAndDelete(itemId);
-        if (!item) throw new Error('Item not found');
+        const item = await Item.findById(itemId);
+        if (!item || item.isDeleted) throw new Error('Item not found');
+
+        item.isDeleted = true;
+        item.deletedAt = new Date();
+        await item.save();
+
+        await Promise.all([
+            Cart.updateMany(
+                { 'items.item': item._id },
+                { $pull: { items: { item: item._id } } }
+            ),
+            this.promoService.removePromosForItem(item._id)
+        ]);
     }
 }
 

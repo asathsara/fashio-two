@@ -44,7 +44,7 @@ class CategoryService {
         }
 
         // Load lightweight item references to know which categories/subcategories are in use
-        const items = await Item.find({ category: { $in: categoryIds } })
+        const items = await Item.find({ category: { $in: categoryIds }, isDeleted: { $ne: true } })
             .select('category subCategory');
 
         const categoryUsageMap = new Map();
@@ -94,7 +94,7 @@ class CategoryService {
             throw new Error('Category not found');
         }
 
-        const categoryInUse = await Item.exists({ category: categoryId });
+        const categoryInUse = await Item.exists({ category: categoryId, isDeleted: { $ne: true } });
         if (categoryInUse) {
             throw buildUsageError('Cannot delete category while items are assigned to it');
         }
@@ -118,6 +118,7 @@ class CategoryService {
         const subCategoryInUse = await Item.exists({
             category: categoryId,
             subCategory: subCategory._id,
+            isDeleted: { $ne: true },
         });
 
         if (subCategoryInUse) {
