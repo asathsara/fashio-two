@@ -176,7 +176,7 @@ class ItemService {
                 { 'items.item': item._id },
                 { $pull: { items: { item: item._id } } }
             ),
-            this.promoService.removePromosForItem(item._id)
+            this.promoService.archivePromosForItem(item._id)
         ]);
     }
 }

@@ -11,6 +11,9 @@ const promoSchema = new Schema({
     endDate: { type: String, required: true },
     endTime: { type: String, required: true },
     discount: { type: String, required: true },
+    isArchived: { type: Boolean, default: false, index: true },
+    archivedAt: { type: Date },
+    archivedReason: { type: String }
 });
 
 export default model("Promo", promoSchema);

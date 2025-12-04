@@ -19,44 +19,47 @@ class PromoService {
             endDate: promoData.endDate,
             endTime: promoData.endTime,
             discount: promoData.discount,
+            isArchived: false
         });
         await promo.save();
         return promo;
     }
 
     async updatePromo(promoId, promoData) {
-        if (promoData.item) {
-            await this.ensureItemIsActive(promoData.item);
-        }
-        const promo = await Promo.findByIdAndUpdate(
-            promoId,
-            {
-                item: promoData.item,
-                startDate: promoData.startDate,
-                startTime: promoData.startTime,
-                endDate: promoData.endDate,
-                endTime: promoData.endTime,
-                discount: promoData.discount,
-            },
-            { new: true }
-        );
-
+        const promo = await Promo.findById(promoId);
         if (!promo) {
             throw new Error('Promo not found');
         }
 
+        if (promo.isArchived) {
+            throw new Error('Archived promos cannot be modified');
+        }
+
+        if (promoData.item) {
+            await this.ensureItemIsActive(promoData.item);
+            promo.item = promoData.item;
+        }
+
+        const updatableFields = ['startDate', 'startTime', 'endDate', 'endTime', 'discount'];
+        updatableFields.forEach((field) => {
+            if (promoData[field] !== undefined) {
+                promo[field] = promoData[field];
+            }
+        });
+
+        await promo.save();
         return promo;
     }
 
     // Read
     async getAllPromos() {
-        const promos = await Promo.find().populate("item");
+        const promos = await Promo.find({ isArchived: { $ne: true } }).populate("item");
         return promos.filter(promo => promo.item && promo.item.isDeleted !== true);
     }
 
     async getPromoById(promoId) {
         const promo = await Promo.findById(promoId).populate("item");
-        if (!promo || !promo.item || promo.item.isDeleted) {
+        if (!promo || !promo.item) {
             throw new Error('Promo not found');
         }
         return promo;
@@ -73,6 +76,9 @@ class PromoService {
     // Check if a promo is currently active
     // Treats stored dates as UTC to ensure consistent timezone handling
     isPromoActive(promo) {
+        if (promo.isArchived) {
+            return false;
+        }
         const now = new Date();
         const startDateTime = new Date(`${promo.startDate}T${promo.startTime}Z`);
         const endDateTime = new Date(`${promo.endDate}T${promo.endTime}Z`);
@@ -82,7 +88,12 @@ class PromoService {
 
     // Get active promo for a specific item
     async getActivePromoForItem(itemId) {
-        const promos = await Promo.find({ item: itemId });
+        const itemActive = await Item.exists({ _id: itemId, isDeleted: { $ne: true } });
+        if (!itemActive) {
+            return null;
+        }
+
+        const promos = await Promo.find({ item: itemId, isArchived: { $ne: true } });
 
         for (const promo of promos) {
             if (this.isPromoActive(promo)) {
@@ -95,7 +106,7 @@ class PromoService {
 
     // Get all active promos
     async getActivePromos() {
-        const allPromos = await Promo.find().populate({
+        const allPromos = await Promo.find({ isArchived: { $ne: true } }).populate({
             path: "item",
             match: { isDeleted: { $ne: true } }
         });
@@ -141,7 +152,7 @@ class PromoService {
 
     // Batch fetch promos for multiple items (optimized for N+1 query prevention)
     async getPromosForItems(itemIds) {
-        const promos = await Promo.find({ item: { $in: itemIds } });
+        const promos = await Promo.find({ item: { $in: itemIds }, isArchived: { $ne: true } });
 
         const activeItems = await Item.find({
             _id: { $in: itemIds },
@@ -175,8 +186,22 @@ class PromoService {
     }
 
 
-    async removePromosForItem(itemId) {
-        await Promo.deleteMany({ item: itemId });
+    async archivePromosForItem(itemId) {
+        const now = new Date();
+        const isoString = now.toISOString();
+        const [datePart, timePart] = isoString.split('T');
+        const hhmm = timePart.slice(0, 5);
+
+        await Promo.updateMany(
+            { item: itemId, isArchived: { $ne: true } },
+            {
+                isArchived: true,
+                archivedAt: now,
+                archivedReason: 'Item deleted',
+                endDate: datePart,
+                endTime: hhmm
+            }
+        );
     }
 
     // Calculate pricing in-memory (no database query)
