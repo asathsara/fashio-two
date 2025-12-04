@@ -5,9 +5,6 @@ import { useMyOrders } from '@/hooks/useOrders';
 import { Spinner } from '@/components/common/Spinner';
 import ProfileOrderCard from '@/components/client/profile/ProfileOrderCard';
 import { ComponentErrorBoundary } from '@/error-boundaries/ComponentErrorBoundary';
-import { Suspense } from 'react';
-import { ComponentLoadingFallback } from '@/components/common/LazyLoadingFallback';
-
 const OrderHistoryTab = () => {
     const navigate = useNavigate();
     const { data: orders, isLoading } = useMyOrders();
@@ -56,9 +53,7 @@ const OrderHistoryTab = () => {
                 <ComponentErrorBoundary
                     name={`order ${order._id}`}
                 >
-                    <Suspense fallback={<ComponentLoadingFallback />}>
-                        <ProfileOrderCard key={order._id} order={order} />
-                    </Suspense>
+                    <ProfileOrderCard key={order._id} order={order} />
                 </ComponentErrorBoundary>
             ))}
         </div>
