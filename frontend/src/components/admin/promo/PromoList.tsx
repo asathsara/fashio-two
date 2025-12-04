@@ -6,7 +6,7 @@ import { usePromoList } from '@/hooks/admin/usePromoList';
 import type { PromoFilter } from '@/hooks/admin/usePromoList';
 import { Spinner } from '@/components/common/Spinner';
 import type { PromoWithItem } from '@/types/promo';
-import { PromoCard } from './PromoCard';
+import { PromoCard } from './promo-card/PromoCard';
 import { ComponentErrorBoundary } from '@/error-boundaries';
 import { useTogglePromoStatus } from '@/hooks/usePromos';
 
