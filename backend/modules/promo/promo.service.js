@@ -199,9 +199,6 @@ class PromoService {
 
     async archivePromosForItem(itemId) {
         const now = new Date();
-        const isoString = now.toISOString();
-        const [datePart, timePart] = isoString.split('T');
-        const hhmm = timePart.slice(0, 5);
 
         await Promo.updateMany(
             { item: itemId, isArchived: { $ne: true } },
@@ -211,8 +208,7 @@ class PromoService {
                 archivedReason: 'Item deleted',
                 isPaused: true,
                 pausedAt: now,
-                endDate: datePart,
-                endTime: hhmm
+                // endDate and endTime are intentionally not modified
             }
         );
     }
