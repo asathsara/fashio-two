@@ -142,13 +142,23 @@ class PromoService {
     // Batch fetch promos for multiple items (optimized for N+1 query prevention)
     async getPromosForItems(itemIds) {
         const promos = await Promo.find({ item: { $in: itemIds } });
-        const activeItems = await Item.find({ _id: { $in: itemIds }, isDeleted: { $ne: true } }).select('_id');
+
+        const activeItems = await Item.find({
+            _id: { $in: itemIds },
+            isDeleted: { $ne: true }
+        })
+            .select('_id')
+            .lean();
+
         const activeItemSet = new Set(activeItems.map(item => item._id.toString()));
 
-        // Filter only active promos and map to include itemId for easy lookup
         const activePromos = [];
+
         for (const promo of promos) {
-            if (activeItemSet.has(promo.item.toString()) && this.isPromoActive(promo)) {
+            const isActiveItem = activeItemSet.has(promo.item.toString());
+            const isActivePromo = this.isPromoActive(promo);
+
+            if (isActiveItem && isActivePromo) {
                 activePromos.push({
                     itemId: promo.item,
                     _id: promo._id,
@@ -163,6 +173,7 @@ class PromoService {
 
         return activePromos;
     }
+
 
     async removePromosForItem(itemId) {
         await Promo.deleteMany({ item: itemId });
