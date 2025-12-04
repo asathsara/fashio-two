@@ -6,6 +6,7 @@ import { PromoDetail } from './PromoDetail';
 
 import type { PromoWithItem } from '@/types/promo';
 import type { PromoStatus } from '@/hooks/admin/usePromoList';
+import { formatISODateTime } from '@/utils/datetime';
 
 interface PromoCardProps {
     promo: PromoWithItem;
@@ -28,15 +29,8 @@ export const PromoCard = ({
     const promoId = promo._id ?? '';
     const itemName = promo.item?.name ?? 'Unavailable item';
 
-     const formatMetadataTimestamp = (iso?: string | null) => {
-        if (!iso) return null;
-        const [datePart, timePart] = iso.split('T');
-        const time = timePart?.split('.')[0] ?? '00:00:00';
-        return formatDateTime(datePart, time);
-    };
-
-    const metadataPausedAt = formatMetadataTimestamp(promo.pausedAt ?? undefined);
-    const metadataArchivedAt = formatMetadataTimestamp(promo.archivedAt ?? undefined);
+    const metadataPausedAt = formatISODateTime(promo.pausedAt ?? undefined);
+    const metadataArchivedAt = formatISODateTime(promo.archivedAt ?? undefined);
 
     const handleEdit = () => {
         if (!promoId) return;
