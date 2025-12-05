@@ -6,7 +6,8 @@ import { buildImageSrc, getImageUrl } from '@/utils/image';
 import { SmartImage } from '@/components/common/SmartImage';
 import { QuantityController } from '@/components/common/QuantityController';
 import { ConfirmDialog } from '@/components/common/ConfirmDialog';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useDebounce } from '@/hooks/useDebounce';
 
 interface CartItemProps {
     item: CartItemType;
@@ -25,12 +26,35 @@ export const CartItem = ({ item, onUpdateQuantity, onRemove }: CartItemProps) =>
     const totalSavings = item.discount * item.quantity;
     const itemId = item.item._id || "";
 
+    const [localQuantity, setLocalQuantity] = useState(item.quantity);
+
+    useEffect(() => {
+        setLocalQuantity(item.quantity);
+    }, [item.quantity]);
+
+    const debouncedUpdate = useDebounce(async (quantity: number) => {
+        try {
+            await onUpdateQuantity(itemId, item.size, quantity);
+        } catch (error) {
+            setLocalQuantity(item.quantity); // rollback on error
+            console.error(error);
+        }
+    }, 400);
+
     const handleIncrease = () => {
-        onUpdateQuantity(itemId, item.size, item.quantity + 1);
+        if (localQuantity < item.item.stock) {
+            const newQuantity = localQuantity + 1;
+            setLocalQuantity(newQuantity);
+            debouncedUpdate(newQuantity);
+        }
     };
 
     const handleDecrease = () => {
-        onUpdateQuantity(itemId, item.size, item.quantity - 1);
+        if (localQuantity > 1) {
+            const newQuantity = localQuantity - 1;
+            setLocalQuantity(newQuantity);
+            debouncedUpdate(newQuantity);
+        }
     };
 
     return (
@@ -100,7 +124,7 @@ export const CartItem = ({ item, onUpdateQuantity, onRemove }: CartItemProps) =>
 
                 <div className="mt-6">
                     <QuantityController
-                        quantity={item.quantity}
+                        quantity={localQuantity}
                         maxQuantity={item.item.stock}
                         onIncrease={handleIncrease}
                         onDecrease={handleDecrease}

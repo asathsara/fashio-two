@@ -39,7 +39,6 @@ export const CartPage = () => {
     };
 
     const handleCheckout = () => {
-        // TODO: Navigate to checkout page when implemented
         navigate('/checkout');
     };
 
