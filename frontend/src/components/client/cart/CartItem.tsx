@@ -21,12 +21,13 @@ export const CartItem = ({ item, onUpdateQuantity, onRemove }: CartItemProps) =>
     const [itemToDelete, setItemToDelete] = useState<CartItemType | null>(null);
     const imageUrl = getImageUrl(item.item, item.selectedImageIndex);
 
+    const [localQuantity, setLocalQuantity] = useState(item.quantity);
+
     const hasDiscount = item.discount > 0;
-    const itemTotal = item.appliedPrice * item.quantity;
+    const itemTotal = item.appliedPrice * localQuantity;
     const totalSavings = item.discount * item.quantity;
     const itemId = item.item._id || "";
-
-    const [localQuantity, setLocalQuantity] = useState(item.quantity);
+    const reachedMaxStock = localQuantity >= item.item.stock;
 
     useEffect(() => {
         setLocalQuantity(item.quantity);
@@ -39,7 +40,7 @@ export const CartItem = ({ item, onUpdateQuantity, onRemove }: CartItemProps) =>
             setLocalQuantity(item.quantity); // rollback on error
             console.error(error);
         }
-    }, 400);
+    }, 250);
 
     const handleIncrease = () => {
         if (localQuantity < item.item.stock) {
@@ -102,7 +103,7 @@ export const CartItem = ({ item, onUpdateQuantity, onRemove }: CartItemProps) =>
                     </p>
                 )}
 
-                {item.quantity >= item.item.stock && (
+                {reachedMaxStock && (
                     <p className="text-sm text-red-600 mt-2">Max stock reached</p>
                 )}
             </div>
