@@ -41,7 +41,7 @@ export const publicRoutes: NavItem[] = [
         showInNav: true,
     },
     {
-        path: "/items/:id",
+        path: "/items/:slug",
         label: "Item Details",
         element: <ItemDetailPage />,
     },

@@ -14,7 +14,7 @@ const ItemImageGallery = lazy(() => import('@/components/client/details/ItemImag
 const ItemDetailsContent = lazy(() => import('@/components/client/details/ItemDetailsContent'))
 
 const ItemDetailPage = () => {
-    const { id } = useParams<{ id: string }>();
+    const { slug } = useParams<{ slug: string }>();
     const navigate = useNavigate();
 
     const {
@@ -29,7 +29,7 @@ const ItemDetailPage = () => {
         cartLoading,
         isAuthenticated,
         pricing,
-    } = useItemDetails(id);
+    } = useItemDetails(slug);
 
     if (isLoading) {
         return <Spinner fullHeight />;

@@ -73,7 +73,7 @@ export const CartItem = ({ item, onUpdateQuantity, onRemove }: CartItemProps) =>
             {/* LEFT COLUMN: Trash button + Image */}
             <div className="flex flex-col items-center gap-3 flex-shrink-0 mt-2">
 
-                <Link to={`/items/${item.item._id}`}>
+                <Link to={`/items/${item.item.slug || item.item._id}`}>
                     <SmartImage
                         src={buildImageSrc(imageUrl)}
                         alt={item.item.name}
@@ -85,7 +85,7 @@ export const CartItem = ({ item, onUpdateQuantity, onRemove }: CartItemProps) =>
 
             {/* MIDDLE: Item info */}
             <div className="flex-1 min-w-0 mt-2">
-                <Link to={`/items/${item.item._id}`} className="hover:underline">
+                <Link to={`/items/${item.item.slug || item.item._id}`} className="hover:underline">
                     <h3 className="font-semibold text-lg truncate">{item.item.name}</h3>
                 </Link>
 
