@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { Trash2, ChevronDown, ChevronUp, Plus, FolderOpen } from "lucide-react";
+import { Trash2, ChevronDown, ChevronUp, Plus, FolderOpen, Loader2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,6 +19,7 @@ interface CategoryItemProps {
   onAddSubItem: (categoryId: string, subItemName: string) => void;
   onDelete: (categoryId: string) => void;
   onDeleteSubCategory: (categoryId: string, subCategoryId: string) => void;
+  isAddingSubCategory?: boolean;
 }
 
 const CategoryItem = ({
@@ -26,6 +27,7 @@ const CategoryItem = ({
   onAddSubItem,
   onDelete,
   onDeleteSubCategory,
+  isAddingSubCategory = false,
 }: CategoryItemProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -139,16 +141,21 @@ const CategoryItem = ({
                     placeholder="Add a subcategory..."
                     className="flex-1"
                     onClick={(e) => e.stopPropagation()}
+                    disabled={isAddingSubCategory}
                   />
                   <Button
                     onClick={(e) => {
                       e.stopPropagation();
                       handleAddSubItem();
                     }}
-                    disabled={!subItemValue.trim()}
+                    disabled={!subItemValue.trim() || isAddingSubCategory}
                     className="gap-2"
                   >
-                    <Plus className="w-4 h-4" />
+                    {isAddingSubCategory ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <Plus className="w-4 h-4" />
+                    )}
                     Add
                   </Button>
                 </div>
