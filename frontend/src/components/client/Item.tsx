@@ -17,7 +17,7 @@ const ItemCard = ({ item }: ItemCardProps) => {
   const pricing = getItemPricing(item);
 
   const handleClick = () => {
-    navigate(`/items/${item._id}`);
+    navigate(`/items/${item.slug || item._id}`);
   };
 
   return (

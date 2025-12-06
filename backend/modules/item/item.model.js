@@ -10,6 +10,7 @@ const ItemSchema = new Schema({
     subCategory: { type: Schema.Types.ObjectId, ref: 'SubCategory', required: true },
     sizes: { type: [String], required: true },
     description: { type: String },
+    slug: { type: String, unique: true, index: true, sparse: true },
     createdAt: { type: Date, default: Date.now },
     isDeleted: { type: Boolean, default: false, index: true },
     deletedAt: { type: Date, default: null }

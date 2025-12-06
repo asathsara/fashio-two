@@ -65,6 +65,7 @@ const updateItemValidation = [
 router.post("/add", upload.array("images", 4), itemValidation, (req, res) => itemController.addItem(req, res));
 
 // Read
+router.get("/slug/:slug", (req, res) => itemController.getItemBySlug(req, res));
 router.get("/", (req, res) => itemController.getAllItems(req, res));
 router.get("/:id", (req, res) => itemController.getItemById(req, res));
 router.get("/:itemId/image/:index", (req, res) => itemController.getItemImage(req, res));
