@@ -2,6 +2,7 @@ import Item from './item.model.js';
 import Category from '../category/category.model.js';
 import PromoService from '../promo/promo.service.js';
 import Cart from '../cart/cart.model.js';
+import slugify from 'slugify';
 
 class ItemService {
     constructor() {
@@ -71,9 +72,12 @@ class ItemService {
         // Parse sizes if it's a JSON string
         const sizes = typeof itemData.sizes === 'string' ? JSON.parse(itemData.sizes) : itemData.sizes;
 
+        const slug = slugify(itemData.name, { lower: true, strict: true });
+
         const item = new Item({
             images: imageObjects,
             name: itemData.name,
+            slug: slug,
             price: itemData.price,
             stock: itemData.stock,
             category: category._id,
@@ -97,9 +101,19 @@ class ItemService {
         return itemsWithPromo;
     }
 
-    // Get one item
+    // Get one item by ID
     async getItemById(itemId) {
         const item = await Item.findOne({ _id: itemId, isDeleted: { $ne: true } })
+            .select('-images.data')
+            .populate('category', 'name subCategories');
+
+        if (!item) throw new Error('Item not found');
+        return this.buildItemResponse(item);
+    }
+
+    // Get one item by Slug
+    async getItemBySlug(slug) {
+        const item = await Item.findOne({ slug: slug, isDeleted: { $ne: true } })
             .select('-images.data')
             .populate('category', 'name subCategories');
 
@@ -162,7 +176,10 @@ class ItemService {
             throw new Error('At least one image is required');
         }
 
-        if (itemData.name) item.name = itemData.name;
+        if (itemData.name) {
+            item.name = itemData.name;
+            item.slug = slugify(itemData.name, { lower: true, strict: true });
+        }
         if (itemData.price) item.price = itemData.price;
         if (itemData.stock !== undefined) item.stock = itemData.stock;
         if (itemData.sizes) {

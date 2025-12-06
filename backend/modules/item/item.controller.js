@@ -75,6 +75,20 @@ class ItemController {
         }
     }
 
+    // Read by slug
+    async getItemBySlug(req, res) {
+        try {
+            const item = await itemService.getItemBySlug(req.params.slug);
+            res.status(200).json(item);
+        } catch (error) {
+            console.error('Get item by slug error:', error);
+            if (error.message === 'Item not found') {
+                return res.status(404).json({ message: error.message });
+            }
+            res.status(500).json({ message: 'Failed to fetch item', error: error.message });
+        }
+    }
+
     // Update
     async updateItem(req, res) {
         try {
