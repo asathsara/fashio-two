@@ -12,7 +12,7 @@ interface PromoProviderProps {
 
 export const PromoProvider = ({ children }: PromoProviderProps) => {
   const { data: itemsData = [], isLoading: itemsLoading } = useItems();
-  const { data: promosData = [], isLoading: promosLoading } = usePromos();
+  const { data: promosData = [], isLoading: promosLoading, isFetching: isPromosFetching } = usePromos();
 
   // Map Item[] to PromoSelectableItem[] - only pick the needed fields
   const items: PromoSelectableItem[] = itemsData.map(item => ({
@@ -49,7 +49,7 @@ export const PromoProvider = ({ children }: PromoProviderProps) => {
   const value: PromoContextValue = {
     items,
     promos: promosData,
-    isLoading: itemsLoading || promosLoading,
+    isLoading: itemsLoading || promosLoading || isPromosFetching,
     calculateDiscountedPrice,
     getItemPricing
   };
