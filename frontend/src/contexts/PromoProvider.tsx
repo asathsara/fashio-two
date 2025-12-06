@@ -4,7 +4,7 @@ import type { PromoSelectableItem } from "@/types/promo";
 import type { Item } from "@/types/item";
 import type { ReactNode } from "react";
 import { PromoContext, type PromoContextValue } from "./PromoContext";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 
 interface PromoProviderProps {
   children: ReactNode;
@@ -15,11 +15,11 @@ export const PromoProvider = ({ children }: PromoProviderProps) => {
   const { data: promosData = [], isLoading: promosLoading, isFetching: isPromosFetching } = usePromos();
 
   // Map Item[] to PromoSelectableItem[] - only pick the needed fields
-  const items: PromoSelectableItem[] = itemsData.map(item => ({
+  const items: PromoSelectableItem[] = useMemo(() => itemsData.map(item => ({
     _id: item._id,
     name: item.name,
     category: item.category,
-  }));
+  })), [itemsData]);
 
   // Calculate discounted price
   const calculateDiscountedPrice = useCallback((originalPrice: number, discountPercentage: string): number => {
@@ -46,13 +46,13 @@ export const PromoProvider = ({ children }: PromoProviderProps) => {
     };
   }, []);
 
-  const value: PromoContextValue = {
+  const value: PromoContextValue = useMemo(() => ({
     items,
     promos: promosData,
     isLoading: itemsLoading || promosLoading || isPromosFetching,
     calculateDiscountedPrice,
     getItemPricing
-  };
+  }), [items, promosData, itemsLoading, promosLoading, isPromosFetching, calculateDiscountedPrice, getItemPricing]);
 
   return <PromoContext.Provider value={value}>{children}</PromoContext.Provider>;
 };

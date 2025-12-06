@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tag } from 'lucide-react';
@@ -14,6 +15,14 @@ interface PromoListProps {
   onEditPromo: (promo: PromoWithItem) => void;
 }
 
+const filterOptions: { label: string; value: PromoFilter }[] = [
+  { label: 'All', value: 'all' },
+  { label: 'Active', value: 'active' },
+  { label: 'Upcoming', value: 'upcoming' },
+  { label: 'Not Active', value: 'not-active' },
+  { label: 'Archived', value: 'archived' },
+];
+
 export const PromoList = ({ onEditPromo }: PromoListProps) => {
   const { promos, isLoading } = usePromoData();
   const {
@@ -27,18 +36,10 @@ export const PromoList = ({ onEditPromo }: PromoListProps) => {
 
   const filteredPromos = filterPromos(promos);
 
-  const handlePromoStatusToggle = (promo: PromoWithItem) => {
+  const handlePromoStatusToggle = useCallback((promo: PromoWithItem) => {
     if (!promo._id) return;
     togglePromoStatus.mutate({ id: promo._id, isPaused: !promo.isPaused });
-  };
-
-  const filterOptions: { label: string; value: PromoFilter }[] = [
-    { label: 'All', value: 'all' },
-    { label: 'Active', value: 'active' },
-    { label: 'Upcoming', value: 'upcoming' },
-    { label: 'Not Active', value: 'not-active' },
-    { label: 'Archived', value: 'archived' },
-  ];
+  }, [togglePromoStatus]);
 
   return (
     <>

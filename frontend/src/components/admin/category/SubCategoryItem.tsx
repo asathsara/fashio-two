@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { Trash2, Tag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/common/ConfirmDialog";
@@ -11,7 +11,7 @@ type SubCategoryItemProps = {
   onDeleteSubCategory: () => void;
 };
 
-const SubCategoryItem = ({ subCategory, onDeleteSubCategory }: SubCategoryItemProps) => {
+const SubCategoryItem = memo(({ subCategory, onDeleteSubCategory }: SubCategoryItemProps) => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const isProtected = Boolean(subCategory.hasAssignedItems);
 
@@ -62,6 +62,6 @@ const SubCategoryItem = ({ subCategory, onDeleteSubCategory }: SubCategoryItemPr
       />
     </>
   );
-};
+});
 
 export default SubCategoryItem;
