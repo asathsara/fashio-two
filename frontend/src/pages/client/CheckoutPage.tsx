@@ -37,7 +37,7 @@ export const CheckoutPage = () => {
     }, [cart]);
 
     const handlePlaceOrder = async () => {
-        if (!address || !cart || cart.items.length === 0 || createOrder.isPending) {
+        if (!address || !cart || cart.items.length === 0 || createOrder.isPending || loading) {
             return;
         }
 
@@ -128,7 +128,7 @@ export const CheckoutPage = () => {
                             itemCount={itemCount}
                             paymentMethod={paymentMethod}
                             notes={notes}
-                            disabled={!address}
+                            disabled={!address || loading}
                             loading={createOrder.isPending}
                             onNotesChange={setNotes}
                             onPaymentMethodChange={setPaymentMethod}

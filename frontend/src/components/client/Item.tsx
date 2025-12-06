@@ -1,5 +1,6 @@
 import type { Item } from "../../types/item";
 import { useNavigate } from "react-router-dom";
+import { memo } from "react";
 import { SmartImage } from "@/components/common/SmartImage";
 import { buildImageSrc, getImageUrl } from "@/utils/image";
 import { usePromoData } from "@/hooks/usePromoData";
@@ -59,4 +60,4 @@ const ItemCard = ({ item }: ItemCardProps) => {
   );
 };
 
-export default ItemCard;
+export default memo(ItemCard);

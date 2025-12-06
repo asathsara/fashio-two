@@ -7,6 +7,7 @@ import { PromoDetail } from './PromoDetail';
 import type { PromoWithItem } from '@/types/promo';
 import type { PromoStatus } from '@/hooks/admin/usePromoList';
 import { formatISODateTime } from '@/utils/datetime';
+import { memo } from 'react';
 
 interface PromoCardProps {
     promo: PromoWithItem;
@@ -17,7 +18,7 @@ interface PromoCardProps {
     isStatusUpdating?: boolean;
 }
 
-export const PromoCard = ({
+export const PromoCard = memo(({
     promo,
     status,
     formatDateTime,
@@ -111,4 +112,4 @@ export const PromoCard = ({
             )}
         </div>
     );
-};
+});

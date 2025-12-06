@@ -1,10 +1,12 @@
+import { memo } from "react";
+
 interface CategoryPillProps {
     label: string;
     active: boolean;
     onClick: () => void;
 }
 
-export const CategoryPill = ({ label, active, onClick }: CategoryPillProps) => (
+export const CategoryPill = memo(({ label, active, onClick }: CategoryPillProps) => (
     <button
         type="button"
         onClick={onClick}
@@ -16,4 +18,4 @@ export const CategoryPill = ({ label, active, onClick }: CategoryPillProps) => (
     >
         {label}
     </button>
-);
+));

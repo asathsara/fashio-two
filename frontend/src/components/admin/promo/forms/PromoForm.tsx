@@ -4,6 +4,7 @@ import { promoSchema, type PromoFormData } from "@/schemas/promoSchema";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
 import { PromoDateTimePicker } from "./PromoDateTimePicker";
 import { PromoItemSelect } from "./PromoItemSelect";
 import type { PromoFormProps } from "@/types/promo";
@@ -57,9 +58,6 @@ export const PromoForm = ({
   });
 
   const isSubmitting = isEditMode ? isUpdatePending : isCreatePending;
-  const primaryButtonLabel = isEditMode
-    ? isUpdatePending ? "Updating..." : "Update Promotion"
-    : isCreatePending ? "Creating..." : "Create Promotion";
 
   return (
     <Card>
@@ -101,7 +99,14 @@ export const PromoForm = ({
             disabled={isLoading || Boolean(isSubmitting)}
             className="w-full flex-1"
           >
-            {isLoading ? "Loading..." : primaryButtonLabel}
+            {isSubmitting ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                {isEditMode ? "Updating..." : "Creating..."}
+              </>
+            ) : (
+              isEditMode ? "Update Promotion" : "Create Promotion"
+            )}
           </Button>
         </div>
       </CardContent>
