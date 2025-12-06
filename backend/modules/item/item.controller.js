@@ -26,6 +26,13 @@ class ItemController {
                 return res.status(400).json({ message: error.message });
             }
 
+            // Handle duplicate slug error
+            if (error.code === 11000 && error.keyPattern?.slug) {
+                return res.status(400).json({
+                    message: "An item with this name already exists. Please choose a different name."
+                });
+            }
+
             res.status(500).json({ message: 'Failed to add item', error: error.message });
         }
     }
@@ -109,6 +116,13 @@ class ItemController {
                 'At least one image is required'
             ].includes(error.message)) {
                 return res.status(400).json({ message: error.message });
+            }
+
+            // Handle duplicate slug error
+            if (error.code === 11000 && error.keyPattern?.slug) {
+                return res.status(400).json({
+                    message: "An item with this name already exists. Please choose a different name."
+                });
             }
 
             res.status(500).json({ message: 'Failed to update item', error: error.message });
