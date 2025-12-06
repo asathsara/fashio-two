@@ -6,7 +6,7 @@ import { buildImageSrc, getImageUrl } from '@/utils/image';
 import { SmartImage } from '@/components/common/SmartImage';
 import { QuantityController } from '@/components/common/QuantityController';
 import { ConfirmDialog } from '@/components/common/ConfirmDialog';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useDebounce } from '@/hooks/useDebounce';
 
 interface CartItemProps {
@@ -22,6 +22,7 @@ export const CartItem = ({ item, onUpdateQuantity, onRemove }: CartItemProps) =>
     const imageUrl = getImageUrl(item.item, item.selectedImageIndex);
 
     const [localQuantity, setLocalQuantity] = useState(item.quantity);
+    const lastInteractionTime = useRef<number>(0);
 
     const hasDiscount = item.discount > 0;
     const itemTotal = item.appliedPrice * localQuantity;
@@ -30,7 +31,13 @@ export const CartItem = ({ item, onUpdateQuantity, onRemove }: CartItemProps) =>
     const reachedMaxStock = localQuantity >= item.item.stock;
 
     useEffect(() => {
-        setLocalQuantity(item.quantity);
+        // Only sync from server if user hasn't interacted recently (e.g. last 2 seconds)
+        // This prevents "echo" updates from the server overwriting optimistic local state
+        // while the user is still clicking rapidly.
+        const timeSinceInteraction = Date.now() - lastInteractionTime.current;
+        if (timeSinceInteraction > 2000) {
+            setLocalQuantity(item.quantity);
+        }
     }, [item.quantity]);
 
     const debouncedUpdate = useDebounce(async (quantity: number) => {
@@ -40,10 +47,11 @@ export const CartItem = ({ item, onUpdateQuantity, onRemove }: CartItemProps) =>
             setLocalQuantity(item.quantity); // rollback on error
             console.error(error);
         }
-    }, 250);
+    }, 1000);
 
     const handleIncrease = () => {
         if (localQuantity < item.item.stock) {
+            lastInteractionTime.current = Date.now();
             const newQuantity = localQuantity + 1;
             setLocalQuantity(newQuantity);
             debouncedUpdate(newQuantity);
@@ -52,6 +60,7 @@ export const CartItem = ({ item, onUpdateQuantity, onRemove }: CartItemProps) =>
 
     const handleDecrease = () => {
         if (localQuantity > 1) {
+            lastInteractionTime.current = Date.now();
             const newQuantity = localQuantity - 1;
             setLocalQuantity(newQuantity);
             debouncedUpdate(newQuantity);
