@@ -20,7 +20,7 @@ export const useItemDetails = (itemId: string | undefined) => {
         enabled: !!itemId,
     });
 
-    const handleAddToCart = async () => {
+    const handleAddToCart = async (quantity: number = 1) => {
         if (!isAuthenticated) {
             navigate('/login');
             return;
@@ -31,7 +31,7 @@ export const useItemDetails = (itemId: string | undefined) => {
         try {
             await addToCart({
                 itemId,
-                quantity: 1,
+                quantity,
                 size: selectedSize,
                 selectedImageIndex,
             });
