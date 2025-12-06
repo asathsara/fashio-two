@@ -25,7 +25,7 @@ export const CartItem = ({ item, onUpdateQuantity, onRemove }: CartItemProps) =>
 
     const hasDiscount = item.discount > 0;
     const itemTotal = item.appliedPrice * localQuantity;
-    const totalSavings = item.discount * item.quantity;
+    const totalSavings = item.discount * localQuantity;
     const itemId = item.item._id || "";
     const reachedMaxStock = localQuantity >= item.item.stock;
 
