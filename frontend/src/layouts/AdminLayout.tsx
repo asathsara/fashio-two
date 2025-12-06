@@ -11,7 +11,7 @@ const AdminLayout = () => {
     const toggleDrawer = () => setIsDrawerOpen(!isDrawerOpen)
 
     return (
-        <div className="flex h-screen">
+        <div className="flex h-full overflow-hidden">
             {/* Desktop Navigation Rail */}
             <div className="hidden md:block h-full">
                 <NavigationRail routes={adminNavRoutes} />

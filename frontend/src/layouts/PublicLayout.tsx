@@ -17,7 +17,7 @@ const PublicLayout = () => {
 
     return (
         <SearchProvider>
-            <div className="flex flex-col min-h-screen">
+            <div className="flex flex-col h-full overflow-y-auto">
                 <Navbar onOpenDrawer={toggleDrawer} />
                 <NavigationDrawer
                     routes={publicNavRoutes}
