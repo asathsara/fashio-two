@@ -1,5 +1,6 @@
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { ConfirmDialog } from '@/components/common/ConfirmDialog';
 import { Button } from '@/components/ui/button';
 import { Tag } from 'lucide-react';
 import { usePromoData } from '@/hooks/usePromoData';
@@ -9,7 +10,7 @@ import { Spinner } from '@/components/common/Spinner';
 import type { PromoWithItem } from '@/types/promo';
 import { PromoCard } from './promo-card/PromoCard';
 import { ComponentErrorBoundary } from '@/error-boundaries';
-import { useTogglePromoStatus } from '@/hooks/usePromos';
+import { useTogglePromoStatus, useDeletePromo } from '@/hooks/usePromos';
 
 interface PromoListProps {
   onEditPromo: (promo: PromoWithItem) => void;
@@ -33,6 +34,10 @@ export const PromoList = ({ onEditPromo }: PromoListProps) => {
     filterPromos,
   } = usePromoList();
   const togglePromoStatus = useTogglePromoStatus();
+  const deletePromo = useDeletePromo();
+
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [promoToDelete, setPromoToDelete] = useState<PromoWithItem | null>(null);
 
   const filteredPromos = filterPromos(promos);
 
@@ -41,8 +46,30 @@ export const PromoList = ({ onEditPromo }: PromoListProps) => {
     togglePromoStatus.mutate({ id: promo._id, isPaused: !promo.isPaused });
   }, [togglePromoStatus]);
 
+  const handleDeleteClick = useCallback((promo: PromoWithItem) => {
+    setPromoToDelete(promo);
+    setDeleteDialogOpen(true);
+  }, []);
+
+  const handleConfirmDelete = () => {
+    if (promoToDelete?._id) {
+      deletePromo.mutate(promoToDelete._id);
+      setDeleteDialogOpen(false);
+      setPromoToDelete(null);
+    }
+  };
+
   return (
     <>
+      <ConfirmDialog
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        title="Delete Promotion"
+        description="Are you sure you want to delete this promotion? This action cannot be undone."
+        onConfirm={handleConfirmDelete}
+        confirmLabel="Delete"
+        cancelLabel="Cancel"
+      />
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -76,8 +103,8 @@ export const PromoList = ({ onEditPromo }: PromoListProps) => {
                   formatDateTime={formatDateTime}
                   onEditClick={onEditPromo}
                   onToggleStatus={handlePromoStatusToggle}
+                  onDeleteClick={handleDeleteClick}
                   isStatusUpdating={Boolean(togglePromoStatus.isPending && togglePromoStatus.variables?.id === promo._id)}
-
                 />
               </ComponentErrorBoundary>
             ))

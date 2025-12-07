@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { Calendar, Clock, Percent, Pencil } from 'lucide-react';
+import { Calendar, Clock, Percent, Pencil, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { PromoStatusBadge } from './PromoStatusBadge';
 import { PromoDetail } from './PromoDetail';
@@ -15,6 +15,7 @@ interface PromoCardProps {
     formatDateTime: (date: string, time: string) => string;
     onEditClick: (promo: PromoWithItem) => void;
     onToggleStatus: (promo: PromoWithItem) => void;
+    onDeleteClick: (promo: PromoWithItem) => void;
     isStatusUpdating?: boolean;
 }
 
@@ -24,6 +25,7 @@ export const PromoCard = memo(({
     formatDateTime,
     onEditClick,
     onToggleStatus,
+    onDeleteClick,
     isStatusUpdating
 }: PromoCardProps) => {
 
@@ -40,6 +42,11 @@ export const PromoCard = memo(({
             return;
         }
         onEditClick(promo);
+    };
+
+    const handleDelete = () => {
+        if (!promoId) return;
+        onDeleteClick(promo);
     };
 
     const handleToggle = () => {
@@ -66,15 +73,26 @@ export const PromoCard = memo(({
                     />
                 </div>
 
-                <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={handleEdit}
-                    className="text-muted-foreground hover:text-foreground"
-                    aria-label="Edit promotion"
-                >
-                    <Pencil className="w-4 h-4" />
-                </Button>
+                <div className="flex items-center gap-1">
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={handleEdit}
+                        className="text-muted-foreground hover:text-foreground"
+                        aria-label="Edit promotion"
+                    >
+                        <Pencil className="w-4 h-4" />
+                    </Button>
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={handleDelete}
+                        className="text-destructive hover:text-destructive/90"
+                        aria-label="Delete promotion"
+                    >
+                        <Trash2 className="w-4 h-4" />
+                    </Button>
+                </div>
             </div>
 
             {/* Details */}

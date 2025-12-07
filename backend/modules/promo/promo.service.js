@@ -1,5 +1,6 @@
 import Promo from './promo.model.js';
 import Item from '../item/item.model.js';
+import Order from '../order/order.model.js';
 
 
 class PromoService {
@@ -67,6 +68,11 @@ class PromoService {
 
     // Delete
     async deletePromo(promoId) {
+        const isUsedInOrder = await Order.exists({ 'items.promoId': promoId });
+        if (isUsedInOrder) {
+            throw new Error('Cannot delete promo because it is used in an order');
+        }
+
         const promo = await Promo.findByIdAndDelete(promoId);
         if (!promo) {
             throw new Error('Promo not found');
@@ -228,7 +234,7 @@ class PromoService {
         await promo.save();
         return promo;
 
-        
+
         // Each pause/unpause cycle resets the pausedReason.
         // When unpausing, pausedReason is set to null.
         // When pausing again, the reason is set to "Manually paused" regardless of any previous reason.
