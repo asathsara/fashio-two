@@ -1,5 +1,5 @@
 import User from './auth.model.js';
-import mailService from '../../services/emailService.js';
+import mailService from '../../services/mail/mailService.js';
 
 const { sendVerificationEmail, sendWelcomeEmail, sendPasswordResetEmail } = mailService;
 

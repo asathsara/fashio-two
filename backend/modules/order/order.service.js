@@ -2,7 +2,7 @@ import Order, { ORDER_STATUSES, PAYMENT_STATUSES } from './order.model.js';
 import Cart from '../cart/cart.model.js';
 import { Item } from '../item/index.js';
 import { User } from '../auth/index.js';
-import mailService from '../../services/emailService.js';
+import mailService from '../../services/mail/mailService.js';
 
 class OrderService {
 
