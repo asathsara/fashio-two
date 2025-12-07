@@ -62,7 +62,8 @@ app.use(
     cookie: {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: "none", // Required for cross-site cookies
+      // WARNING: In production, HTTPS is required for 'secure: true' and 'sameSite: "none"' to work.
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
       maxAge: 24 * 60 * 60 * 1000 // 1 day
     },
   })
