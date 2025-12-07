@@ -35,6 +35,7 @@ app.use(helmet({
   contentSecurityPolicy: {
     directives: {
       defaultSrc: ["'self'"],
+      connectSrc: [process.env.FRONTEND_URL || 'http://localhost:5173'], // allow API calls
       imgSrc: ["'self'", "data:", "blob:", process.env.FRONTEND_URL || 'http://localhost:5173'],
     },
   },
@@ -78,8 +79,6 @@ app.use(httpLogger);
 
 // Apply general rate limiting to all routes
 app.use(generalLimiter);
-
-import seedAdmin from './utils/seeder.js';
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/fashio-two')
