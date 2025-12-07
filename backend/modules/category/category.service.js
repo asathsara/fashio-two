@@ -108,8 +108,7 @@ class CategoryService {
             throw new Error('Category not found');
         }
 
-        const subCategory = category.subCategories.id(subCategoryId) ??
-            category.subCategories.find((subItem) => subItem.name === subCategoryId);
+        const subCategory = category.subCategories.id(subCategoryId);
 
         if (!subCategory) {
             throw new Error('Sub-item not found');
