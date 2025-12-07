@@ -30,64 +30,110 @@ pnpm lint
 ```
 src/
 ├── assets/              # Static assets (images, icons)
-├── components/          # Reusable components
-│   ├── admin/          # Admin dashboard components
-│   │   ├── CategoryItem.tsx
-│   │   ├── CategorySelector.tsx
-│   │   ├── Dialog.tsx
-│   │   ├── FormInput.tsx
-│   │   ├── ImageCard.tsx
-│   │   ├── ImageUploader.tsx
+├── components/          # Reusable UI components
+│   ├── admin/          # Admin dashboard components (30+ components)
+│   │   ├── category/   # Category management components
+│   │   ├── item/       # Item/Product components
+│   │   ├── order/      # Order management components
+│   │   ├── promo/      # Promo management components
 │   │   ├── Navbar.tsx
-│   │   ├── NavigationDrawer.tsx
 │   │   ├── NavigationRail.tsx
 │   │   └── ...
-│   ├── client/         # Client-facing components
-│   │   ├── Footer.tsx
-│   │   ├── Item.tsx
-│   │   ├── ItemCategory.tsx
+│   ├── auth/           # Authentication components
+│   │   ├── LoginForm.tsx
+│   │   ├── RegisterForm.tsx
+│   │   └── ProtectedRoute.tsx
+│   ├── client/         # Client-facing components (35+ components)
+│   │   ├── cart/       # Shopping cart components
+│   │   ├── checkout/   # Checkout flow components
+│   │   ├── home/       # Homepage components (Hero, Slider)
+│   │   ├── item/       # Product display components
+│   │   ├── profile/    # User profile components
 │   │   ├── Navbar.tsx
-│   │   ├── NavigationDrawer.tsx
+│   │   ├── Footer.tsx
 │   │   └── ...
-│   └── common/         # Shared components
-│       ├── Dialog.tsx
-│       ├── ProtectedRoute.tsx
-│       └── Spacer.tsx
-├── config/             # Configuration files
-│   └── routes.tsx      # Unified routing configuration
+│   ├── common/         # Shared components
+│   │   ├── Button.tsx
+│   │   ├── Input.tsx
+│   │   ├── Spinner.tsx
+│   │   └── ...
+│   └── ui/             # Radix UI primitives (20+ components)
+│       ├── button.tsx
+│       ├── dialog.tsx
+│       ├── select.tsx
+│       └── ...
+├── config/             # App configuration
+│   └── routes.tsx      # Unified routing config
 ├── contexts/           # React Context providers
-│   └── AuthContext.tsx # Authentication state
-├── layouts/            # Layout components
-│   ├── AdminLayout.tsx # Admin dashboard layout
-│   └── PublicLayout.tsx # Client-facing layout
-├── pages/              # Page components
+│   ├── auth/           # Auth context & provider
+│   ├── cart/           # Cart context & provider
+│   ├── PromoProvider.tsx
+│   └── ...
+├── error-boundaries/   # Error handling components
+│   ├── AsyncErrorBoundary.tsx
+│   ├── ComponentErrorBoundary.tsx
+│   ├── RouteErrorBoundary.tsx
+│   └── ...
+├── hooks/              # Custom React hooks
+│   ├── admin/          # Admin-specific hooks
+│   ├── auth/           # Auth hooks
+│   ├── useAuthQueries.ts
+│   ├── useCart.ts
+│   ├── useCategories.ts
+│   ├── useItems.ts
+│   ├── useOrders.ts
+│   ├── usePromos.ts
+│   └── ...
+├── layouts/            # Layout wrappers
+│   ├── AdminLayout.tsx
+│   └── PublicLayout.tsx
+├── lib/                # Utility libraries
+│   └── utils.ts        # Helper functions
+├── pages/              # Route page components
 │   ├── admin/          # Admin pages
-│   │   ├── CategoriesInsertPage.tsx
-│   │   ├── ImageSliderManagerPage.tsx
+│   │   ├── CategoriesPage.tsx
+│   │   ├── ImageSliderPage.tsx
 │   │   ├── ItemInsertPage.tsx
 │   │   ├── ItemListPage.tsx
+│   │   ├── OrderDashboardPage.tsx
 │   │   └── PromoAddPage.tsx
-│   └── client/         # Client pages
-│       ├── HomePage.tsx
-│       ├── PromoPage.tsx
-│       ├── HelpPage.tsx
-│       ├── LoginPage.tsx
-│       └── ProfilePage.tsx
+│   ├── client/         # Client pages
+│   │   ├── HomePage.tsx
+│   │   ├── ItemDetailPage.tsx
+│   │   ├── CartPage.tsx
+│   │   ├── CheckoutPage.tsx
+│   │   ├── ProfilePage.tsx
+│   │   ├── PromoPage.tsx
+│   │   └── HelpPage.tsx
+│   └── NotFoundPage.tsx
+├── schemas/            # Zod validation schemas
+│   ├── authSchemas.ts
+│   ├── itemSchemas.ts
+│   └── orderSchemas.ts
 ├── services/           # API service layer
 │   ├── api.ts          # Axios instance
-│   ├── endpoints.ts    # API endpoints
+│   ├── authService.ts
+│   ├── cartService.ts
 │   ├── categoryService.ts
 │   ├── imageService.ts
 │   ├── itemService.ts
-│   └── promoService.ts
-├── types/              # TypeScript type definitions
+│   ├── orderService.ts
+│   ├── promoService.ts
+│   └── userService.ts
+├── types/              # TypeScript definitions
 │   ├── auth.ts
+│   ├── cart.ts
 │   ├── category.ts
-│   ├── image.ts
 │   ├── item.ts
-│   ├── nav.ts
-│   └── promo.ts
-├── App.tsx             # Main app component
+│   ├── order.ts
+│   ├── promo.ts
+│   └── ...
+├── utils/              # Helper utilities
+│   ├── image.ts
+│   ├── promo.ts
+│   └── ...
+├── App.tsx             # Root component
+├── AppRoutes.tsx       # Route definitions
 ├── main.tsx            # Entry point
 └── index.css           # Global styles
 ```
