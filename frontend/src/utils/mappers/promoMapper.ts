@@ -1,13 +1,26 @@
 import type { PromoFormData } from "@/schemas/promoSchema";
 import type { Promo, PromoWithItem } from "@/types/promo";
 
+const formatLocalDate = (date: Date) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
+const formatLocalTime = (date: Date) => {
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  return `${hours}:${minutes}`;
+};
+
 // Map form data to Promo type expected by the backend
 export const mapFormToPromo = (data: PromoFormData): Omit<Promo, "_id"> => ({
   item: data.item,
-  startDate: data.startDate.toISOString().split("T")[0],
-  startTime: data.startDate.toISOString().split("T")[1].slice(0, 5),
-  endDate: data.endDate.toISOString().split("T")[0],
-  endTime: data.endDate.toISOString().split("T")[1].slice(0, 5),
+  startDate: formatLocalDate(data.startDate),
+  startTime: formatLocalTime(data.startDate),
+  endDate: formatLocalDate(data.endDate),
+  endTime: formatLocalTime(data.endDate),
   discount: data.discount.toString(),
 });
 

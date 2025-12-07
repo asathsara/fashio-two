@@ -86,8 +86,8 @@ class PromoService {
             return false;
         }
         const now = new Date();
-        const startDateTime = new Date(`${promo.startDate}T${promo.startTime}Z`);
-        const endDateTime = new Date(`${promo.endDate}T${promo.endTime}Z`);
+        const startDateTime = new Date(`${promo.startDate}T${promo.startTime}`);
+        const endDateTime = new Date(`${promo.endDate}T${promo.endTime}`);
 
         return now >= startDateTime && now <= endDateTime;
     }
