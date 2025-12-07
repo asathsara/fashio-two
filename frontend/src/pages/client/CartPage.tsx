@@ -39,7 +39,10 @@ export const CartPage = () => {
     };
 
     const handleCheckout = () => {
-        // TODO: Navigate to checkout page when implemented
+        if (loading) {
+            return;
+        }
+
         navigate('/checkout');
     };
 
@@ -119,6 +122,8 @@ export const CartPage = () => {
                             itemCount={cart.totalItems}
                             onCheckout={handleCheckout}
                             onClearCart={() => setShowClearDialog(true)}
+                            checkoutDisabled={loading}
+                            clearDisabled={loading}
                         />
                     </ComponentErrorBoundary>
                 </div>

@@ -3,10 +3,13 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
+import helmet from 'helmet';
+import compression from 'compression';
 
 
 import passport from './config/passport.js';
 import session from 'express-session';
+import MongoStore from 'connect-mongo';
 import httpLogger from './config/httpLogger.js';
 import logger from './config/logger.js';
 import { authRoutes } from './modules/auth/index.js';
@@ -25,6 +28,18 @@ dotenv.config();
 
 const app = express();
 
+// Security & Performance Middleware
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" },
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      imgSrc: ["'self'", "data:", "blob:", process.env.FRONTEND_URL || 'http://localhost:5173'],
+    },
+  },
+}));
+app.use(compression());
+
 // Middleware
 app.use(cors({
   origin: process.env.FRONTEND_URL || 'http://localhost:5173',
@@ -40,10 +55,16 @@ app.use(
     secret: process.env.SESSION_SECRET || 'supersecret',
     resave: false,
     saveUninitialized: false,
+    store: MongoStore.create({
+      mongoUrl: process.env.MONGO_URI || 'mongodb://localhost:27017/fashio-two',
+      ttl: 24 * 60 * 60 // 1 day
+    }),
     cookie: {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: "none", // Required for cross-site cookies
+      // WARNING: In production, HTTPS is required for 'secure: true' and 'sameSite: "none"' to work.
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+      maxAge: 24 * 60 * 60 * 1000 // 1 day
     },
   })
 );

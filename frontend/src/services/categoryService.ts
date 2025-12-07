@@ -28,9 +28,9 @@ export const insertSubCategory = async (
 
 export const deleteSubCategory = async (
   categoryId: string,
-  subItemName: string): Promise<DeleteSubCategoryResponse> => {
+  subCategoryId: string): Promise<DeleteSubCategoryResponse> => {
   const response = await axiosInstance.delete(
-    API_ENDPOINTS.DELETE_SUBCATEGORY(categoryId, subItemName)
+    API_ENDPOINTS.DELETE_SUBCATEGORY(categoryId, subCategoryId)
   );
   return response.data;
 };

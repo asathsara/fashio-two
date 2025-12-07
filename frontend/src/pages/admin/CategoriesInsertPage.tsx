@@ -1,5 +1,6 @@
 import { useRef } from "react";
 import { FaSearch } from "react-icons/fa";
+import { Loader2 } from "lucide-react";
 
 import CategoryItem from "../../components/admin/category/CategoryItem";
 import { useCategories, useInsertCategory, useDeleteCategory, useInsertSubCategory, useDeleteSubCategory } from "../../hooks/useCategories";
@@ -39,8 +40,8 @@ const CategoriesInsertPage = () => {
     deleteCategoryMutation.mutate(categoryId);
   };
 
-  const handleDeleteSubCategory = (categoryId: string, subCategoryName: string) => {
-    deleteSubCategoryMutation.mutate({ categoryId, subItemName: subCategoryName });
+  const handleDeleteSubCategory = (categoryId: string, subCategoryId: string) => {
+    deleteSubCategoryMutation.mutate({ categoryId, subCategoryId });
   };
 
   if (isLoading) {
@@ -69,9 +70,11 @@ const CategoriesInsertPage = () => {
           />
         </div>
         <button
-          className="bg-black text-backgroundGray px-8 py-2 rounded-full font-semibold font-poppins flex-1 ml-8 h-full text-white cursor-pointer"
+          className="bg-black text-backgroundGray px-8 py-2 rounded-full font-semibold font-poppins flex-1 ml-8 h-full text-white cursor-pointer disabled:opacity-70 flex items-center justify-center gap-2"
           onClick={handleAddCategory}
+          disabled={insertCategoryMutation.isPending}
         >
+          {insertCategoryMutation.isPending && <Loader2 className="w-4 h-4 animate-spin" />}
           ADD
         </button>
       </div>
@@ -88,6 +91,7 @@ const CategoriesInsertPage = () => {
               onAddSubItem={addSubItem}
               onDelete={handleDeleteCategory}
               onDeleteSubCategory={handleDeleteSubCategory}
+              isAddingSubCategory={insertSubCategoryMutation.isPending && insertSubCategoryMutation.variables?.id === category._id}
             />
           ))}
         </div>

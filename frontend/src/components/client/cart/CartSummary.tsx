@@ -9,6 +9,8 @@ interface CartSummaryProps {
     onCheckout: () => void;
     onClearCart: () => void;
     itemCount: number;
+    checkoutDisabled?: boolean;
+    clearDisabled?: boolean;
 }
 
 export const CartSummary = ({
@@ -17,7 +19,9 @@ export const CartSummary = ({
     total,
     onCheckout,
     onClearCart,
-    itemCount
+    itemCount,
+    checkoutDisabled = false,
+    clearDisabled = false
 }: CartSummaryProps) => {
     const hasDiscount = totalDiscount > 0;
 
@@ -62,6 +66,7 @@ export const CartSummary = ({
             <Button
                 onClick={onCheckout}
                 className="w-full mb-3"
+                disabled={checkoutDisabled}
             >
                 Proceed to Checkout
             </Button>
@@ -70,6 +75,7 @@ export const CartSummary = ({
                 onClick={onClearCart}
                 variant="outline"
                 className="w-full"
+                disabled={clearDisabled}
             >
                 Clear Cart
             </Button>

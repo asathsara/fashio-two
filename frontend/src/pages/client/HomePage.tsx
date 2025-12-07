@@ -1,18 +1,16 @@
-import { motion, AnimatePresence } from "framer-motion";
 import DetailsBar from "../../components/client/detailsbar/Detailsbar";
 import { Spinner } from "@/components/common/Spinner";
 import { ErrorMessage } from "@/components/common/ErrorMessage";
 import { useImages } from "@/hooks/useImages";
 import { useCategories } from "@/hooks/useCategories";
 import { useItems } from "@/hooks/useItems";
-import { useImageCarousel } from "@/hooks/useImageCarousel";
-import type { Image } from "@/types/image";
 import { lazy, Suspense } from "react";
 import { ComponentLoadingFallback } from "@/components/common/LazyLoadingFallback";
 import { ComponentErrorBoundary, ComponentFallback } from "@/error-boundaries";
 import { useNavbarSearch } from "@/hooks/useNavbarSearch";
 import { useCategorySections } from "@/hooks/useCategorySections";
-import { CategoryPill } from "@/components/client/CategoryPill";
+import { CategoryPill } from "@/components/client/home/CategoryPill";
+import { HeroSlider } from "@/components/client/home/HeroSlider";
 
 // Lazy load heavy ItemCategory component
 const ItemCategory = lazy(() => import("../../components/client/ItemCategory"));
@@ -23,7 +21,6 @@ const HomePage = () => {
   const { data: categories = [] } = useCategories();
   const { data: items = [], isLoading: loading, error } = useItems();
   const { query } = useNavbarSearch();
-  const { currentImage, index } = useImageCarousel<Image>(images, 5000);
 
   const { selectedCategoryId, categorySections, noResults, handleCategoryClick } = useCategorySections({
     categories,
@@ -35,26 +32,7 @@ const HomePage = () => {
 
   return (
     <div className="flex flex-col w-full">
-      <div className="flex justify-center">
-        {images.length > 0 && (
-          <AnimatePresence mode="wait">
-            <motion.img
-              key={index}
-              src={`${import.meta.env.VITE_API_UPLOAD_IMAGES_URL}${currentImage._id}`}
-              alt={currentImage.filename}
-              className="object-cover w-4/5 md:h-144 sm:min-h-72 min-w-4/5 rounded-2xl mt-8 shadow-sm"
-              initial={{ opacity: 0, x: 100 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -100 }}
-              transition={{
-                type: "spring",
-                stiffness: 100,
-                damping: 20,
-                duration: 1,
-              }}
-            />
-          </AnimatePresence>)}
-      </div>
+      <HeroSlider images={images} interval={5000} />
 
       <DetailsBar className={"mt-8"} />
 

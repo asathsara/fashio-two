@@ -1,4 +1,5 @@
 import { useParams, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import { Spinner } from '@/components/common/Spinner';
 import { ErrorMessage } from '@/components/common/ErrorMessage';
 import { Button } from '@/components/ui/button';
@@ -13,7 +14,7 @@ const ItemImageGallery = lazy(() => import('@/components/client/details/ItemImag
 const ItemDetailsContent = lazy(() => import('@/components/client/details/ItemDetailsContent'))
 
 const ItemDetailPage = () => {
-    const { id } = useParams<{ id: string }>();
+    const { slug } = useParams<{ slug: string }>();
     const navigate = useNavigate();
 
     const {
@@ -28,10 +29,26 @@ const ItemDetailPage = () => {
         cartLoading,
         isAuthenticated,
         pricing,
-    } = useItemDetails(id);
+    } = useItemDetails(slug);
 
     if (isLoading) {
         return <Spinner fullHeight />;
+    }
+
+    const isItemRemoved = axios.isAxiosError(error) && error.response?.status === 404;
+
+    if (isItemRemoved) {
+        return (
+            <div className="container mx-auto px-4 py-8">
+                <ErrorMessage message="This item is no longer available." />
+                <p className="mt-2 text-muted-foreground">
+                    It may have been removed from the catalog, but any past orders remain accessible.
+                </p>
+                <Button onClick={() => navigate('/')} className="mt-4">
+                    Back to shopping
+                </Button>
+            </div>
+        );
     }
 
     if (error || !item || !pricing) {

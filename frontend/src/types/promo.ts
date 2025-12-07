@@ -2,19 +2,29 @@ import type { Item } from "./item";
 
 export interface Promo {
   _id?: string,
-  item: string;          
-  startDate: string;     
-  startTime: string;    
-  endDate: string;     
-  endTime: string;       
-  discount: string;      
+  item: string;
+  startDate: string;
+  startTime: string;
+  endDate: string;
+  endTime: string;
+  discount: string;
+  isArchived?: boolean;
+  archivedAt?: string | null;
+  archivedReason?: string | null;
+  isPaused?: boolean;
+  pausedAt?: string | null;
+  pausedReason?: string | null;
 }
 
 
 export type PromoSelectableItem = Pick<Item, "_id" | "name" | "category">;
 
 export interface PromoFormProps {
-  onSubmit: (promo: Omit<Promo, "_id">) => Promise<void>;
+  editingPromo?: PromoWithItem | null;
+  onSubmit: (promo: Omit<Promo, "_id">, promoId?: string) => void | Promise<void>;
+  onCancelEdit?: () => void;
+  isCreatePending?: boolean;
+  isUpdatePending?: boolean;
 }
 
 export interface PromoWithItem extends Omit<Promo, 'item'> {
@@ -24,7 +34,7 @@ export interface PromoWithItem extends Omit<Promo, 'item'> {
     price: number;
     category: string;
     images: string[];
-  };
+  } | null;
 }
 
 export interface PromoContextValue {

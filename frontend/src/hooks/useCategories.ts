@@ -8,6 +8,7 @@ export const useCategories = () => {
     return useQuery<Category[]>({
         queryKey: ['categories'],
         queryFn: fetchCategories,
+        staleTime: 1000 * 60 * 5, // 5 minutes
     });
 };
 
@@ -60,8 +61,8 @@ export const useDeleteSubCategory = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: ({ categoryId, subItemName }: { categoryId: string; subItemName: string }) =>
-            deleteSubCategory(categoryId, subItemName),
+        mutationFn: ({ categoryId, subCategoryId }: { categoryId: string; subCategoryId: string }) =>
+            deleteSubCategory(categoryId, subCategoryId),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['categories'] });
             toast.success('Subcategory deleted successfully');

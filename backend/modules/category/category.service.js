@@ -1,4 +1,11 @@
 import Category from './category.model.js';
+import Item from '../item/item.model.js';
+
+const buildUsageError = (message) => {
+    const error = new Error(message);
+    error.statusCode = 400;
+    return error;
+};
 
 class CategoryService {
     // Create
@@ -30,7 +37,46 @@ class CategoryService {
     // Read
     async getAllCategories() {
         const categories = await Category.find();
-        return categories;
+        const categoryIds = categories.map((category) => category._id);
+
+        if (categoryIds.length === 0) {
+            return categories;
+        }
+
+        // Load lightweight item references to know which categories/subcategories are in use
+        const items = await Item.find({ category: { $in: categoryIds }, isDeleted: { $ne: true } })
+            .select('category subCategory');
+
+        const categoryUsageMap = new Map();
+        const subCategoryUsageMap = new Map();
+
+        items.forEach((item) => {
+            const catKey = item.category?.toString();
+            if (catKey) {
+                categoryUsageMap.set(catKey, true);
+            }
+
+            if (catKey && item.subCategory) {
+                const subKey = `${catKey}_${item.subCategory.toString()}`;
+                subCategoryUsageMap.set(subKey, true);
+            }
+        });
+
+        return categories.map((category) => {
+            const categoryObj = category.toObject();
+            const catKey = categoryObj._id.toString();
+
+            categoryObj.hasAssignedItems = Boolean(categoryUsageMap.get(catKey));
+            categoryObj.subCategories = categoryObj.subCategories?.map((subCategory) => {
+                const subKey = `${catKey}_${subCategory._id.toString()}`;
+                return {
+                    ...subCategory,
+                    hasAssignedItems: Boolean(subCategoryUsageMap.get(subKey)),
+                };
+            }) ?? [];
+
+            return categoryObj;
+        });
     }
 
     async getCategoryById(categoryId) {
@@ -43,30 +89,42 @@ class CategoryService {
 
     // Delete 
     async deleteCategory(categoryId) {
-        const category = await Category.findByIdAndDelete(categoryId);
-        if (!category) {
-            throw new Error('Category not found');
-        }
-
-    }
-
-    async deleteSubCategory(categoryId, subItemIdentifier) {
         const category = await Category.findById(categoryId);
         if (!category) {
             throw new Error('Category not found');
         }
 
-        const initialLength = category.subCategories.length;
+        const categoryInUse = await Item.exists({ category: categoryId, isDeleted: { $ne: true } });
+        if (categoryInUse) {
+            throw buildUsageError('Cannot delete category while items are assigned to it');
+        }
 
-        // Remove by _id or by name
-        category.subCategories = category.subCategories.filter(
-            (subItem) => subItem._id.toString() !== subItemIdentifier && subItem.name !== subItemIdentifier
-        );
+        await Category.findByIdAndDelete(categoryId);
+    }
 
-        if (category.subCategories.length === initialLength) {
+    async deleteSubCategory(categoryId, subCategoryId) {
+        const category = await Category.findById(categoryId);
+        if (!category) {
+            throw new Error('Category not found');
+        }
+
+        const subCategory = category.subCategories.id(subCategoryId);
+
+        if (!subCategory) {
             throw new Error('Sub-item not found');
         }
 
+        const subCategoryInUse = await Item.exists({
+            category: categoryId,
+            subCategory: subCategory._id,
+            isDeleted: { $ne: true },
+        });
+
+        if (subCategoryInUse) {
+            throw buildUsageError('Cannot delete subcategory while items are assigned to it');
+        }
+
+        category.subCategories.id(subCategory._id)?.deleteOne();
         await category.save();
         return { message: 'Sub-item deleted successfully', subCategories: category.subCategories };
     }

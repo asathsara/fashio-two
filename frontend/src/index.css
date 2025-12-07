@@ -109,6 +109,12 @@
     font-family: var(--font-poppins);
   }
 
+  html,
+  body,
+  #root {
+    @apply h-full w-full overflow-hidden;
+  }
+
   /* Tailwind v4 preflight compatibility for borders */
   *,
   ::before,

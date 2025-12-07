@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { fetchItems, insertItem, updateItem, deleteItem, fetchItemById } from '../services/itemService';
+import { fetchItems, insertItem, updateItem, deleteItem, fetchItemById, fetchItemBySlug } from '../services/itemService';
 import type { Item } from '@/types/item';
 import { toast } from 'sonner';
 import { getErrorMessage } from '@/utils/errorHandler';
@@ -16,6 +16,14 @@ export const useGetItem = (id: string, isEditMode: boolean) => {
         queryKey: ['item', id],
         queryFn: () => fetchItemById(id),
         enabled: isEditMode,
+    });
+};
+
+export const useGetItemBySlug = (slug: string) => {
+    return useQuery<Item>({
+        queryKey: ['item', 'slug', slug],
+        queryFn: () => fetchItemBySlug(slug),
+        enabled: !!slug,
     });
 };
 

@@ -6,7 +6,8 @@ import { buildImageSrc, getImageUrl } from '@/utils/image';
 import { SmartImage } from '@/components/common/SmartImage';
 import { QuantityController } from '@/components/common/QuantityController';
 import { ConfirmDialog } from '@/components/common/ConfirmDialog';
-import { useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
+import { useDebounce } from '@/hooks/useDebounce';
 
 interface CartItemProps {
     item: CartItemType;
@@ -20,17 +21,50 @@ export const CartItem = ({ item, onUpdateQuantity, onRemove }: CartItemProps) =>
     const [itemToDelete, setItemToDelete] = useState<CartItemType | null>(null);
     const imageUrl = getImageUrl(item.item, item.selectedImageIndex);
 
+    const [localQuantity, setLocalQuantity] = useState(item.quantity);
+    const lastInteractionTime = useRef<number>(0);
+
     const hasDiscount = item.discount > 0;
-    const itemTotal = item.appliedPrice * item.quantity;
-    const totalSavings = item.discount * item.quantity;
+    const itemTotal = item.appliedPrice * localQuantity;
+    const totalSavings = item.discount * localQuantity;
     const itemId = item.item._id || "";
+    const reachedMaxStock = localQuantity >= item.item.stock;
+
+    useEffect(() => {
+        // Only sync from server if user hasn't interacted recently (e.g. last 2 seconds)
+        // This prevents "echo" updates from the server overwriting optimistic local state
+        // while the user is still clicking rapidly.
+        const timeSinceInteraction = Date.now() - lastInteractionTime.current;
+        if (timeSinceInteraction > 2000) {
+            setLocalQuantity(item.quantity);
+        }
+    }, [item.quantity]);
+
+    const debouncedUpdate = useDebounce(async (quantity: number) => {
+        try {
+            await onUpdateQuantity(itemId, item.size, quantity);
+        } catch (error) {
+            setLocalQuantity(item.quantity); // rollback on error
+            console.error(error);
+        }
+    }, 1000);
 
     const handleIncrease = () => {
-        onUpdateQuantity(itemId, item.size, item.quantity + 1);
+        if (localQuantity < item.item.stock) {
+            lastInteractionTime.current = Date.now();
+            const newQuantity = localQuantity + 1;
+            setLocalQuantity(newQuantity);
+            debouncedUpdate(newQuantity);
+        }
     };
 
     const handleDecrease = () => {
-        onUpdateQuantity(itemId, item.size, item.quantity - 1);
+        if (localQuantity > 1) {
+            lastInteractionTime.current = Date.now();
+            const newQuantity = localQuantity - 1;
+            setLocalQuantity(newQuantity);
+            debouncedUpdate(newQuantity);
+        }
     };
 
     return (
@@ -39,7 +73,7 @@ export const CartItem = ({ item, onUpdateQuantity, onRemove }: CartItemProps) =>
             {/* LEFT COLUMN: Trash button + Image */}
             <div className="flex flex-col items-center gap-3 flex-shrink-0 mt-2">
 
-                <Link to={`/items/${item.item._id}`}>
+                <Link to={`/items/${item.item.slug || item.item._id}`}>
                     <SmartImage
                         src={buildImageSrc(imageUrl)}
                         alt={item.item.name}
@@ -51,7 +85,7 @@ export const CartItem = ({ item, onUpdateQuantity, onRemove }: CartItemProps) =>
 
             {/* MIDDLE: Item info */}
             <div className="flex-1 min-w-0 mt-2">
-                <Link to={`/items/${item.item._id}`} className="hover:underline">
+                <Link to={`/items/${item.item.slug || item.item._id}`} className="hover:underline">
                     <h3 className="font-semibold text-lg truncate">{item.item.name}</h3>
                 </Link>
 
@@ -78,7 +112,7 @@ export const CartItem = ({ item, onUpdateQuantity, onRemove }: CartItemProps) =>
                     </p>
                 )}
 
-                {item.quantity >= item.item.stock && (
+                {reachedMaxStock && (
                     <p className="text-sm text-red-600 mt-2">Max stock reached</p>
                 )}
             </div>
@@ -100,7 +134,7 @@ export const CartItem = ({ item, onUpdateQuantity, onRemove }: CartItemProps) =>
 
                 <div className="mt-6">
                     <QuantityController
-                        quantity={item.quantity}
+                        quantity={localQuantity}
                         maxQuantity={item.item.stock}
                         onIncrease={handleIncrease}
                         onDecrease={handleDecrease}

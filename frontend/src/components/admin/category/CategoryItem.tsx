@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { Trash2, ChevronDown, ChevronUp, Plus, FolderOpen } from "lucide-react";
+import { Trash2, ChevronDown, ChevronUp, Plus, FolderOpen, Loader2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,12 +12,14 @@ import {
 import SubCategoryItem from "./SubCategoryItem";
 import type { Category } from "../../../types/category";
 import { ConfirmDialog } from "@/components/common/ConfirmDialog";
+import { toast } from "sonner";
 
 interface CategoryItemProps {
   category: Category;
   onAddSubItem: (categoryId: string, subItemName: string) => void;
   onDelete: (categoryId: string) => void;
-  onDeleteSubCategory: (categoryId: string, subCategoryName: string) => void;
+  onDeleteSubCategory: (categoryId: string, subCategoryId: string) => void;
+  isAddingSubCategory?: boolean;
 }
 
 const CategoryItem = ({
@@ -25,11 +27,13 @@ const CategoryItem = ({
   onAddSubItem,
   onDelete,
   onDeleteSubCategory,
+  isAddingSubCategory = false,
 }: CategoryItemProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [subItemValue, setSubItemValue] = useState("");
   const subItemRef = useRef<HTMLInputElement | null>(null);
+  const hasAssignedItems = Boolean(category.hasAssignedItems);
 
   const handleAddSubItem = () => {
     const subItemName = subItemValue.trim();
@@ -43,6 +47,17 @@ const CategoryItem = ({
     if (e.key === "Enter") {
       handleAddSubItem();
     }
+  };
+
+  const handleDeleteCategoryClick = (event: React.MouseEvent) => {
+    event.stopPropagation();
+    if (hasAssignedItems) {
+      toast.error(
+        `Cannot delete ${category.name} because items are assigned to this category.`
+      );
+      return;
+    }
+    setIsDeleteDialogOpen(true);
   };
 
   const handleDeleteCategory = () => {
@@ -63,8 +78,11 @@ const CategoryItem = ({
                     <FolderOpen className="w-4 h-4 text-primary" />
                   </div>
                   <div className="flex items-center gap-2 flex-1">
-                    <h3 className="font-semibold text-foreground text-lg">
+                    <h3 className="font-semibold text-foreground text-lg flex items-center gap-2">
                       {category.name}
+                      {hasAssignedItems && (
+                        <Badge variant="outline">In Use</Badge>
+                      )}
                     </h3>
                     <Badge variant="secondary" className="ml-2">
                       {category.subCategories?.length || 0}
@@ -81,11 +99,10 @@ const CategoryItem = ({
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setIsDeleteDialogOpen(true);
-                }}
-                className="ml-2 text-destructive hover:text-destructive hover:bg-destructive/10"
+                onClick={handleDeleteCategoryClick}
+                aria-disabled={hasAssignedItems}
+                className={`ml-2 text-destructive hover:text-destructive hover:bg-destructive/10 ${hasAssignedItems ? "opacity-50" : ""
+                  }`}
               >
                 <Trash2 className="w-4 h-4" />
               </Button>
@@ -99,10 +116,10 @@ const CategoryItem = ({
                   <div className="space-y-2 mb-4">
                     {category.subCategories.map((subItem) => (
                       <SubCategoryItem
-                        key={subItem.name}
-                        name={subItem.name}
+                        key={subItem._id}
+                        subCategory={subItem}
                         onDeleteSubCategory={() =>
-                          onDeleteSubCategory(category._id, subItem.name)
+                          onDeleteSubCategory(category._id, subItem._id)
                         }
                       />
                     ))}
@@ -124,16 +141,21 @@ const CategoryItem = ({
                     placeholder="Add a subcategory..."
                     className="flex-1"
                     onClick={(e) => e.stopPropagation()}
+                    disabled={isAddingSubCategory}
                   />
                   <Button
                     onClick={(e) => {
                       e.stopPropagation();
                       handleAddSubItem();
                     }}
-                    disabled={!subItemValue.trim()}
+                    disabled={!subItemValue.trim() || isAddingSubCategory}
                     className="gap-2"
                   >
-                    <Plus className="w-4 h-4" />
+                    {isAddingSubCategory ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <Plus className="w-4 h-4" />
+                    )}
                     Add
                   </Button>
                 </div>

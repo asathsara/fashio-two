@@ -11,19 +11,22 @@ const API_ENDPOINTS = {
   ADD_SUBCATEGORY: (id: Id) => `/categories/${id}/sub-categories`,
   DELETE_SUBCATEGORY: (
     categoryId: string,
-    subItemName: string
+    subCategoryId: string
   ) =>
-    `/categories/${categoryId}/sub-categories/${subItemName}`,
+    `/categories/${categoryId}/sub-categories/${subCategoryId}`,
 
   ITEMS: '/items',
   ADD_ITEMS: '/items/add',
   GET_ITEM: (id: Id) => `/items/${id}`,
+  GET_ITEM_BY_SLUG: (slug: string) => `/items/slug/${slug}`,
   UPDATE_ITEM: (id: Id) => `/items/${id}`,
   DELETE_ITEM: (id: Id) => `/items/${id}`,
 
   PROMOS: '/promos',
   ADD_PROMOS: '/promos/add',
   DELETE_PROMO: (id: Id) => `/promos/${id}`,
+  UPDATE_PROMO: (id: Id) => `/promos/${id}`,
+  PROMO_STATUS: (id: Id) => `/promos/${id}/status`,
 
   ORDERS: '/orders',
   ORDER_CHECKOUT: '/orders/checkout',

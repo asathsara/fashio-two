@@ -1,4 +1,5 @@
 import CategoryService from './category.service.js';
+import { validationResult } from 'express-validator';
 
 const categoryService = new CategoryService();
 
@@ -7,6 +8,11 @@ class CategoryController {
     // Create 
     async addCategory(req, res) {
         try {
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                return res.status(400).json({ errors: errors.array() });
+            }
+
             const category = await categoryService.createCategory(req.body.name);
             res.status(201).json(category);
         } catch (error) {
@@ -17,6 +23,11 @@ class CategoryController {
 
     async addSubCategory(req, res) {
         try {
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                return res.status(400).json({ errors: errors.array() });
+            }
+
             const newSubItem = await categoryService.addSubCategory(req.params.id, req.body.name);
             res.status(201).json(newSubItem);
         } catch (error) {
@@ -50,20 +61,26 @@ class CategoryController {
             if (error.message === 'Category not found') {
                 return res.status(404).json({ message: error.message });
             }
+            if (error.statusCode) {
+                return res.status(error.statusCode).json({ message: error.message });
+            }
             res.status(500).json({ message: 'Error deleting category', error: error.message });
         }
     }
 
     async deleteSubCategory(req, res) {
         try {
-            const { id, subItemName } = req.params;
-            const result = await categoryService.deleteSubCategory(id, subItemName);
+            const { id, subCategoryId } = req.params;
+            const result = await categoryService.deleteSubCategory(id, subCategoryId);
             res.json(result);
 
         } catch (error) {
             console.error('Delete subcategory error:', error);
             if (error.message === 'Category not found' || error.message === 'Sub-item not found') {
                 return res.status(404).json({ error: error.message });
+            }
+            if (error.statusCode) {
+                return res.status(error.statusCode).json({ message: error.message });
             }
             res.status(500).json({ message: 'Error deleting subcategory', error: error.message });
         }

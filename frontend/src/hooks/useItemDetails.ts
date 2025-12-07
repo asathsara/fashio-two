@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { fetchItemById } from '@/services/itemService';
+import { fetchItemById, fetchItemBySlug } from '@/services/itemService';
 import { useCart } from '@/hooks/useCart';
 import { useAuth } from '@/hooks/UseAuth';
 import { usePromoData } from '@/hooks/usePromoData';
 
-export const useItemDetails = (itemId: string | undefined) => {
+export const useItemDetails = (slugOrId: string | undefined) => {
     const navigate = useNavigate();
     const [selectedSize, setSelectedSize] = useState<string>('');
     const [selectedImageIndex, setSelectedImageIndex] = useState(0);
@@ -14,24 +14,29 @@ export const useItemDetails = (itemId: string | undefined) => {
     const { isAuthenticated } = useAuth();
     const { getItemPricing } = usePromoData();
 
+    // specific check for 24-char hex string (ObjectId)
+    const isObjectId = slugOrId && /^[0-9a-fA-F]{24}$/.test(slugOrId);
+
     const { data: item, isLoading, error } = useQuery({
-        queryKey: ['item', itemId],
-        queryFn: () => fetchItemById(itemId!),
-        enabled: !!itemId,
+        queryKey: ['item', slugOrId],
+        queryFn: () => isObjectId
+            ? fetchItemById(slugOrId!)
+            : fetchItemBySlug(slugOrId!),
+        enabled: !!slugOrId,
     });
 
-    const handleAddToCart = async () => {
+    const handleAddToCart = async (quantity: number = 1) => {
         if (!isAuthenticated) {
             navigate('/login');
             return;
         }
 
-        if (!itemId || !selectedSize) return;
+        if (!item?._id || !selectedSize) return;
 
         try {
             await addToCart({
-                itemId,
-                quantity: 1,
+                itemId: item._id,
+                quantity,
                 size: selectedSize,
                 selectedImageIndex,
             });

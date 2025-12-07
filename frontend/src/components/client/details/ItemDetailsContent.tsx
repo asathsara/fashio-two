@@ -5,6 +5,8 @@ import { ItemStockBadge } from './ItemStockBadge';
 import { SizeSelector } from './SizeSelector';
 import { ItemDescription } from './ItemDescription';
 import { AddToCartButton } from './AddToCartButton';
+import { QuantityController } from '@/components/common/QuantityController';
+import { useState } from 'react';
 
 interface ItemDetailsContentProps {
     item: Item;
@@ -17,7 +19,7 @@ interface ItemDetailsContentProps {
     onSizeSelect: (size: string) => void;
     isAuthenticated: boolean;
     cartLoading: boolean;
-    onAddToCart: () => void;
+    onAddToCart: (quantity: number) => void;
 }
 
 export const ItemDetailsContent = ({
@@ -29,6 +31,7 @@ export const ItemDetailsContent = ({
     cartLoading,
     onAddToCart
 }: ItemDetailsContentProps) => {
+    const [quantity, setQuantity] = useState(1);
     const needsSizeSelection = item.sizes.length > 0 && !selectedSize;
 
     return (
@@ -64,14 +67,29 @@ export const ItemDetailsContent = ({
             {/* Description */}
             <ItemDescription description={item.description} />
 
-            {/* Add to Cart */}
-            <AddToCartButton
-                isOutOfStock={item.stock === 0}
-                needsSizeSelection={needsSizeSelection}
-                isLoading={cartLoading}
-                isAuthenticated={isAuthenticated}
-                onAddToCart={onAddToCart}
-            />
+            <div className="flex flex-col gap-4">
+                {/* Quantity Controller */}
+                {item.stock > 0 && (
+                    <div className="flex items-center gap-4">
+                        <span className="font-medium">Quantity:</span>
+                        <QuantityController
+                            quantity={quantity}
+                            maxQuantity={item.stock}
+                            onIncrease={() => setQuantity(q => Math.min(q + 1, item.stock))}
+                            onDecrease={() => setQuantity(q => Math.max(q - 1, 1))}
+                        />
+                    </div>
+                )}
+
+                {/* Add to Cart */}
+                <AddToCartButton
+                    isOutOfStock={item.stock === 0}
+                    needsSizeSelection={needsSizeSelection}
+                    isLoading={cartLoading}
+                    isAuthenticated={isAuthenticated}
+                    onAddToCart={() => onAddToCart(quantity)}
+                />
+            </div>
         </div>
     );
 };
