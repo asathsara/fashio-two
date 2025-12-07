@@ -2,6 +2,7 @@ import Order, { ORDER_STATUSES, PAYMENT_STATUSES } from './order.model.js';
 import Cart from '../cart/cart.model.js';
 import { Item } from '../item/index.js';
 import { User } from '../auth/index.js';
+import mailService from '../../services/mail/mailService.js';
 
 class OrderService {
 
@@ -85,10 +86,15 @@ class OrderService {
         cart.items = [];
         await cart.save();
 
-        return order.populate([
+        const populatedOrder = await order.populate([
             { path: 'items.item', select: 'name price images' },
             { path: 'user', select: 'name email' }
         ]);
+
+        // Send confirmation email
+        await mailService.sendOrderConfirmationEmail(populatedOrder);
+
+        return populatedOrder;
     }
 
     async getUserOrders(userId) {
@@ -142,8 +148,10 @@ class OrderService {
             throw new Error('Order not found');
         }
 
-        if (status) {
+        let statusChanged = false;
+        if (status && order.status !== status) {
             order.status = status;
+            statusChanged = true;
         }
 
         if (paymentStatus) {
@@ -153,10 +161,16 @@ class OrderService {
         }
 
         await order.save();
-        return order.populate([
+        const populatedOrder = await order.populate([
             { path: 'user', select: 'name email' },
             { path: 'items.item', select: 'name price images' }
         ]);
+
+        if (statusChanged) {
+            await mailService.sendOrderStatusUpdateEmail(populatedOrder);
+        }
+
+        return populatedOrder;
     }
 
     // get order statistics for admin dashboard
