@@ -29,7 +29,15 @@ dotenv.config();
 const app = express();
 
 // Security & Performance Middleware
-app.use(helmet());
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" },
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      imgSrc: ["'self'", "data:", "blob:", process.env.FRONTEND_URL || 'http://localhost:5173'],
+    },
+  },
+}));
 app.use(compression());
 
 // Middleware
