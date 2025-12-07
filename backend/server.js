@@ -22,6 +22,7 @@ import { orderRoutes } from './modules/order/index.js';
 import { aiRoutes } from './modules/ai/index.js';
 import { generalLimiter } from './middleware/rateLimiter.js';
 import { errorHandler } from './middleware/errorHandler.js';
+import seedAdmin from './utils/seeder.js';
 
 dotenv.config();
 
