@@ -78,9 +78,14 @@ app.use(httpLogger);
 // Apply general rate limiting to all routes
 app.use(generalLimiter);
 
+import seedAdmin from './utils/seeder.js';
+
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/fashio-two')
-  .then(() => logger.info('MongoDB connected successfully'))
+  .then(() => {
+    logger.info('MongoDB connected successfully');
+    seedAdmin();
+  })
   .catch((err) => logger.error({ err }, 'MongoDB connection error'));
 
 // Routes
