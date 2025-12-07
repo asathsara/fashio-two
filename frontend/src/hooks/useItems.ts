@@ -8,7 +8,6 @@ export const useItems = () => {
     return useQuery<Item[]>({
         queryKey: ['items'],
         queryFn: fetchItems,
-        staleTime: 1000 * 60 * 5, // 5 minutes
     });
 };
 
