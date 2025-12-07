@@ -3,6 +3,8 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
+import helmet from 'helmet';
+import compression from 'compression';
 
 
 import passport from './config/passport.js';
@@ -25,6 +27,10 @@ dotenv.config();
 
 
 const app = express();
+
+// Security & Performance Middleware
+app.use(helmet());
+app.use(compression());
 
 // Middleware
 app.use(cors({
