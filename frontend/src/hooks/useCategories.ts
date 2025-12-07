@@ -61,8 +61,8 @@ export const useDeleteSubCategory = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: ({ categoryId, subItemName }: { categoryId: string; subItemName: string }) =>
-            deleteSubCategory(categoryId, subItemName),
+        mutationFn: ({ categoryId, subCategoryId }: { categoryId: string; subCategoryId: string }) =>
+            deleteSubCategory(categoryId, subCategoryId),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['categories'] });
             toast.success('Subcategory deleted successfully');

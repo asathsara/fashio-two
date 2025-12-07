@@ -70,8 +70,8 @@ class CategoryController {
 
     async deleteSubCategory(req, res) {
         try {
-            const { id, subItemName } = req.params;
-            const result = await categoryService.deleteSubCategory(id, subItemName);
+            const { id, subCategoryId } = req.params;
+            const result = await categoryService.deleteSubCategory(id, subCategoryId);
             res.json(result);
 
         } catch (error) {

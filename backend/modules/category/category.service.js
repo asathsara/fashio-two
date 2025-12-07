@@ -102,14 +102,14 @@ class CategoryService {
         await Category.findByIdAndDelete(categoryId);
     }
 
-    async deleteSubCategory(categoryId, subItemIdentifier) {
+    async deleteSubCategory(categoryId, subCategoryId) {
         const category = await Category.findById(categoryId);
         if (!category) {
             throw new Error('Category not found');
         }
 
-        const subCategory = category.subCategories.id(subItemIdentifier) ??
-            category.subCategories.find((subItem) => subItem.name === subItemIdentifier);
+        const subCategory = category.subCategories.id(subCategoryId) ??
+            category.subCategories.find((subItem) => subItem.name === subCategoryId);
 
         if (!subCategory) {
             throw new Error('Sub-item not found');

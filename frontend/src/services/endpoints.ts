@@ -11,9 +11,9 @@ const API_ENDPOINTS = {
   ADD_SUBCATEGORY: (id: Id) => `/categories/${id}/sub-categories`,
   DELETE_SUBCATEGORY: (
     categoryId: string,
-    subItemName: string
+    subCategoryId: string
   ) =>
-    `/categories/${categoryId}/sub-categories/${subItemName}`,
+    `/categories/${categoryId}/sub-categories/${subCategoryId}`,
 
   ITEMS: '/items',
   ADD_ITEMS: '/items/add',

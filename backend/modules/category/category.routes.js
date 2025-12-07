@@ -22,6 +22,6 @@ router.get("/", (req, res) => categoryController.getAllCategories(req, res));
 
 // Delete
 router.delete("/:id", (req, res) => categoryController.deleteCategory(req, res));
-router.delete("/:id/sub-categories/:subItemName", (req, res) => categoryController.deleteSubCategory(req, res));
+router.delete("/:id/sub-categories/:subCategoryId", (req, res) => categoryController.deleteSubCategory(req, res));
 
 export default router;
