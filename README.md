@@ -117,6 +117,24 @@ pnpm dev
 ```
 
 ---
+120: 
+121: ### 4. Run with Docker 🐳
+122: 
+123: You can run the entire stack (Frontend, Backend, and MongoDB) using Docker Compose.
+124: 
+125: ```bash
+126: # Build and start the containers
+127: docker-compose up --build
+128: 
+129: # To run in the background (detached mode)
+130: docker-compose up -d
+131: ```
+132: 
+133: *   **Frontend**: http://localhost
+134: *   **Backend**: http://localhost:5000
+135: *   **MongoDB**: exposed on port 27017
+136: 
+137: ---
 
 ## 📦 Deployment
 
