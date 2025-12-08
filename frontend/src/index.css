@@ -346,3 +346,12 @@
   scrollbar-width: none;     /* Firefox */
 }
 
+:root {
+  --admin-rail-width: 50px;
+}
+
+@media (min-width: 640px) {
+  :root {
+    --admin-rail-width: 250px;
+  }
+}
