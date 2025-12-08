@@ -1,7 +1,7 @@
-# 👗 Fashio Two - Modern E-Commerce Platform
+# Fashio Two - Modern E-Commerce Platform
 
 ![Project Status](https://img.shields.io/badge/status-active-success.svg)
-![License](https://img.shields.io/badge/license-ISC-blue.svg)
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
 
 A premium, full-stack fashion e-commerce application built with the MERN stack (MongoDB, Express, React, Node.js). Features a robust admin dashboard, AI-powered fashion assistant, secure authentication, and a dynamic user experience.
 
@@ -27,6 +27,40 @@ A premium, full-stack fashion e-commerce application built with the MERN stack (
 *   **Security**: Helmet headers (CSP/CORP), Rate Limiting, and HttpOnly Cookies.
 *   **Performance**: Gzip compression, lazy loading, and optimized assets.
 *   **Session Management**: Persistent sessions using MongoDB Store (`connect-mongo`).
+
+---
+
+## 📸 Screenshots
+
+### Client Interface
+<div align="center">
+  <img src="screenshots/home.png" alt="Home Page" width="45%" style="margin-right: 10px;" />
+  <img src="screenshots/promo.png" alt="Promo Management" width="45%" />
+</div>
+<br/>
+<div align="center">
+  <img src="screenshots/cart.png" alt="Shopping Cart" width="45%" style="margin-right: 10px;" />
+  <img src="screenshots/help.png" alt="Help Center" width="45%" />
+</div>
+<br/>
+<div align="center">
+  <img src="screenshots/oder_update.png" alt="Order Tracking" width="80%" />
+</div>
+
+### Admin Dashboard
+<div align="center">
+  <img src="screenshots/dashboard.png" alt="Admin Dashboard" width="45%" style="margin-right: 10px;" />
+  <img src="screenshots/statistics.png" alt="Statistics" width="45%" />
+</div>
+<br/>
+<div align="center">
+  <img src="screenshots/item_list.png" alt="Item Management" width="45%" style="margin-right: 10px;" />
+  <img src="screenshots/promo_add_page.png" alt="Add Promo" width="45%" />
+</div>
+<br/>
+<div align="center">
+  <img src="screenshots/slider.png" alt="Slider Management" width="80%" />
+</div>
 
 ---
 
