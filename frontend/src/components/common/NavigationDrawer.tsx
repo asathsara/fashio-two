@@ -13,7 +13,7 @@ const NavigationDrawer = ({ routes, closeNav, navbarOpen }: DrawerProps) => {
 
   return (
     <div
-      className={`${navbarOpen ? "w-64" : "w-0"} h-full z-20 fixed overflow-x-hidden  bg-slate-100 transition-all duration-300`}
+      className={`${navbarOpen ? "w-64" : "w-0"} h-full z-40 fixed overflow-x-hidden  bg-slate-100 transition-all duration-300`}
     >
       <span
         className="cursor-pointer text-4xl float-right mr-6 pt-3 pb-5 "
