@@ -22,6 +22,7 @@ A premium, full-stack fashion e-commerce application built with the MERN stack (
 *   **Order Fulfillment**: Manage customer orders and update shipping statuses.
 *   **Media Management**: Upload and manage slider images and product photos.
 *   **AI Product Generation**: Auto-generate product descriptions and content using Gemini AI.
+*   **AI Product Generation**: Auto-generate product descriptions and content using Gemini AI.
 
 ### 🛡️ Security & Performance
 *   **Security**: Helmet headers (CSP/CORP), Rate Limiting, and HttpOnly Cookies.
@@ -40,11 +41,12 @@ A premium, full-stack fashion e-commerce application built with the MERN stack (
 <br/>
 <div align="center">
   <img src="screenshots/cart.png" alt="Shopping Cart" width="45%" style="margin-right: 10px;" />
-  <img src="screenshots/help.png" alt="Help Center" width="45%" />
+  <img src="screenshots/profile.png" alt="User Profile" width="45%" />
 </div>
 <br/>
 <div align="center">
-  <img src="screenshots/oder_update.png" alt="Order Tracking" width="80%" />
+  <img src="screenshots/oder_update.png" alt="Order Tracking" width="45%" style="margin-right: 10px;" />
+  <img src="screenshots/help.png" alt="Help Center" width="45%" />
 </div>
 
 ### Admin Dashboard
@@ -54,12 +56,13 @@ A premium, full-stack fashion e-commerce application built with the MERN stack (
 </div>
 <br/>
 <div align="center">
-  <img src="screenshots/item_list.png" alt="Item Management" width="45%" style="margin-right: 10px;" />
-  <img src="screenshots/promo_add_page.png" alt="Add Promo" width="45%" />
+  <img src="screenshots/item_list.png" alt="Item List" width="45%" style="margin-right: 10px;" />
+  <img src="screenshots/item_insert.png" alt="Insert Item" width="45%" />
 </div>
 <br/>
 <div align="center">
-  <img src="screenshots/slider.png" alt="Slider Management" width="80%" />
+  <img src="screenshots/promo_add_page.png" alt="Add Promo" width="45%" style="margin-right: 10px;" />
+  <img src="screenshots/slider.png" alt="Slider Management" width="45%" />
 </div>
 
 ---
