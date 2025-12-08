@@ -13,14 +13,15 @@ const NavigationDrawer = ({ routes, closeNav, navbarOpen }: DrawerProps) => {
 
   return (
     <div
-      className={`${navbarOpen ? "w-64" : "w-0"} h-full z-20 fixed overflow-x-hidden  bg-slate-100 transition-all duration-300`}
+      className={`${navbarOpen ? "w-64" : "w-0"} h-full z-40 fixed top-0 left-0 overflow-x-hidden bg-slate-100 transition-all duration-300 shadow-2xl`}
     >
-      <span
-        className="cursor-pointer text-4xl float-right mr-6 pt-3 pb-5 "
+      <button
+        className="absolute top-4 right-4 text-4xl leading-none text-gray-600 hover:text-gray-900 focus:outline-none"
         onClick={closeNav}
+        aria-label="Close menu"
       >
         &times;
-      </span>
+      </button>
       <ul className="list-none flex flex-col gap-2 w-full px-4  font-poppins ">
         {routes.map((r) => (
           <NavLink

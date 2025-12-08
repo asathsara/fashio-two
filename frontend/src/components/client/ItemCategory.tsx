@@ -9,9 +9,9 @@ type ItemCategoryProps = {
 const ItemCategory = ({ categoryName, subcategories }: ItemCategoryProps) => {
   return (
     <section className="flex flex-col font-poppins px-4 sm:px-8 xl:px-16 py-6">
-      <div className="flex flex-wrap items-baseline gap-4 mt-4 tracking-tight">
-        <p className="font-bold md:text-5xl text-4xl">{`${categoryName}'s`}</p>
-        <p className="md:text-5xl text-4xl font-bold text-outline">Collection</p>
+      <div className="flex items-baseline gap-2 sm:gap-4 mt-4 tracking-tight">
+        <p className="font-bold md:text-5xl text-2xl">{`${categoryName}'s`}</p>
+        <p className="md:text-5xl text-2xl font-bold text-outline">Collection</p>
       </div>
 
       {subcategories.length === 0 ? (
@@ -19,18 +19,19 @@ const ItemCategory = ({ categoryName, subcategories }: ItemCategoryProps) => {
       ) : (
         subcategories.map((subCategory) => (
           <div key={subCategory._id} className="mt-8">
-            <div className="flex items-center gap-4 mb-4">
-              <h3 className="text-2xl font-semibold text-navbar-gray">
+            <div className="flex items-center gap-2 sm:gap-4 mb-2">
+              <h3 className="text-lg md:text-2xl font-semibold text-navbar-gray">
                 {subCategory.name}
               </h3>
               <div className="h-px flex-1 bg-gray-200" aria-hidden="true" />
-              {/* <span className="text-sm text-gray-500">
-                {subCategory.items.length} item{subCategory.items.length !== 1 ? "s" : ""}
-              </span> */}
             </div>
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+
+            {/* Horizontal scroll container with small gap and hidden scrollbar */}
+            <div className="flex gap-4 sm:gap-8 overflow-x-auto scrollbar-none py-2">
               {subCategory.items.map((item) => (
-                <ItemCard key={item._id} item={item} />
+                <div key={item._id} className="flex-shrink-0">
+                  <ItemCard item={item} />
+                </div>
               ))}
             </div>
           </div>
