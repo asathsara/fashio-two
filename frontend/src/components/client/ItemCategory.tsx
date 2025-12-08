@@ -10,8 +10,8 @@ const ItemCategory = ({ categoryName, subcategories }: ItemCategoryProps) => {
   return (
     <section className="flex flex-col font-poppins px-4 sm:px-8 xl:px-16 py-6">
       <div className="flex items-baseline gap-2 sm:gap-4 mt-4 tracking-tight">
-        <p className="font-bold md:text-5xl text-3xl">{`${categoryName}'s`}</p>
-        <p className="md:text-5xl text-3xl font-bold text-outline">Collection</p>
+        <p className="font-bold md:text-5xl text-2xl">{`${categoryName}'s`}</p>
+        <p className="md:text-5xl text-2xl font-bold text-outline">Collection</p>
       </div>
 
       {subcategories.length === 0 ? (
@@ -20,7 +20,7 @@ const ItemCategory = ({ categoryName, subcategories }: ItemCategoryProps) => {
         subcategories.map((subCategory) => (
           <div key={subCategory._id} className="mt-8">
             <div className="flex items-center gap-2 sm:gap-4 mb-2">
-              <h3 className="text-xl md:text-2xl font-semibold text-navbar-gray">
+              <h3 className="text-lg md:text-2xl font-semibold text-navbar-gray">
                 {subCategory.name}
               </h3>
               <div className="h-px flex-1 bg-gray-200" aria-hidden="true" />
