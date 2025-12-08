@@ -34,9 +34,9 @@ const HomePage = () => {
     <div className="flex flex-col w-full">
       <HeroSlider images={images} interval={5000} />
 
-      <DetailsBar className={"mt-8"} />
+      <DetailsBar className={"mt-4 md:mt-8"} />
 
-      <div className="flex flex-wrap items-center gap-3 mt-16 justify-center w-full px-4">
+      <div className="flex flex-wrap items-center gap-2 md:gap-3 mt-8 md:mt-16 justify-center w-full px-4">
         <CategoryPill
           label="All"
           active={!selectedCategoryId}

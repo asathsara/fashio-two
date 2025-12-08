@@ -76,7 +76,7 @@ export const AdminOrderTable = ({ orders = [], loading, statusFilter, onStatusFi
             ) : orders.length === 0 ? (
                 <div className="py-16 text-center text-gray-500">No orders match this filter.</div>
             ) : (
-                <div className="overflow-x-auto">
+                        <div className="overflow-x-auto w-[calc(100vw-var(--admin-rail-width))]">
                     <table className="w-full text-left text-sm">
                         <thead className="bg-gray-50 text-xs uppercase tracking-wider text-gray-500">
                             <tr>

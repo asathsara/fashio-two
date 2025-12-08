@@ -336,3 +336,22 @@
     transform: translateX(100%);
   }
 }
+
+/* Hide scrollbars for all overflow-x containers */
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;     /* Firefox */
+}
+
+:root {
+  --admin-rail-width: 50px;
+}
+
+@media (min-width: 640px) {
+  :root {
+    --admin-rail-width: 250px;
+  }
+}

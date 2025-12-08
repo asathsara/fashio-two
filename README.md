@@ -10,7 +10,6 @@ A premium, full-stack fashion e-commerce application built with the MERN stack (
 ## ✨ Features
 
 ### 🛍️ Client Experience
-*   **AI Fashion Assistant**: Real-time fashion advice and product recommendations using Gemini AI.
 *   **Modern Shopping**: Categories, search, filters, and dynamic promotional sliders.
 *   **Cart & Checkout**: Full cart management with real-time stock validation and address management.
 *   **Order Tracking**: Users can track order status (Pending, Shipping, Delivered) from their profile.
@@ -22,6 +21,7 @@ A premium, full-stack fashion e-commerce application built with the MERN stack (
 *   **Product Management**: CRUD operations for Items, Categories, and Promos.
 *   **Order Fulfillment**: Manage customer orders and update shipping statuses.
 *   **Media Management**: Upload and manage slider images and product photos.
+*   **AI Product Generation**: Auto-generate product descriptions and content using Gemini AI.
 
 ### 🛡️ Security & Performance
 *   **Security**: Helmet headers (CSP/CORP), Rate Limiting, and HttpOnly Cookies.

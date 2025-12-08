@@ -1,13 +1,13 @@
 import Detail from "./Detail";
 import { FaTruck, FaExchangeAlt, FaLock } from "react-icons/fa";
 
-
 type DetailsBarProps = {
-  className: string
+  className?: string
 }
-const DetailsBar = ({className}: DetailsBarProps) => {
+
+const DetailsBar = ({ className = "" }: DetailsBarProps) => {
   return (
-      <div className={`${className} flex space-x-6 p-6 justify-center`}>
+    <div className={`${className} flex justify-center space-x-4 sm:space-x-6 p-4 sm:p-6`}>
       <Detail
         icon={FaTruck}
         heading="Free Shipping Island-wide"
