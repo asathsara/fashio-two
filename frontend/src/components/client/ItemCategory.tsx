@@ -10,8 +10,8 @@ const ItemCategory = ({ categoryName, subcategories }: ItemCategoryProps) => {
   return (
     <section className="flex flex-col font-poppins px-4 sm:px-8 xl:px-16 py-6">
       <div className="flex items-baseline gap-2 sm:gap-4 mt-4 tracking-tight">
-        <p className="font-bold md:text-5xl text-4xl">{`${categoryName}'s`}</p>
-        <p className="md:text-5xl text-4xl font-bold text-outline">Collection</p>
+        <p className="font-bold md:text-5xl text-3xl">{`${categoryName}'s`}</p>
+        <p className="md:text-5xl text-3xl font-bold text-outline">Collection</p>
       </div>
 
       {subcategories.length === 0 ? (
