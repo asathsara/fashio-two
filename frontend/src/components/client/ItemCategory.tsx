@@ -29,8 +29,8 @@ const ItemCategory = ({ categoryName, subcategories }: ItemCategoryProps) => {
             {/* Horizontal scroll container with small gap and hidden scrollbar */}
             <div className="flex gap-4 sm:gap-8 overflow-x-auto scrollbar-none py-2">
               {subCategory.items.map((item) => (
-                <div className="flex-shrink-0">
-                  <ItemCard key={item._id} item={item} />
+                <div key={item._id} className="flex-shrink-0">
+                  <ItemCard item={item} />
                 </div>
               ))}
             </div>

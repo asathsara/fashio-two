@@ -60,7 +60,7 @@ const Navbar = ({ onOpenDrawer }: NavbarProps) => {
     <nav className="fixed top-0 left-0 w-full z-30 bg-navbar-gray h-16 sm:h-20 shadow-md">
       <div className="flex px-2 sm:px-4 h-full items-center justify-between">
         {/* Logo */}
-        <div className="flex font-pacifico text-2xl sm:text-2xl md:text-3xl font-semibold pl-2 sm:pl-4 cursor-pointer text-background-gray shrink-0">
+        <div className="flex font-pacifico text-2xl md:text-3xl font-semibold pl-2 sm:pl-4 cursor-pointer text-background-gray shrink-0">
           <Link to="/">Fashio</Link>
         </div>
 
@@ -146,12 +146,14 @@ const Navbar = ({ onOpenDrawer }: NavbarProps) => {
           </div>
 
           {/* Mobile Menu Button */}
-          <span
+          <button
+            type="button"
             className="md:hidden cursor-pointer text-2xl mx-2 text-background-gray shrink-0"
             onClick={onOpenDrawer}
+            aria-label="Open menu"
           >
             &#9776;
-          </span>
+          </button>
         </div>
       </div>
     </nav>
