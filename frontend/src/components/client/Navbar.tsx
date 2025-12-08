@@ -68,15 +68,15 @@ const Navbar = ({ onOpenDrawer }: NavbarProps) => {
 
   return (
     <nav className="fixed top-0 left-0 w-full z-30 bg-navbar-gray h-20 shadow-md">
-      <div className="flex p-4 items-center justify-between">
+      <div className="flex px-2 md:px-4 h-full items-center justify-between">
         {/* Logo */}
-        <div className="flex font-pacifico text-3xl font-semibold pl-4 cursor-pointer text-background-gray">
+        <div className="flex font-pacifico text-2xl md:text-3xl font-semibold pl-2 md:pl-4 cursor-pointer text-background-gray shrink-0">
           <Link to="/">Fashio</Link>
         </div>
 
         {/* Center Navigation */}
-        <div className="flex items-center">
-          <ul className="hidden md:flex gap-6 font-poppins font-semibold text-background-gray mx-4">
+        <div className="flex items-center flex-1 justify-end">
+          <ul className="hidden md:flex gap-6 font-poppins font-semibold text-background-gray mx-4 shrink-0">
             {publicNavRoutes.map((route) => (
               <li key={route.path}>
                 <Link to={route.path}>{route.label}</Link>
@@ -84,21 +84,13 @@ const Navbar = ({ onOpenDrawer }: NavbarProps) => {
             ))}
           </ul>
 
-          {/* Mobile Menu Button */}
-          <span
-            className="md:hidden cursor-pointer text-3xl mx-3 text-background-gray"
-            onClick={onOpenDrawer}
-          >
-            &#9776;
-          </span>
-
           {/* Search Bar */}
-          <div className="flex rounded-full p-3 md:min-w-72 min-w-64 bg-dark-gray justify-between">
-            <div className="flex flex-[5] items-center">
+          <div className="flex rounded-full p-2 md:p-3 flex-1 max-w-[200px] md:max-w-md mx-2 bg-dark-gray justify-between transition-all duration-300">
+            <div className="flex flex-[5] items-center overflow-hidden">
               <button
                 type="button"
                 onClick={handleSearchSubmit}
-                className="mx-3 text-background-gray cursor-pointer bg-transparent border-0 outline-none flex items-center"
+                className="mx-2 md:mx-3 text-background-gray cursor-pointer bg-transparent border-0 outline-none flex items-center shrink-0"
                 aria-label="Search products"
               >
                 <FaSearch />
@@ -110,20 +102,20 @@ const Navbar = ({ onOpenDrawer }: NavbarProps) => {
                 onChange={handleSearchChange}
                 onKeyDown={handleSearchKeyDown}
                 placeholder="Search"
-                className="bg-transparent border-0 outline-none flex-1 font-poppins text-background-gray"
+                className="bg-transparent border-0 outline-none w-full min-w-0 font-poppins text-background-gray text-sm md:text-base"
                 aria-label="Search catalog"
               />
             </div>
-            <div className="flex items-center ml-2 relative">
-              <div className="h-full w-px bg-slate-300"></div>
+            <div className="flex items-center ml-1 md:ml-2 relative shrink-0">
+              <div className="h-4 md:h-full w-px bg-slate-300"></div>
               <div
-                className="mx-3 cursor-pointer relative"
+                className="mx-2 md:mx-3 cursor-pointer relative"
                 onClick={handleCartClick}
               >
-                <MdOutlineShoppingBag className="text-background-gray size-6" />
+                <MdOutlineShoppingBag className="text-background-gray size-5 md:size-6" />
                 {isAuthenticated && itemCount > 0 && (
                   <Badge
-                    className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 text-xs"
+                    className="absolute -top-2 -right-2 h-4 w-4 md:h-5 md:w-5 flex items-center justify-center p-0 text-[10px] md:text-xs"
                     variant="secondary"
                   >
                     {itemCount > 99 ? '99+' : itemCount}
@@ -133,8 +125,14 @@ const Navbar = ({ onOpenDrawer }: NavbarProps) => {
             </div>
           </div>
 
+          {/* Mobile Menu Button - Moved to right for typical pattern, or keep in flow? 
+             Original had it before search bar. Let's keep consistent but flexible.
+             Wait, original had: Logo -> Nav -> MobileMenu -> Search -> Auth.
+             If I use flex-1 for search, it will take space.
+          */}
+
           {/* Right-side Auth Buttons / User Menu */}
-          <div className="ml-6">
+          <div className="hidden md:block ml-4 shrink-0">
             {!isAuthenticated ? (
               <Button asChild className="rounded-full px-5">
                 <Link to="/login">Login</Link>
@@ -167,6 +165,15 @@ const Navbar = ({ onOpenDrawer }: NavbarProps) => {
               </DropdownMenu>
             )}
           </div>
+
+          {/* Mobile Menu Button - Moved to the end on mobile to be easily accessible */}
+          <span
+            className="md:hidden cursor-pointer text-2xl mx-2 text-background-gray shrink-0"
+            onClick={onOpenDrawer}
+          >
+            &#9776;
+          </span>
+
         </div>
       </div>
     </nav>
