@@ -3,6 +3,7 @@ import Category from '../category/category.model.js';
 import PromoService from '../promo/promo.service.js';
 import Cart from '../cart/cart.model.js';
 import slugify from 'slugify';
+import compressImage from '../../utils/imageCompressor.js';
 
 class ItemService {
     constructor() {
@@ -62,11 +63,14 @@ class ItemService {
         const subCategory = category.subCategories.id(itemData.subCategory);
         if (!subCategory) throw new Error('Subcategory not found in the selected category');
 
-        // Map images
-        const imageObjects = files.map(file => ({
-            filename: file.originalname,
-            data: file.buffer,
-            contentType: file.mimetype,
+        // Map and compress images
+        const imageObjects = await Promise.all(files.map(async (file) => {
+            const compressed = await compressImage(file);
+            return {
+                filename: compressed.filename,
+                data: compressed.buffer,
+                contentType: compressed.mimetype,
+            };
         }));
 
         // Parse sizes if it's a JSON string
@@ -159,12 +163,15 @@ class ItemService {
             remainingImages.includes(index)
         );
 
-        // Map new uploaded files to image objects
+        // Map new uploaded files to image objects with compression
         const newImageObjects = files && files.length > 0
-            ? files.map(file => ({
-                filename: file.originalname,
-                data: file.buffer,
-                contentType: file.mimetype,
+            ? await Promise.all(files.map(async (file) => {
+                const compressed = await compressImage(file);
+                return {
+                    filename: compressed.filename,
+                    data: compressed.buffer,
+                    contentType: compressed.mimetype,
+                };
             }))
             : [];
 
