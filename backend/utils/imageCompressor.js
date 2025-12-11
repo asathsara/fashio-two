@@ -39,11 +39,22 @@ const compressImage = async (file) => {
             headers['x-api-key'] = API_KEY;
         }
 
-        const response = await fetch(url, {
-            method: 'POST',
-            body: formData,
-            headers: headers
-        });
+        // Set up timeout for fetch using AbortController
+        const controller = new AbortController();
+        const timeoutMs = 30000; // 30 seconds
+        const timeout = setTimeout(() => controller.abort(), timeoutMs);
+
+        let response;
+        try {
+            response = await fetch(url, {
+                method: 'POST',
+                body: formData,
+                headers: headers,
+                signal: controller.signal
+            });
+        } finally {
+            clearTimeout(timeout);
+        }
 
         if (!response.ok) {
             console.error(`Compression failed with status ${response.status}: ${await response.text()}`);
