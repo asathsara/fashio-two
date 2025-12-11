@@ -3,6 +3,7 @@ import { Blob } from 'buffer';
 const compressImage = async (file) => {
     const COMPRESSOR_URL = process.env.IMAGE_COMPRESSOR_URL;
     const QUALITY = process.env.IMAGE_COMPRESSOR_QUALITY || '80';
+    const API_KEY = process.env.IMAGE_COMPRESSOR_API_KEY;
 
     // Check if compressor URL is set
     if (!COMPRESSOR_URL) {
@@ -33,9 +34,15 @@ const compressImage = async (file) => {
 
         console.log(`Compressing image via ${url.toString()}...`);
 
+        const headers = {};
+        if (API_KEY) {
+            headers['x-api-key'] = API_KEY;
+        }
+
         const response = await fetch(url, {
             method: 'POST',
-            body: formData
+            body: formData,
+            headers: headers
         });
 
         if (!response.ok) {
