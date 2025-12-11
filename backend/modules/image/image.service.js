@@ -1,4 +1,5 @@
 import Image from './image.model.js';
+import compressImage from '../../utils/imageCompressor.js';
 
 class ImageService {
     // Create
@@ -7,10 +8,12 @@ class ImageService {
             throw new Error('No file uploaded');
         }
 
+        const compressed = await compressImage(file);
+
         const newImage = new Image({
-            filename: file.originalname,
-            data: file.buffer,
-            contentType: file.mimetype,
+            filename: compressed.filename,
+            data: compressed.buffer,
+            contentType: compressed.mimetype,
         });
 
         await newImage.save();
