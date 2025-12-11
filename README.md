@@ -22,7 +22,7 @@ A premium, full-stack fashion e-commerce application built with the MERN stack (
 *   **Order Fulfillment**: Manage customer orders and update shipping statuses.
 *   **Media Management**: Upload and manage slider images and product photos.
 *   **AI Product Generation**: Auto-generate product descriptions and content using Gemini AI.
-*   **AI Product Generation**: Auto-generate product descriptions and content using Gemini AI.
+
 
 ### 🛡️ Security & Performance
 *   **Security**: Helmet headers (CSP/CORP), Rate Limiting, and HttpOnly Cookies.
@@ -82,6 +82,7 @@ A premium, full-stack fashion e-commerce application built with the MERN stack (
 *   **Database**: MongoDB + Mongoose
 *   **Auth**: Passport.js (Google OAuth), JWT, Argon2/Bcrypt
 *   **AI**: Google Gemini SDK (`@google/genai`)
+*   **Media**: Image Compression via [Pixel Press](https://github.com/asathsara/pixel-press)
 *   **Email**: Nodemailer
 *   **Security**: Helmet, Express Rate Limit, CORS
 
@@ -127,6 +128,11 @@ GOOGLE_CLIENT_SECRET=your_google_client_secret
 # AI
 GEMINI_API_KEY=your_gemini_api_key
 
+# Image Compression
+IMAGE_COMPRESSOR_URL=your_compressor_url
+IMAGE_COMPRESSOR_QUALITY=80
+IMAGE_COMPRESSOR_API_KEY=your_compressor_api_key
+
 # Email (Optional)
 EMAIL_HOST=smtp.gmail.com
 EMAIL_USER=your@email.com
@@ -154,24 +160,25 @@ pnpm dev
 ```
 
 ---
-120: 
-121: ### 4. Run with Docker 🐳
-122: 
-123: You can run the entire stack (Frontend, Backend, and MongoDB) using Docker Compose.
-124: 
-125: ```bash
-126: # Build and start the containers
-127: docker-compose up --build
-128: 
-129: # To run in the background (detached mode)
-130: docker-compose up -d
-131: ```
-132: 
-133: *   **Frontend**: http://localhost
-134: *   **Backend**: http://localhost:5000
-135: *   **MongoDB**: exposed on port 27017
-136: 
-137: ---
+### 4. Run with Docker 🐳
+
+You can run the entire stack (Frontend, Backend, and MongoDB) using Docker Compose.
+
+#### Commands
+
+```bash
+# Build and start the containers
+docker-compose up --build
+
+# To run in the background (detached mode)
+docker-compose up -d
+```
+
+#### Access Points
+
+*   **Frontend**: http://localhost
+*   **Backend**: http://localhost:5000
+*   **MongoDB**: exposed on port 27017
 
 ## 📦 Deployment
 
