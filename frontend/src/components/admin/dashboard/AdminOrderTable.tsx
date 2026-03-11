@@ -70,7 +70,7 @@ export const AdminOrderTable = ({ orders = [], loading, statusFilter, onStatusFi
 
             {/* TABLE */}
             {loading ? (
-                <div className="flex min-h-[200px] items-center justify-center">
+                <div className="flex min-h-50 items-center justify-center">
                     <Spinner />
                 </div>
             ) : orders.length === 0 ? (

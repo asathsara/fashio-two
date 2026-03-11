@@ -24,7 +24,7 @@ const PublicLayout = () => {
                     navbarOpen={isDrawerOpen}
                     closeNav={() => setIsDrawerOpen(false)}
                 />
-                <main className="flex-grow pt-20">
+                <main className="grow pt-20">
                     <Outlet />
                 </main>
                 <Footer footerItems={publicNavRoutes} />

@@ -8,7 +8,7 @@ export const AdminUsersPlaceholder = () => {
 
     if (isLoading) {
         return (
-            <div className="flex min-h-[400px] items-center justify-center">
+            <div className="flex min-h-100 items-center justify-center">
                 <Spinner />
             </div>
         );

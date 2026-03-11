@@ -76,8 +76,8 @@ const Navbar = ({ onOpenDrawer }: NavbarProps) => {
           </ul>
 
           {/* Search Bar */}
-          <div className="flex rounded-full p-2  flex-1 max-w-[160px] sm:max-w-[200px] md:max-w-md bg-dark-gray justify-between transition-all duration-300">
-            <div className="flex flex-[5] items-center overflow-hidden">
+          <div className="flex rounded-full p-2  flex-1 max-w-40 sm:max-w-50 md:max-w-md bg-dark-gray justify-between transition-all duration-300">
+            <div className="flex flex-5 items-center overflow-hidden">
               <button
                 type="button"
                 onClick={handleSearchSubmit}

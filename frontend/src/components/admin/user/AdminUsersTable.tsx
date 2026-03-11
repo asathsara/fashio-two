@@ -57,7 +57,7 @@ export const AdminUsersTable = ({ users, loading }: AdminUsersTableProps) => {
             </div>
 
             {loading ? (
-                <div className="flex min-h-[200px] items-center justify-center">
+                <div className="flex min-h-50 items-center justify-center">
                     <Spinner />
                 </div>
             ) : users.length === 0 ? (

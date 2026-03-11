@@ -48,7 +48,7 @@ export const CartPage = () => {
 
     if (loading && !cart) {
         return (
-            <div className="flex justify-center items-center min-h-[400px]">
+            <div className="flex justify-center items-center min-h-100">
                 <Spinner />
             </div>
         );

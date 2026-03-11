@@ -23,7 +23,7 @@ const ItemCard = ({ item }: ItemCardProps) => {
   return (
     <div
       onClick={handleClick}
-      className="rounded-md border border-gray-100 w-44 sm:w-56 md:w-64 flex-shrink-0 cursor-pointer hover:shadow-lg transition-shadow relative mr-3 sm:mr-4 mt-6"
+      className="rounded-md border border-gray-100 w-44 sm:w-56 md:w-64 shrink-0 cursor-pointer hover:shadow-lg transition-shadow relative mr-3 sm:mr-4 mt-6"
     >
       {pricing.hasPromo && pricing.discountPercentage && (
         <Badge className="absolute top-2 right-2 z-10 bg-red-500 hover:bg-red-600 text-white text-xs sm:text-sm">

@@ -71,7 +71,7 @@ export const CartItem = ({ item, onUpdateQuantity, onRemove }: CartItemProps) =>
         <div className="flex gap-4 p-4 border rounded-lg bg-white">
 
             {/* LEFT COLUMN: Trash button + Image */}
-            <div className="flex flex-col items-center gap-3 flex-shrink-0 mt-2">
+            <div className="flex flex-col items-center gap-3 shrink-0 mt-2">
 
                 <Link to={`/items/${item.item.slug || item.item._id}`}>
                     <SmartImage
@@ -119,7 +119,7 @@ export const CartItem = ({ item, onUpdateQuantity, onRemove }: CartItemProps) =>
 
 
             {/* Quantity Controls and Total */}
-            <div className="relative flex flex-col items-end justify-between gap-4 flex-shrink-0 mt-5">
+            <div className="relative flex flex-col items-end justify-between gap-4 shrink-0 mt-5">
 
                 <button
                     onClick={() => {
